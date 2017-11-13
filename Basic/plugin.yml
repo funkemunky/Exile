@@ -1,0 +1,7 @@
+name: Exile
+version: 1.0
+main: anticheat.Exile
+website: http://Code66.zone
+author: [funkemunky]
+commands:
+    Exile:

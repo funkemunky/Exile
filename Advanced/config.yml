@@ -1,0 +1,8 @@
+Alert_Message: '%prefix%&6%player% &7failed &a%check% &b(%info%) &7[&c%violations%
+  VL&7]'
+Prefix: "&8[&6&lFiona&8]"
+Punish_Cmd: ban %player% Unfair Advantage -s
+Punish_Broadcast: '&6&lFiona &7has detected &6%player% &7to be cheating and has
+  been removed from the network.'
+hwid: ""
+checks:

@@ -1,0 +1,7 @@
+name: Fiona
+version: 1.2.7
+main: anticheat.Fiona
+description: An advanced anticheat in many layers.
+author: [funkemunky, XTasyCode]
+commands:
+    Fiona:

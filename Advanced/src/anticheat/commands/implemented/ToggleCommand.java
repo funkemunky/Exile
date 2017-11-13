@@ -1,0 +1,54 @@
+package anticheat.commands.implemented;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+
+import anticheat.Fiona;
+import anticheat.commands.Command;
+import anticheat.detections.Checks;
+import anticheat.detections.ChecksManager;
+import anticheat.utils.Color;
+
+/**
+ * Created by XtasyCode on 11/08/2017.
+ */
+
+public class ToggleCommand extends Command {
+
+	public ToggleCommand() {
+		super("Fiona");
+	}
+
+	public void onCommand(CommandSender sender, String[] args) {
+			if (args.length > 1) {
+				String subCommand = args[0];
+				String CheckName = args[1];
+				if (subCommand.equalsIgnoreCase("toggle")) {
+					if(sender.hasPermission("fiona.admin")) {
+						Checks check = ChecksManager.getCheckByName(CheckName);
+						if (check == null) {
+							sender.sendMessage(Fiona.getAC().getPrefix() + ChatColor.RED + " Check ' " + CheckName + " ' not found.");
+							ArrayList<String> list = new ArrayList<String>();
+							for(Checks check1 : ChecksManager.getDetections()) {
+								list.add(Color.Gray + (check1.getState() ? Color.Green + check1.getName() : Color.Red + check1.getName()).toString() + Color.Gray);
+							}
+							sender.sendMessage(Fiona.getAC().getPrefix() + ChatColor.RED + " Available checks: " + Color.Gray + list.toString());
+							return;
+						}
+						check.toggle();
+						sender.sendMessage(Fiona.getAC().getPrefix() + ChatColor.RED + check.getName()
+						+ " state has been set to " + (check.isBannable() ? Color.Green + check.getState() : check.getState()));
+					} else {
+						sender.sendMessage(Color.Red + "No permission.");
+					}
+				}
+			} else {
+				if(args[0].equalsIgnoreCase("toggle")) {
+					sender.sendMessage(Fiona.getAC().getPrefix() + ChatColor.RED + " Invalid usage, use /Fiona toggle CheckName.");
+				}
+			}
+	}
+}
