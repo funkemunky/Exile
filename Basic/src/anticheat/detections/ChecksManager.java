@@ -8,15 +8,13 @@ import org.bukkit.event.Event;
 
 import anticheat.Exile;
 import anticheat.checks.combat.Fastbow;
+import anticheat.checks.combat.KillAura;
 import anticheat.checks.combat.Reach;
 import anticheat.checks.combat.Regen;
 import anticheat.checks.movement.Fly;
 import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.Speed;
-import anticheat.checks.movement.Vclip;
-import anticheat.checks.other.Crash;
-import anticheat.checks.other.Exploit;
 import anticheat.checks.other.NoSwing;
 
 public class ChecksManager {
@@ -43,12 +41,10 @@ public class ChecksManager {
 	public void init() {
 		new Reach();
 		new Speed();
-		new Vclip();
-		new Jesus();
+		new KillAura();
 		new NoSwing();
 		new Fly();
-		new Crash();
-		new Exploit();
+		new Jesus();
 		new Fastbow();
 		new Regen();
 		new NoFall();

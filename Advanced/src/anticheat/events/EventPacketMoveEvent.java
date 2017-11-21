@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 
 public class EventPacketMoveEvent implements Listener {
 	
@@ -40,7 +40,7 @@ public class EventPacketMoveEvent implements Listener {
 	
 	@EventHandler
 	public void onMove(PacketedMovementEvent event) {
-		Fiona.getAC().getchecksmanager().event(event);
+		Exile.getAC().getchecksmanager().event(event);
 	}
 
 }

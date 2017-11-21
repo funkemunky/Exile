@@ -10,7 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 
 public class PlayerUtils {
 
@@ -18,9 +18,9 @@ public class PlayerUtils {
 
 	public static void kick(Player p, String reason) {
 		if (p.isOnline()) {
-			p.kickPlayer("§8[§c§l" + "Fiona" + "§8]:\n§c" + reason);
+			p.kickPlayer("§8[§c§l" + "Exile" + "§8]:\n§c" + reason);
 			Bukkit.broadcastMessage(
-					"§8[§c§l" + "Fiona" + "§8]" + " §7kicked §0" + p.getDisplayName() + " §7for §a" + reason);
+					"§8[§c§l" + "Exile" + "§8]" + " §7kicked §0" + p.getDisplayName() + " §7for §a" + reason);
 		}
 	}
 	

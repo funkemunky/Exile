@@ -11,7 +11,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -24,12 +24,13 @@ public class Fastbow extends Checks {
 	public Map<Player, Integer> count;
 
 	public Fastbow() {
-		super("Fastbow", ChecksType.COMBAT, Fiona.getAC(), 5, true, true);
+		super("Fastbow", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
 
 		this.bowPull = new HashMap<Player, Long>();
 		this.count = new HashMap<Player, Integer>();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onEvent(Event event) {
 		if (!this.getState()) {
@@ -75,7 +76,7 @@ public class Fastbow extends Checks {
 							count.put(player, Count - 1);
 						}
 						if (Count > 8) {
-							User user = Fiona.getUserManager().getUser(player.getUniqueId());
+							User user = Exile.getUserManager().getUser(player.getUniqueId());
 							user.setVL(this, user.getVL(this) + 1);
 							this.Alert(player, "*");
 							count.remove(player);

@@ -1,15 +1,9 @@
 package anticheat.packets;
 
-import java.util.HashSet;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.util.Vector;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -19,10 +13,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.packets.events.PacketBlockPlacementEvent;
 import anticheat.packets.events.PacketEntityActionEvent;
 import anticheat.packets.events.PacketHeldItemChangeEvent;
@@ -36,16 +28,13 @@ import anticheat.packets.events.PacketUseEntityEvent;
 import anticheat.packets.events.PacketKeepAliveEvent.PacketKeepAliveType;
 
 public class PacketCore {
-	public Fiona Fiona;
-	private HashSet<EntityType> enabled;
+	public Exile Exile;
 
-	public PacketCore(Fiona Fiona) {
+	public PacketCore(Exile Exile) {
 		super();
-		this.Fiona = Fiona;
-		enabled = new HashSet<EntityType>();
-		enabled.add(EntityType.valueOf((String) "PLAYER"));
+		this.Exile = Exile;
 
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.USE_ENTITY }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final PacketContainer packet = event.getPacket();
@@ -93,34 +82,7 @@ public class PacketCore {
 				}
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(Fiona, new PacketType[] { PacketType.Play.Server.SPAWN_ENTITY_LIVING,
-				PacketType.Play.Server.NAMED_ENTITY_SPAWN, PacketType.Play.Server.ENTITY_METADATA }) {
-
-			public void onPacketSending(PacketEvent event) {
-				PacketContainer packet = event.getPacket();
-				Entity e = (Entity) packet.getEntityModifier(event).read(0);
-				if (e instanceof LivingEntity && enabled.contains((Object) e.getType())
-						&& packet.getWatchableCollectionModifier().read(0) != null
-						&& e.getUniqueId() != event.getPlayer().getUniqueId()) {
-					packet = packet.deepClone();
-					event.setPacket(packet);
-					if (event.getPacket().getType() == PacketType.Play.Server.ENTITY_METADATA) {
-						WrappedDataWatcher watcher = new WrappedDataWatcher(
-								(List) packet.getWatchableCollectionModifier().read(0));
-						this.processDataWatcher(watcher);
-						packet.getWatchableCollectionModifier().write(0,
-								(List<WrappedWatchableObject>) watcher.getWatchableObjects());
-					}
-				}
-			}
-
-			private void processDataWatcher(WrappedDataWatcher watcher) {
-				if (watcher != null && watcher.getObject(6) != null && watcher.getFloat(6) != 0.0F) {
-					watcher.setObject(6, 1.0f);
-				}
-			}
-		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.POSITION_LOOK }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -134,7 +96,7 @@ public class PacketCore {
 						(float) event.getPacket().getFloat().read(1), PacketPlayerType.POSLOOK));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Server.ENTITY_VELOCITY }) {
 			public void onPacketSending(PacketEvent event) {
 				 Player player = event.getPlayer();
@@ -149,7 +111,7 @@ public class PacketCore {
 			}
 		});
 		ProtocolLibrary.getProtocolManager().addPacketListener(
-				(PacketListener) new PacketAdapter(this.Fiona, new PacketType[] { PacketType.Play.Client.LOOK }) {
+				(PacketListener) new PacketAdapter(this.Exile, new PacketType[] { PacketType.Play.Client.LOOK }) {
 					public void onPacketReceiving(final PacketEvent event) {
 						Player player = event.getPlayer();
 
@@ -164,7 +126,7 @@ public class PacketCore {
 										PacketPlayerType.POSLOOK));
 					}
 				});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.POSITION }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -178,7 +140,7 @@ public class PacketCore {
 								player.getLocation().getPitch(), PacketPlayerType.POSITION));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.ENTITY_ACTION }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final PacketContainer packet = event.getPacket();
@@ -190,7 +152,7 @@ public class PacketCore {
 						.callEvent((Event) new PacketEntityActionEvent(player, (int) packet.getIntegers().read(1)));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.KEEP_ALIVE }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -200,7 +162,7 @@ public class PacketCore {
 				Bukkit.getServer().getPluginManager().callEvent((Event) new PacketKeepAliveEvent(player, PacketKeepAliveType.CLIENT));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Server.KEEP_ALIVE }) {
 			public void onPacketSending(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -210,7 +172,7 @@ public class PacketCore {
 				Bukkit.getServer().getPluginManager().callEvent((Event) new PacketKeepAliveEvent(player, PacketKeepAliveType.SERVER));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.ARM_ANIMATION }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -222,7 +184,7 @@ public class PacketCore {
 				Bukkit.getServer().getPluginManager().callEvent((Event) new PacketSwingArmEvent(event, player));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.HELD_ITEM_SLOT }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -232,7 +194,7 @@ public class PacketCore {
 				Bukkit.getServer().getPluginManager().callEvent((Event) new PacketHeldItemChangeEvent(event, player));
 			}
 		});
-		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Fiona,
+		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.BLOCK_PLACE }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final Player player = event.getPlayer();
@@ -243,7 +205,7 @@ public class PacketCore {
 			}
 		});
 		ProtocolLibrary.getProtocolManager().addPacketListener(
-				(PacketListener) new PacketAdapter(this.Fiona, new PacketType[] { PacketType.Play.Client.FLYING }) {
+				(PacketListener) new PacketAdapter(this.Exile, new PacketType[] { PacketType.Play.Client.FLYING }) {
 					public void onPacketReceiving(final PacketEvent event) {
 						final Player player = event.getPlayer();
 						if (player == null) {

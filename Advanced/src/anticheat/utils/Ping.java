@@ -7,13 +7,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 
 public class Ping {
 
 	private static double tps;
 
-	public Ping(Fiona Fiona) {
+	public Ping(Exile Exile) {
 		new BukkitRunnable() {
 			long sec;
 			long currentSec;
@@ -29,7 +29,7 @@ public class Ping {
 					this.ticks = 0;
 				}
 			}
-		}.runTaskTimerAsynchronously(Fiona, 1L, 1L);
+		}.runTaskTimerAsynchronously(Exile, 1L, 1L);
 	}
 
 	public double getTPS() {

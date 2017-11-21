@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -17,7 +17,7 @@ import anticheat.utils.TimerUtils;
 public class NoSwing extends Checks {
 
 	public NoSwing() {
-		super("NoSwing", ChecksType.OTHER, Fiona.getAC(), 20, true, true);
+		super("NoSwing", ChecksType.OTHER, Exile.getAC(), 20, true, true);
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class NoSwing extends Checks {
 
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			
-			if(!Fiona.getAC().isEnabled()) {
+			if(!Exile.getAC().isEnabled()) {
 				return;
 			}
 
 			Player p = (Player) e.getDamager();
 
-			User user = Fiona.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getUserManager().getUser(p.getUniqueId());
 
 			if (e.getEntity() != null && p != null) {
 				new BukkitRunnable() {
@@ -44,7 +44,7 @@ public class NoSwing extends Checks {
 							user.setHasSwung(false);
 
 						} else {
-							if(Fiona.getAC().isEnabled()) {
+							if(Exile.getAC().isEnabled()) {
 								if(!(TimerUtils.nowlong() < (user.getLastSwing() + 1500L))) {
 									user.setVL(NoSwing.this, user.getVL(NoSwing.this) + 1);
 									Alert(p, "*");
@@ -52,7 +52,7 @@ public class NoSwing extends Checks {
 							}
 						}
 					}
-				}.runTaskLater(Fiona.getAC(), 10L);
+				}.runTaskLater(Exile.getAC(), 10L);
 			}
 
 		}
@@ -61,7 +61,7 @@ public class NoSwing extends Checks {
 			PacketSwingArmEvent psav = (PacketSwingArmEvent) event;
 			Player p = psav.getPlayer();
 
-			User user = Fiona.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getUserManager().getUser(p.getUniqueId());
 
 			user.setHasSwung(true);
 

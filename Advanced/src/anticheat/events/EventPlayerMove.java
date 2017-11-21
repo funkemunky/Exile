@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.user.User;
 import anticheat.utils.PlayerUtils;
 
@@ -18,9 +18,9 @@ public class EventPlayerMove implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
-		Fiona.getAC().getchecksmanager().event(event);
+		Exile.getAC().getchecksmanager().event(event);
 		Player p = event.getPlayer();
-		User user = Fiona.getUserManager().getUser(p.getUniqueId());
+		User user = Exile.getUserManager().getUser(p.getUniqueId());
 
 		if (PlayerUtils.isReallyOnground(p)) {
 			user.setGroundTicks(user.getGroundTicks() + 1);
@@ -38,7 +38,7 @@ public class EventPlayerMove implements Listener {
 						user.setTeleported(false);
 					}
 				}
-			}.runTaskLaterAsynchronously(Fiona.getAC(), 20L);
+			}.runTaskLaterAsynchronously(Exile.getAC(), 20L);
 		}
 	}
 }

@@ -4,26 +4,24 @@ import java.util.ArrayList;
 
 import org.bukkit.command.CommandSender;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.commands.Command;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksManager;
 import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
-import net.md_5.bungee.api.ChatColor;
 
 public class StatusCommand extends Command {
 	
 	public StatusCommand() {
-		super("fiona");
+		super("Exile");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {
 			if (args.length > 0) {
 				String subCommand = args[0];
 				if (subCommand.equalsIgnoreCase("status")) {
-					if(sender.hasPermission("fiona.admin")) {
-						sender.sendMessage(Color.Gray + "Loading status...");
+					if(sender.hasPermission("Exile.admin")) {
 						ArrayList<String> bannable = new ArrayList<String>();
 						for(Checks check1 : ChecksManager.getDetections()) {
 							if(check1.isBannable()) {
@@ -40,12 +38,12 @@ public class StatusCommand extends Command {
 						sender.sendMessage("");
 						sender.sendMessage("");
 						sender.sendMessage(Color.Dark_Gray  + Color.Strikethrough + Color.Bold + "----------------------------------");
-						sender.sendMessage(Color.Gold + Color.Bold + "Fiona Status:");
+						sender.sendMessage(Color.Red + Color.Bold + "Exile Status:");
 						sender.sendMessage("");
-						sender.sendMessage(Color.Yellow + "TPS: " + Color.Red + MathUtils.trim(1, Fiona.getAC().getPing().getTPS()));
+						sender.sendMessage(Color.Gray + "TPS: " + Color.White + MathUtils.trim(1, Exile.getAC().getPing().getTPS()));
 						sender.sendMessage("");
-						sender.sendMessage(Color.Yellow + " Silent Checks: " + Color.Gray + notbannable.toString());
-						sender.sendMessage(Color.Yellow + " Bannable Checks: " + Color.Gray + bannable.toString());
+						sender.sendMessage(Color.Gray + " Silent Checks: " + Color.White + notbannable.toString());
+						sender.sendMessage(Color.Gray + " Bannable Checks: " + Color.White + bannable.toString());
 						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough +  Color.Bold + "----------------------------------");
 						sender.sendMessage("");
 					} else {
@@ -54,7 +52,7 @@ public class StatusCommand extends Command {
 				}
 			} else {
 
-				sender.sendMessage(Fiona.getAC().getPrefix() + Color.Red + " Invalid argument!");
+				sender.sendMessage(Exile.getAC().getPrefix() + Color.Red + " Invalid argument!");
 			}
 	}
 

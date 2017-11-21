@@ -20,6 +20,8 @@ public class User {
 	private int invb = 0;
 	private boolean hasSwung = false;
 	private boolean hasAlerts = false;
+	private int armSwing;
+	private int playerHit;
 	private long lastSwing = 0;
 	private boolean teleported = false;
 	private double lastYawDifference = 1.0D;
@@ -41,7 +43,7 @@ public class User {
 	}
 
 	public boolean isStaff() {
-		if (this.player.hasPermission("fiona.staff") || this.player.isOp()) {
+		if (this.player.hasPermission("Exile.staff") || this.player.isOp()) {
 			return true;
 		}
 		return false;
@@ -124,6 +126,30 @@ public class User {
 	
 	public void setLastHeal(long millis) {
 		this.lastHeal = millis;
+	}
+	
+	public void addHit() {
+		this.playerHit++;
+	}
+	
+	public void addSwing() {
+		this.armSwing++;
+	}
+	
+	public void resetSwing() {
+		this.armSwing = 0;
+	}
+	
+	public void resetHit() {
+		this.playerHit = 0;
+	}
+	
+	public int getHit() {
+		return this.playerHit;
+	}
+	
+	public int getSwing() {
+		return this.armSwing;
 	}
 	
 	/**

@@ -7,14 +7,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import anticheat.Fiona;
+import anticheat.Exile;
+import anticheat.packets.events.PacketKillauraEvent;
+import anticheat.packets.events.PacketPlayerType;
 import anticheat.user.User;
-
-/**
- * Created by XtasyCode on 11/08/2017.
- */
 
 public class EventPlayerAttack implements Listener {
 
@@ -23,27 +20,41 @@ public class EventPlayerAttack implements Listener {
 	@EventHandler
 	public void onAttack(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
-			Fiona.getAC();
+			Exile.getAC();
 			if (!EventPlayerAttack.hasAttacked.contains(e.getDamager())) {
-				Fiona.getAC();
+				Exile.getAC();
 				EventPlayerAttack.hasAttacked.put((Player) e.getDamager(), "Has Attacked Entity");
-				Bukkit.getScheduler().runTaskLater(Fiona.getAC(), new Runnable() {
+				Bukkit.getScheduler().runTaskLater(Exile.getAC(), new Runnable() {
 					@Override
 					public void run() {
-						Fiona.getAC();
+						Exile.getAC();
 						hasAttacked.remove(e.getDamager());
 					}
 				}, 100);
 			}
-			Fiona.getAC().getChecks().event(e);
+			Exile.getAC().getChecks().event(e);
 			if(e.getEntity() instanceof Player) {
 				Player player = (Player) e.getEntity();
-				User user = Fiona.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getUserManager().getUser(player.getUniqueId());
 				if(user != null) {
 					user.setIsHit(System.currentTimeMillis());
 				}
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onKillaura(PacketKillauraEvent e) {
+		Player player = e.getPlayer();
+		User user = Exile.getUserManager().getUser(player.getUniqueId());
+		if(e.getType() == PacketPlayerType.ARM_SWING) {
+			user.addSwing();
+		}
+		if(e.getType() == PacketPlayerType.USE) {
+			user.addHit();
+		}
+		
+		Exile.getAC().getChecks().event(e);
+ 	}
 
 }

@@ -4,13 +4,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 
 public class EventPlayerVelocity implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerVelocityEvent event) {
-		Fiona.getAC().getchecksmanager().event(event);
+		Exile.getAC().getchecksmanager().event(event);
 	}
 
 }

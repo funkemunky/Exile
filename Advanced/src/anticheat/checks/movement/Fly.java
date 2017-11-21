@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -31,11 +31,12 @@ public class Fly extends Checks {
 	public Map<UUID, Double> velocity;
 
 	public Fly() {
-		super("FlyA", ChecksType.MOVEMENT, Fiona.getAC(), 9, true, true);
+		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
 		this.AscensionTicks = new HashMap<UUID, Map.Entry<Long, Double>>();
 		this.velocity = new WeakHashMap<UUID, Double>();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes", "unlikely-arg-type" })
 	@Override
 	protected void onEvent(Event event) {
 		if (!this.getState()) {
@@ -68,7 +69,7 @@ public class Fly extends Checks {
 				return;
 			}
 			
-			User user = Fiona.getUserManager().getUser(player.getUniqueId());
+			User user = Exile.getUserManager().getUser(player.getUniqueId());
 
 			if (PlayerUtils.isAir(player) && user.getAirTicks() > 20 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
 					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
@@ -83,9 +84,9 @@ public class Fly extends Checks {
 			long Time = System.currentTimeMillis();
 			double TotalBlocks = 0.0D;
 			if (this.AscensionTicks.containsKey(player.getUniqueId())) {
-				Time = ((Long) ((Map.Entry) this.AscensionTicks.get(player.getUniqueId())).getKey()).longValue();
+				Time = ((Long) (this.AscensionTicks.get(player.getUniqueId())).getKey()).longValue();
 				TotalBlocks = Double.valueOf(
-						((Double) ((Map.Entry) this.AscensionTicks.get(player.getUniqueId())).getValue()).doubleValue())
+						((Double) (this.AscensionTicks.get(player.getUniqueId())).getValue()).doubleValue())
 						.doubleValue();
 			}
 			long MS = System.currentTimeMillis() - Time;

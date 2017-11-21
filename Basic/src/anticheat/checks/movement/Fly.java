@@ -31,7 +31,7 @@ public class Fly extends Checks {
 	public Map<UUID, Double> velocity;
 
 	public Fly() {
-		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
+		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 10, true, true);
 		this.AscensionTicks = new HashMap<UUID, Map.Entry<Long, Double>>();
 		this.velocity = new WeakHashMap<UUID, Double>();
 	}
@@ -59,9 +59,6 @@ public class Fly extends Checks {
 		if (event instanceof PlayerMoveEvent) {
 			PlayerMoveEvent e = (PlayerMoveEvent) event;
 			Player player = e.getPlayer();
-			if (e.getFrom().getY() >= e.getTo().getY()) {
-				return;
-			}
 			if (player.getAllowFlight()) {
 				return;
 			}
@@ -70,11 +67,14 @@ public class Fly extends Checks {
 			}
 			
 			User user = Exile.getUserManager().getUser(player.getUniqueId());
-
-			if (PlayerUtils.isAir(player) && user.getAirTicks() > 20 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
+			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 20 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
 					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
-				Alert(player, "Invalid");
+				Alert(player, "Type A");
 				user.setVL(this, user.getVL(this) + 1);
+			}
+
+			if (e.getFrom().getY() >= e.getTo().getY()) {
+				return;
 			}
 
 			if (player.getVelocity().length() < velocity.getOrDefault(player.getUniqueId(), -1.0D)) {
@@ -95,14 +95,23 @@ public class Fly extends Checks {
 			if (OffsetY > 0.0D) {
 				TotalBlocks += OffsetY;
 			}
-			if (MiscUtils.blocksNear(player)) {
-				TotalBlocks = 0.0D;
-			}
 			Location a = player.getLocation().subtract(0.0D, 1.0D, 0.0D);
-			if (MiscUtils.blocksNear(a)) {
-				TotalBlocks = 0.0D;
-			}
 			double Limit = 0.5D;
+			if (MiscUtils.blocksNear(a)) {
+				Limit = 1.0;
+			}
+			if (MiscUtils.blocksNear(player)) {
+				Limit = 1.0;
+			}
+			
+			if(MiscUtils.blocksNearC(a)) {
+				TotalBlocks = 0.0;
+			}
+			
+			if(MiscUtils.blocksNearC(player.getLocation())) {
+				TotalBlocks = 0.0;
+			}
+			
 			if (player.hasPotionEffect(PotionEffectType.JUMP)) {
 				for (PotionEffect effect : player.getActivePotionEffects()) {
 					if (effect.getType().equals(PotionEffectType.JUMP)) {
@@ -113,10 +122,10 @@ public class Fly extends Checks {
 				}
 			}
 			if (TotalBlocks > Limit) {
-				if (MS > 150L) {
+				if (MS > 200L) {
 					if (velocity.containsKey(player.getUniqueId())) {
 						user.setVL(this, user.getVL(this) + 1);
-						this.Alert(player, ChatColor.GREEN + "Flew up " + MathUtils.trim(2, TotalBlocks) + " blocks.");
+						this.Alert(player, "Type B");
 					}
 					Time = System.currentTimeMillis();
 				}

@@ -59,6 +59,31 @@ public final class MiscUtils {
 	public static double getZDelta(Location one, Location two) {
 		return Math.abs(one.getZ() - two.getZ());
 	}
+	
+	public static boolean blocksNearC(final Location loc) {
+		boolean nearBlocks = false;
+		for (Block block : BlockUtils.getBlocksAroundCenter(loc, 0.1D)) {
+			if (block.getType() != Material.AIR) {
+				nearBlocks = true;
+				break;
+			}
+		}
+		for (final Block block : BlockUtils.getBlocksAroundCenter(loc, 0.1D)) {
+			if (block.getType() != Material.AIR) {
+				nearBlocks = true;
+				break;
+			}
+		}
+		loc.setY(loc.getY() - 0.5);
+		if (loc.getBlock().getType() != Material.AIR) {
+			nearBlocks = true;
+		}
+		if (isBlock(loc.getBlock().getRelative(BlockFace.DOWN),
+				new Material[] { Material.FENCE, Material.FENCE_GATE, Material.COBBLE_WALL, Material.LADDER })) {
+			nearBlocks = true;
+		}
+		return nearBlocks;
+	}
 
 	public static double getDistance3D(Location one, Location two) {
 		double toReturn = 0.0D;

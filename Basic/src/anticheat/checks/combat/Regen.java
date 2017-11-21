@@ -81,9 +81,10 @@ public class Regen extends Checks {
 			if (checkFastHeal(player)) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
 					Count++;
+					e.setCancelled(true);
 				}
 			}
-			if (Count > 2) {
+			if (Count > 4) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
 					User user = Exile.getUserManager().getUser(player.getUniqueId());
 					user.setVL(this, user.getVL(this) == 0 ? 1 : user.getVL(this) + 1);

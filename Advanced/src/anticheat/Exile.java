@@ -38,14 +38,12 @@ import anticheat.user.User;
 import anticheat.user.UserManager;
 import anticheat.utils.AdvancedLicense;
 import anticheat.utils.Color;
-import anticheat.utils.MathUtils;
 import anticheat.utils.Ping;
-import anticheat.utils.MathUtils.TimeUnit;
 
-public class Fiona extends JavaPlugin {
+public class Exile extends JavaPlugin {
 
 	private static ChecksManager checksmanager;
-	private static Fiona Fiona;
+	private static Exile Exile;
 	public PacketCore packet;
 	private static UserManager userManager;
 	private Ping ping;
@@ -59,8 +57,8 @@ public class Fiona extends JavaPlugin {
 		return this.ping;
 	}
 
-	public static Fiona getAC() {
-		return Fiona;
+	public static Exile getAC() {
+		return Exile;
 	}
 
 	public ChecksManager getChecks() {
@@ -83,11 +81,11 @@ public class Fiona extends JavaPlugin {
 		return commandManager;
 	}
 
-	@SuppressWarnings({ "static-access", "deprecation" })
+	@SuppressWarnings({ "static-access" })
 	public void onEnable() {
 		this.getServer().getConsoleSender()
 				.sendMessage(Color.translate("&d------------------------------------------"));
-		Fiona = this;
+		Exile = this;
 		this.userManager = new UserManager();
 		this.ping = new Ping(this);
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded Main class!"));
@@ -153,7 +151,6 @@ public class Fiona extends JavaPlugin {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void clearVLS() {
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			getUserManager().getUser(online.getUniqueId()).getVLs().clear();
@@ -190,6 +187,7 @@ public class Fiona extends JavaPlugin {
 			}
 		}.runTaskTimer(this, 0L, 1L);
 		new BukkitRunnable() {
+			@SuppressWarnings("static-access")
 			public void run() {
 				getServer().getPluginManager().callEvent(new TickEvent(TickType.FAST));
 

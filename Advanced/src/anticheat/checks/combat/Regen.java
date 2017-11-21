@@ -1,7 +1,6 @@
 package anticheat.checks.combat;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -12,7 +11,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -25,13 +24,13 @@ public class Regen extends Checks {
 	public Map<UUID, Map.Entry<Integer, Long>> FastHealTicks;
 
 	public Regen() {
-		super("Regen", ChecksType.COMBAT, Fiona.getAC(), 5, true, true);
+		super("Regen", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
 
 		this.FastHealTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 	}
 
 	public boolean checkFastHeal(Player player) {
-		User user = Fiona.getUserManager().getUser(player.getUniqueId());
+		User user = Exile.getUserManager().getUser(player.getUniqueId());
 		if (user.getLastHeal() != 0) {
 			long l = user.getLastHeal();
 			user.setLastHeal(0L);
@@ -65,7 +64,7 @@ public class Regen extends Checks {
 			if (!(e.getEntity() instanceof Player)) {
 				return;
 			}
-			if (Fiona.getAC().getPing().getTPS() < 17) {
+			if (Exile.getAC().getPing().getTPS() < 17) {
 				return;
 			}
 			Player player = (Player) e.getEntity();
@@ -86,7 +85,7 @@ public class Regen extends Checks {
 			}
 			if (Count > 2) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
-					User user = Fiona.getUserManager().getUser(player.getUniqueId());
+					User user = Exile.getUserManager().getUser(player.getUniqueId());
 					user.setVL(this, user.getVL(this) == 0 ? 1 : user.getVL(this) + 1);
 					this.Alert(player, "*");
 				}

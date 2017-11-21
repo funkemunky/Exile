@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.utils.Color;
 import anticheat.utils.JsonMessage;
 
@@ -16,7 +16,7 @@ import anticheat.utils.JsonMessage;
 
 public class Checks {
 
-	public static Fiona ac;
+	public static Exile ac;
 	public ChecksType type;
 	private String name;
 	private boolean state;
@@ -27,7 +27,7 @@ public class Checks {
 
 	private int weight;
 
-	public Checks(String name, ChecksType type, Fiona ac, Integer weight, boolean state, boolean bannable) {
+	public Checks(String name, ChecksType type, Exile ac, Integer weight, boolean state, boolean bannable) {
 		this.name = name;
 		Checks.ac = ac;
 		this.type = type;
@@ -82,15 +82,15 @@ public class Checks {
 		long l = System.currentTimeMillis() - this.delay;
 		if (l > this.interval) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (Fiona.getUserManager().getUser(p.getUniqueId()).isHasAlerts() && player.isOp() || player.hasPermission("Fiona.staff")) {
+				if (Exile.getUserManager().getUser(p.getUniqueId()).isHasAlerts() && player.isOp() || player.hasPermission("Exile.staff")) {
 					JsonMessage msg = new JsonMessage();
-					Fiona.getAC();
-					msg.addText(Color.translate(Fiona.getAC().getConfig().getString("Alert_Message")
-							.replaceAll("%prefix%", Fiona.getAC().getPrefix()).replaceAll("%player%", p.getName())
+					Exile.getAC();
+					msg.addText(Color.translate(Exile.getAC().getConfig().getString("Alert_Message")
+							.replaceAll("%prefix%", Exile.getAC().getPrefix()).replaceAll("%player%", p.getName())
 							.replaceAll("%check%", getName().toUpperCase()).replaceAll("%info%", value)
 							.replaceAll("%violations%",
 									String.valueOf(
-											Fiona.getUserManager().getUser(p.getUniqueId()).getVL(this)))))
+											Exile.getUserManager().getUser(p.getUniqueId()).getVL(this)))))
 							.addHoverText(Color.Gray + "Teleport to " + p.getName() + "?")
 							.setClickEvent(JsonMessage.ClickableType.RunCommand, "/tp " + p.getName());
 					msg.sendToPlayer(player);
@@ -102,13 +102,13 @@ public class Checks {
 	}
 
 	public void kick(Player p) {
-		if (Fiona.getUserManager().getUser(p.getUniqueId()).needBan(this) && this.isBannable() && !p.isOp() && !Fiona.getAC().playersBanned.contains(p)) {
-			Fiona.getAC().getServer().dispatchCommand(Fiona.getAC().getServer().getConsoleSender(),
-					Color.translate(Fiona.getAC().getConfig().getString("Punish_Cmd")
+		if (Exile.getUserManager().getUser(p.getUniqueId()).needBan(this) && this.isBannable() && !p.isOp() && !Exile.getAC().playersBanned.contains(p)) {
+			Exile.getAC().getServer().dispatchCommand(Exile.getAC().getServer().getConsoleSender(),
+					Color.translate(Exile.getAC().getConfig().getString("Punish_Cmd")
 							.replaceAll("%player%", p.getName()).replaceAll("%check%", this.getName().toUpperCase())));
 			Bukkit.broadcastMessage(Color.translate(
-					Fiona.getAC().getConfig().getString("Punish_Broadcast").replaceAll("%player%", p.getName()).replaceAll("%check%", this.getName().toUpperCase())));
-			Fiona.getAC().playersBanned.add(p);
+					Exile.getAC().getConfig().getString("Punish_Broadcast").replaceAll("%player%", p.getName()).replaceAll("%check%", this.getName().toUpperCase())));
+			Exile.getAC().playersBanned.add(p);
 		}
 	}
 }

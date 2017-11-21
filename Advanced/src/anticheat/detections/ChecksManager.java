@@ -6,34 +6,24 @@ import java.util.List;
 
 import org.bukkit.event.Event;
 
-import anticheat.Fiona;
-import anticheat.checks.combat.AimPattern;
+import anticheat.Exile;
 import anticheat.checks.combat.Fastbow;
-import anticheat.checks.combat.KillAuraA;
 import anticheat.checks.combat.Reach;
 import anticheat.checks.combat.Regen;
-import anticheat.checks.combat.ZeroPatterns;
 import anticheat.checks.movement.Fly;
-import anticheat.checks.movement.FlyB;
-import anticheat.checks.movement.GroundSpoof;
 import anticheat.checks.movement.Jesus;
-import anticheat.checks.movement.NoSlowDown;
+import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.movement.Vclip;
 import anticheat.checks.other.Crash;
 import anticheat.checks.other.Exploit;
 import anticheat.checks.other.NoSwing;
-import anticheat.checks.other.PingSpoof;
-
-/**
- * Created by XtasyCode on 11/08/2017.
- */
 
 public class ChecksManager {
 
 	private static List<Checks> detections = new ArrayList<>();
 
-	public ChecksManager(Fiona ac) {
+	public ChecksManager(Exile ac) {
 	}
 
 	public static List<Checks> getDetections() {
@@ -53,21 +43,15 @@ public class ChecksManager {
 	public void init() {
 		new Reach();
 		new Speed();
-		new KillAuraA();
 		new Vclip();
 		new Jesus();
 		new NoSwing();
 		new Fly();
-		new ZeroPatterns();
-		new FlyB();
 		new Crash();
-		new NoSlowDown();
 		new Exploit();
-		new GroundSpoof();
 		new Fastbow();
-		new PingSpoof();
 		new Regen();
-		new AimPattern();
+		new NoFall();
 	}
 
 	public void event(Event event) {

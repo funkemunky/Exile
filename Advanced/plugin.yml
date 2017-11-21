@@ -1,7 +1,8 @@
-name: Fiona
-version: 1.2.7
-main: anticheat.Fiona
-description: An advanced anticheat in many layers.
-author: [funkemunky, XTasyCode]
+name: Exile
+version: 1.0
+main: anticheat.Exile
+description: Advanced plan.
+website: http://Code66.zone
+author: [funkemunky]
 commands:
-    Fiona:
+    Exile:

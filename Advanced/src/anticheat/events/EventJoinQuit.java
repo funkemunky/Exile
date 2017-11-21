@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.user.User;
 import anticheat.utils.Color;
 
@@ -19,25 +19,25 @@ public class EventJoinQuit implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		Fiona.getAC();
-		Fiona.getUserManager().add(new User(p));
-		User user = Fiona.getUserManager().getUser(p.getUniqueId());
+		Exile.getAC();
+		Exile.getUserManager().add(new User(p));
+		User user = Exile.getUserManager().getUser(p.getUniqueId());
 		user.setLoginMillis(System.currentTimeMillis());
 		if(user.isStaff()) {
 			if(!user.isHasAlerts()) {
 				user.setHasAlerts(true);
-				p.sendMessage(Fiona.getAC().getPrefix() + Color.Gray + Color.Italics + " Turns on your cheat alerts automatically. Do " + Color.Green + "/fiona alerts " + Color.Gray + Color.Italics + "to toggle them.");
+				p.sendMessage(Exile.getAC().getPrefix() + Color.Gray + Color.Italics + " Turns on your cheat alerts automatically. Do " + Color.Green + "/Exile alerts " + Color.Gray + Color.Italics + "to toggle them.");
 			}
 		}
-		Fiona.getAC().getchecksmanager().event(e);
+		Exile.getAC().getchecksmanager().event(e);
 	}
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
-		Fiona.getAC();
-		Fiona.getUserManager().remove(Fiona.getUserManager().getUser(p.getUniqueId()));
-		Fiona.getAC().getchecksmanager().event(e);
+		Exile.getAC();
+		Exile.getUserManager().remove(Exile.getUserManager().getUser(p.getUniqueId()));
+		Exile.getAC().getchecksmanager().event(e);
 	}
 
 }

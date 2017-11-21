@@ -123,11 +123,11 @@ public class BlockUtils {
 		return false;
 	}
 
-	public static ArrayList<Block> getBlocksAroundCenter(Location loc, int radius) {
+	public static ArrayList<Block> getBlocksAroundCenter(Location loc, double radius) {
 		ArrayList<Block> blocks = new ArrayList();
-		for (int x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
-			for (int y = loc.getBlockY() - radius; y <= loc.getBlockY() + radius; y++) {
-				for (int z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
+		for (double x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
+			for (double y = loc.getBlockY() - radius; y <= loc.getBlockY() + radius; y++) {
+				for (double z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
 					Location l = new Location(loc.getWorld(), x, y, z);
 					if (l.distance(loc) <= radius) {
 						blocks.add(l.getBlock());

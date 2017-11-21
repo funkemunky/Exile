@@ -10,7 +10,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -26,7 +26,7 @@ public class Jesus extends Checks {
 	public Map<UUID, Double> velocity;
 
 	public Jesus() {
-		super("Jesus", ChecksType.MOVEMENT, Fiona.getAC(), 10, true, true);
+		super("Jesus", ChecksType.MOVEMENT, Exile.getAC(), 10, true, true);
 
 		this.onWater = new HashMap<Player, Integer>();
 		this.placedBlockOnWater = new ArrayList<Player>();
@@ -34,7 +34,6 @@ public class Jesus extends Checks {
 		this.velocity = new HashMap<UUID, Double>();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onEvent(Event event) {
 		if(!this.getState()) {
@@ -91,7 +90,7 @@ public class Jesus extends Checks {
 			}
 
 			if (Count >= 20) {
-				User user = Fiona.getUserManager().getUser(p.getUniqueId());
+				User user = Exile.getUserManager().getUser(p.getUniqueId());
 				count.remove(p);
 				user.setVL(this, user.getVL(this) + 1);
 				this.Alert(p, "*");

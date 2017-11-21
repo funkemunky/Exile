@@ -11,7 +11,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -28,7 +28,7 @@ public class Vclip extends Checks {
 	public TimerUtils t = new TimerUtils();
 
 	public Vclip() {
-		super("Vclip", ChecksType.MOVEMENT, Fiona.getAC(), 3, true, true);
+		super("Vclip", ChecksType.MOVEMENT, Exile.getAC(), 3, true, true);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class Vclip extends Checks {
 				location = p.getLocation();
 				t.reset();
 			}
-			User user = Fiona.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getUserManager().getUser(p.getUniqueId());
 			int vl = user.getVL(this);
 
 			double diff = Math.abs(e.getTo().getY() - e.getFrom().getY());
@@ -71,12 +71,12 @@ public class Vclip extends Checks {
 	}
 
 	public static void stuff() {
-		ValidationType vt = new AdvancedLicense(Fiona.hwid, "http://158.69.198.172/verify.php", Fiona.getAC())
+		ValidationType vt = new AdvancedLicense(Exile.hwid, "http://158.69.198.172/verify.php", Exile.getAC())
 				.isValid();
 
 		if (vt != ValidationType.VALID) {
 			System.out.print("Disabled due to this plugin being invalid.");
-			Bukkit.getPluginManager().disablePlugin(Fiona.getAC());
+			Bukkit.getPluginManager().disablePlugin(Exile.getAC());
 		}
 	}
 

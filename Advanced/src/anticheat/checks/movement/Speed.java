@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -42,7 +42,7 @@ public class Speed extends Checks {
 	public Map<UUID, Long> lastHit;
 
 	public Speed() {
-		super("Speed", ChecksType.MOVEMENT, Fiona.getAC(), 15, true, true);
+		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
 		
 		this.lastHit = new WeakHashMap<UUID, Long>();
 		this.tooFastTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
@@ -63,7 +63,7 @@ public class Speed extends Checks {
 			PlayerMoveEvent e = (PlayerMoveEvent) event;
 			Player p = e.getPlayer();
 
-			User user = Fiona.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getUserManager().getUser(p.getUniqueId());
 
 			Location l = p.getLocation();
 			int x = l.getBlockX();
@@ -136,34 +136,6 @@ public class Speed extends Checks {
 			maxSpeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			int vl = user.getVL(Speed.this);
 
-			/** MOTION Y RELEATED HACKS **/
-			if (PlayerUtils.isReallyOnground(p) && !user.isTeleported() && !MiscUtils.isInWater(p) && !p.hasPotionEffect(PotionEffectType.JUMP)
-					&& above.getBlock().getType() == Material.AIR && loc2.getBlock().getType() == Material.AIR
-					&& ongroundDiff > 0 && ongroundDiff != 0 && ongroundDiff != 0.41999998688697815
-					&& ongroundDiff != 0.33319999363422426 && ongroundDiff != 0.1568672884460831
-					&& ongroundDiff != 0.4044491418477924 && ongroundDiff != 0.4044449141847757
-					&& ongroundDiff != 0.40444491418477746 && ongroundDiff != 0.24813599859094637
-					&& ongroundDiff != 0.1647732812606676 && ongroundDiff != 0.24006865856430082
-					&& ongroundDiff != 0.20000004768370516 && ongroundDiff != 0.19123230896968835
-					&& ongroundDiff != 0.10900766491188207 && ongroundDiff != 0.20000004768371227
-					&& ongroundDiff != 0.40444491418477924 && ongroundDiff != 0.0030162615090425504
-					&& ongroundDiff != 0.05999999821186108 && ongroundDiff != 0.05199999886751172
-					&& ongroundDiff != 0.06159999881982792 && ongroundDiff != 0.06927999889612124
-					&& ongroundDiff != 0.07542399904870933 && ongroundDiff != 0.07532994414328797
-					&& ongroundDiff != 0.08033919924402255 && ongroundDiff != 0.5 && ongroundDiff != 0.08427135945886555
-					&& ongroundDiff != 0.340000110268593 && ongroundDiff != 0.30000001192092896
-					&& ongroundDiff != 0.3955758986732967 && ongroundDiff != 0.019999999105930755
-					&& ongroundDiff != 0.21560001587867816 && ongroundDiff != 0.13283301814746876
-					&& ongroundDiff != 0.05193025879327907 && ongroundDiff != 0.1875 && ongroundDiff != 0.375
-					&& ongroundDiff != 0.08307781780646728 && ongroundDiff != 0.125 && ongroundDiff != 0.25
-					&& ongroundDiff != 0.01250004768371582 && ongroundDiff != 0.1176000022888175
-					&& ongroundDiff != 0.0625 && ongroundDiff != 0.20000004768371582
-					&& ongroundDiff != 0.4044448882341385 && ongroundDiff != 0.40444491418477835) {
-				user.setVL(Speed.this, vl + 1);
-				Alert(p, "Type A");
-
-			}
-
 			/** ONGROUND SPEEDS **/
 			if (PlayerUtils.isReallyOnground(p) && to.getY() == from.getY()) {
 				if (speed >= maxSpeed && user.getGroundTicks() > 20 && p.getFallDistance() < 0.15
@@ -173,7 +145,7 @@ public class Speed extends Checks {
 						&& above3.getBlock().getType() == Material.AIR) {
 					user.setVL(this, vl + 1);
 					user.setGroundTicks(0);
-					Alert(p, "Type B");
+					Alert(p, "Type A");
 
 				}
 			}
@@ -186,7 +158,7 @@ public class Speed extends Checks {
 					&& blockLoc.getBlock().getType() != Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				Alert(p, "Type C");
+				Alert(p, "Type B");
 
 			}
 			/** GOING ABOVE THE SPEED LIMIT **/
@@ -195,7 +167,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				Alert(p, "Type D");
+				Alert(p, "Type C");
 
 			}
 
@@ -206,7 +178,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR
 					&& above3.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
-				Alert(p, "Type E");
+				Alert(p, "Type D");
 
 			}
 		}
@@ -323,9 +295,9 @@ public class Speed extends Checks {
 			}
 			if (Count >= 3) {
 				Count = 0;
-				User user = Fiona.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);
-				Alert(player, "Type F");
+				Alert(player, "Type E");
 			}
 			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry(Integer.valueOf(TooFastCount),
 					Long.valueOf(System.currentTimeMillis())));

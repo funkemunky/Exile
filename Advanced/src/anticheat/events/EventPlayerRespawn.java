@@ -4,13 +4,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 
 public class EventPlayerRespawn implements Listener {
 	
 	@EventHandler
 	public void respawn(PlayerRespawnEvent event) {
-		Fiona.getAC().getchecksmanager().event(event);
+		Exile.getAC().getchecksmanager().event(event);
 	}
 
 }

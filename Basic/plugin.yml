@@ -1,6 +1,7 @@
 name: Exile
 version: 1.0
 main: anticheat.Exile
+description: Basic Plan.
 website: http://Code66.zone
 author: [funkemunky]
 commands:

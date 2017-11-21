@@ -13,7 +13,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import anticheat.checks.movement.Vclip;
 import anticheat.commands.CommandManager;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksManager;
@@ -36,7 +35,6 @@ import anticheat.events.TickType;
 import anticheat.packets.PacketCore;
 import anticheat.user.User;
 import anticheat.user.UserManager;
-import anticheat.utils.AdvancedLicense;
 import anticheat.utils.Color;
 import anticheat.utils.Ping;
 
@@ -84,25 +82,23 @@ public class Exile extends JavaPlugin {
 	@SuppressWarnings({ "static-access" })
 	public void onEnable() {
 		this.getServer().getConsoleSender()
-				.sendMessage(Color.translate("&d------------------------------------------"));
+				.sendMessage(Color.translate("&7------------------------------------------"));
 		Exile = this;
 		this.userManager = new UserManager();
 		this.ping = new Ping(this);
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded Main class!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Main class!"));
 		checksmanager = new ChecksManager(this);
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded checks!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded checks!"));
 		commandManager = new CommandManager();
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded commands!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded commands!"));
 		this.packet = new PacketCore(this);
 		File file = new File(getDataFolder(), "config.yml");
 		if (!file.exists()) {
 			saveDefaultConfig();
 		}
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded Configuration!"));
-		this.hwid = getConfig().getString("hwid");
-		if (!new AdvancedLicense(hwid, "http://158.69.198.172/verify.php", this).register())
-			return;
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded players data's!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Configuration!"));
+		
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded players data's!"));
 		commandManager.init();
 		checksmanager.init();
 		for (Checks check : checksmanager.getDetections()) {
@@ -114,12 +110,11 @@ public class Exile extends JavaPlugin {
 				getConfig().set("checks." + check.getName() + ".bannable", check.isBannable());
 			}
 		}
-		Vclip.stuff();
 		registerEvents();
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Registered events!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Registered events!"));
 		if (!getDataFolder().exists()) {
 			getDataFolder().mkdirs();
-			this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Made Fiona file!"));
+			this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Made Exile file!"));
 
 		}
 
@@ -128,7 +123,7 @@ public class Exile extends JavaPlugin {
 				file.createNewFile();
 			} catch (IOException e) {
 				this.getServer().getConsoleSender()
-						.sendMessage(Color.translate("&d Fiona &f Made JudgementDay txt file!"));
+						.sendMessage(Color.translate("&6 Exile &f Made JudgementDay txt file!"));
 				e.printStackTrace();
 			}
 		}
@@ -136,9 +131,11 @@ public class Exile extends JavaPlugin {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			getUserManager().add(new User(player));
 		}
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&d Fiona &f Loaded Fiona!"));
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f added all online players to User list!"));
+		
+		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Exile!"));
 		this.getServer().getConsoleSender()
-				.sendMessage(Color.translate("&d------------------------------------------"));
+				.sendMessage(Color.translate("&7------------------------------------------"));
 
 	}
 

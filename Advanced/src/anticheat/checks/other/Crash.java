@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import anticheat.Fiona;
+import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
@@ -30,7 +30,7 @@ public class Crash extends Checks {
 	public List<UUID> faggots;
 
 	public Crash() {
-		super("Crash", ChecksType.OTHER, Fiona.getAC(), 1, true, true);
+		super("Crash", ChecksType.OTHER, Exile.getAC(), 1, true, true);
 
 		this.faggotTicks = new HashMap<UUID, Map.Entry<Integer, Long>>();
 		this.faggot2Ticks = new HashMap<UUID, Map.Entry<Integer, Long>>();
@@ -62,7 +62,7 @@ public class Crash extends Checks {
 					Time = TimerUtils.nowlong();
 				}
 				if (Count > 2000) {
-					User user = Fiona.getUserManager().getUser(faggot.getUniqueId());
+					User user = Exile.getUserManager().getUser(faggot.getUniqueId());
 					user.setVL(this, user.getVL(this) + 1);
 					this.Alert(faggot, "*");
 					this.faggots.add(faggot.getUniqueId());
@@ -88,7 +88,7 @@ public class Crash extends Checks {
 					Time = TimerUtils.nowlong();
 				}
 				if (Count > 2000) {
-					User user = Fiona.getUserManager().getUser(faggot.getUniqueId());
+					User user = Exile.getUserManager().getUser(faggot.getUniqueId());
 					user.setVL(this, user.getVL(this) + 1);
 					this.Alert(faggot, "*");
 					this.faggots.add(faggot.getUniqueId());
@@ -114,7 +114,7 @@ public class Crash extends Checks {
 					Time = TimerUtils.nowlong();
 				}
 				if (Count > 2000) {
-					User user = Fiona.getUserManager().getUser(faggot.getUniqueId());
+					User user = Exile.getUserManager().getUser(faggot.getUniqueId());
 					user.setVL(this, user.getVL(this) + 1);
 					this.Alert(faggot, "*");
 					this.faggots.add(faggot.getUniqueId());
