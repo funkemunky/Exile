@@ -23,6 +23,7 @@ import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
 import anticheat.events.PacketedMovementEvent;
 import anticheat.user.User;
+import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
 import anticheat.utils.MiscUtils;
 import anticheat.utils.PlayerUtils;
@@ -145,7 +146,7 @@ public class Speed extends Checks {
 						&& above3.getBlock().getType() == Material.AIR) {
 					user.setVL(this, vl + 1);
 					user.setGroundTicks(0);
-					Alert(p, "Type A");
+					Alert(p, "Reason: " + Color.Green + "onGround " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 				}
 			}
@@ -158,7 +159,7 @@ public class Speed extends Checks {
 					&& blockLoc.getBlock().getType() != Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				Alert(p, "Type B");
+				Alert(p, "Reason: " + Color.Green + "midAir " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 			/** GOING ABOVE THE SPEED LIMIT **/
@@ -167,7 +168,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				Alert(p, "Type C");
+				Alert(p, "Reason: " + Color.Green + "Speed_Limit " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 
@@ -178,7 +179,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR
 					&& above3.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
-				Alert(p, "Type D");
+				Alert(p, "Reason: " + Color.Green + "Vanilla " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 		}
@@ -297,7 +298,7 @@ public class Speed extends Checks {
 				Count = 0;
 				User user = Exile.getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);
-				Alert(player, "Type E");
+				Alert(player, "Reason: " + Color.Green + "Overall " + Color.Gray + "Speed: " + Color.Red + "N/A");
 			}
 			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry(Integer.valueOf(TooFastCount),
 					Long.valueOf(System.currentTimeMillis())));
