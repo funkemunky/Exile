@@ -26,4 +26,5 @@ public class EventPlayerInteractEvent implements Listener {
 			user.setRightClicks(user.getRightClicks() + 1);
 		}
 	}
+	
 }

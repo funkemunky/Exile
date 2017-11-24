@@ -67,7 +67,7 @@ public class Fly extends Checks {
 			}
 			
 			User user = Exile.getUserManager().getUser(player.getUniqueId());
-			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 20 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
+			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 25 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.04
 					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
 				Alert(player, "Type A");
 				user.setVL(this, user.getVL(this) + 1);

@@ -76,12 +76,13 @@ public class DoubleClick extends Checks {
 					user.setVL(this, user.getVL(this) + 1);
 					
 					if(user.getVL(this) > 50) {
-						Alert(player, "Macros/Killaura/Autoclicker");
+						Alert(player, "*");
 					}
 				}
 				secondClick = 0;
 				firstClick = 0;
 			}
+			this.clicks.put(player.getUniqueId(), new Long[]{firstClick, secondClick});
 		}
 	}
 

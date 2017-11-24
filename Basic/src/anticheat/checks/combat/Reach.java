@@ -1,9 +1,14 @@
 package anticheat.checks.combat;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.WeakHashMap;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
@@ -14,13 +19,15 @@ import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
 import anticheat.utils.PlayerUtils;
 
-@ChecksListener(events = { EntityDamageByEntityEvent.class })
+@ChecksListener(events = { EntityDamageByEntityEvent.class, PlayerQuitEvent.class })
 public class Reach extends Checks {
 
+	private Map<UUID, Integer> verbose;
 
 	public Reach() {
 		super("Reach", ChecksType.COMBAT, Exile.getAC(), 11, true, true);
 
+		this.verbose = new WeakHashMap<UUID, Integer>();
 	}
 
 	@Override
@@ -28,6 +35,14 @@ public class Reach extends Checks {
 		if (!this.getState()) {
 			return;
 		}
+		if(event instanceof PlayerQuitEvent) {
+			PlayerQuitEvent e = (PlayerQuitEvent) event;
+			
+			if(verbose.containsKey(e.getPlayer().getUniqueId())) {
+				verbose.remove(e.getPlayer().getUniqueId());
+			}
+		}
+		
 		if (event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
 			if (e.getCause() != DamageCause.ENTITY_ATTACK) {
@@ -41,6 +56,11 @@ public class Reach extends Checks {
 			}
 			Player damager = (Player) e.getDamager();
 			Player player = (Player) e.getEntity();
+			
+			/**
+			 * Gets the verbose count if contains. If not, return 0.
+			 */
+			int verbose = this.verbose.getOrDefault(damager.getUniqueId(), 0);
 			
 			/**
 			 * Measures reach minus Y Coordinate Difference. Only substracts y difference if greater than 0.5.
@@ -112,11 +132,21 @@ public class Reach extends Checks {
 			
 			
 			if(Reach > MaxReach) {
+				verbose+= 2;
+			} else {
+				verbose = verbose > 0 ? verbose-- : 0;
+			}
+			
+			if(verbose > 5) {
 				User user = Exile.getUserManager().getUser(damager.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
 				this.Alert(damager, Color.Green + Reach + Color.Gray + " > " + Color.Green + MaxReach);
+				
+				verbose = 0;
 			}
+			
+			this.verbose.put(damager.getUniqueId(), verbose);
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package anticheat.commands.implemented;
 
-import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,20 +32,24 @@ public class ViolationsCommand extends Command {
 						sender.sendMessage(Color.Red + "That player is not online!");
 						return;
 					}
-					sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
+					sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
 					User user = Exile.getUserManager().getUser(target.getUniqueId());
 					if(user.getVLs().size() > 0) {
+						sender.sendMessage(Color.Gold + Color.Bold + target.getName() + "'s Violations/Info");
+						sender.sendMessage("");
+						sender.sendMessage(Color.Gray + "Ping: " + Color.White + Exile.getAC().getPing().getPing(target));
+						sender.sendMessage("");
 						sender.sendMessage(Color.Red + Color.Bold + "Set off:");
 						sender.sendMessage("");
 						
 						for(Checks check : user.getVLs().keySet()) {
-							sender.sendMessage(Color.White + "- " + check.getName());
+							sender.sendMessage(Color.White + "- " + check.getName() + " VL: " + user.getVL(check));
 						}
 						
 					} else {
 						sender.sendMessage(Color.Red + "This player set of no checks!");
 					}
-					sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
+					sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
 				} else {
 					sender.sendMessage(Color.Red + "No permission.");
 				}

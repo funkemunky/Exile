@@ -82,7 +82,7 @@ public class Checks {
 		long l = System.currentTimeMillis() - this.delay;
 		if (l > this.interval) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (Exile.getUserManager().getUser(p.getUniqueId()).isHasAlerts() && player.isOp() || player.hasPermission("Exile.staff")) {
+				if (Exile.getUserManager().getUser(p.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
 					JsonMessage msg = new JsonMessage();
 					Exile.getAC();
 					msg.addText(Color.translate(Exile.getAC().getConfig().getString("Alert_Message")

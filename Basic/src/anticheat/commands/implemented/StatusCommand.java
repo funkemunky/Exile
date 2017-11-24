@@ -34,12 +34,12 @@ public class StatusCommand extends Command {
 							}
 						}
 						sender.sendMessage("");
-						sender.sendMessage(Color.Dark_Gray  + Color.Strikethrough + Color.Bold + "----------------------------------");
-						sender.sendMessage(Color.Gold + Color.Bold + "Exile Information:");
+						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
+						sender.sendMessage(Color.Gold + Color.Bold + "Exile's Information:");
 						sender.sendMessage("");
 						sender.sendMessage(Color.Gray + " Silent Checks: " + Color.White + notbannable.toString());
 						sender.sendMessage(Color.Gray + " Bannable Checks: " + Color.White + bannable.toString());
-						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough +  Color.Bold + "----------------------------------");
+						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
 						sender.sendMessage("");
 					} else {
 						sender.sendMessage(Color.Red + "No permission.");

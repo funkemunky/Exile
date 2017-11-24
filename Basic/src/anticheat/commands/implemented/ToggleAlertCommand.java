@@ -17,7 +17,7 @@ public class ToggleAlertCommand extends Command {
 
 	public void onCommand(CommandSender sender, String[] args) {
 		if(!(sender instanceof Player)) {
-			sender.sendMessage(Color.Red + "Only players may use this command.");
+			sender.sendMessage(Color.Red + "You must be a player to run this command.");
 			return;
 		}
 		Player p = (Player) sender;

@@ -10,6 +10,7 @@ import anticheat.commands.implemented.StatusCommand;
 import anticheat.commands.implemented.ToggleAlertCommand;
 import anticheat.commands.implemented.ToggleBansCommand;
 import anticheat.commands.implemented.ToggleCommand;
+import anticheat.commands.implemented.ViolationsCommand;
 import anticheat.utils.Color;
 
 public class CommandManager {
@@ -20,6 +21,7 @@ public class CommandManager {
 		addCommand(new ToggleAlertCommand());
 		addCommand(new ToggleBansCommand());
 		addCommand(new StatusCommand());
+		addCommand(new ViolationsCommand());
 	}
 
 	private List<Command> getCommands() {
@@ -35,15 +37,15 @@ public class CommandManager {
 			if (cmd.getString().equalsIgnoreCase(label)) {
 				if (args.length < 1) {
 					if(sender.hasPermission("exile.staff")) {
-						sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
+						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
 						sender.sendMessage(Color.Gold + Color.Bold + "Exile Help:");
 						sender.sendMessage("");
-						sender.sendMessage(Color.White + "/exile alerts           - " + Color.Gray + "Toggles alerts on/off.");
-						sender.sendMessage(Color.White + "/exile toggle <check> -  " + Color.Gray + "Toggle checks.");
+						sender.sendMessage(Color.White + "/exile alerts               - " + Color.Gray + "Toggles alerts on/off.");
+						sender.sendMessage(Color.White + "/exile toggle <check>  -  " + Color.Gray + "Toggle checks.");
 						sender.sendMessage(Color.White + "/exile bans <check>    -" + Color.Gray + "Toggle banning for a check.");
-						sender.sendMessage(Color.White + "/exile info            - " + Color.Gray + "View info on Exile.");
+						sender.sendMessage(Color.White + "/exile info                  - " + Color.Gray + "View info on Exile.");
 						sender.sendMessage(Color.White + "/exile violations <player> - " + Color.Gray + "See a player's violations.");
-						sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
+						sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
 					} else {
 						sender.sendMessage(Color.Red + "This server is using Exile v" + Exile.getAC().getDescription().getVersion() + " by funkemunky.");
 					}
