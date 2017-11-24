@@ -22,7 +22,7 @@ public class ToggleBansCommand extends Command {
 			String subCommand = args[0];
 			String checkName = args[1];
 			
-			if(subCommand.equalsIgnoreCase("bannable")) {
+			if(subCommand.equalsIgnoreCase("bans")) {
 				if(!sender.hasPermission("Exile.admin")) {
 					sender.sendMessage(Color.Red + "No permission.");
 					return;

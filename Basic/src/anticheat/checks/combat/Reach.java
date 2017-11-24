@@ -109,6 +109,8 @@ public class Reach extends Checks {
 			/**
 			 * Checks if Reach measured above is greater than the leniency given, then adds a ban VL and flags.
 			 */
+			
+			
 			if(Reach > MaxReach) {
 				User user = Exile.getUserManager().getUser(damager.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);

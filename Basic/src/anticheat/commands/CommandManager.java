@@ -35,17 +35,17 @@ public class CommandManager {
 			if (cmd.getString().equalsIgnoreCase(label)) {
 				if (args.length < 1) {
 					if(sender.hasPermission("exile.staff")) {
-						sender.sendMessage(Exile.getAC().getPrefix() + Color.Gray + "Invalid usage.");
-						sender.sendMessage(Exile.getAC().getPrefix() + Color.Gray
-								+ "Use /exile toggle <CheckName> to enable/disable checks.");
-						sender.sendMessage(Exile.getAC().getPrefix() + Color.Gray
-								+ "Use /Exile Alerts on/off to enable/disable alerts.");
-						sender.sendMessage(Exile.getAC().getPrefix() + Color.Gray
-								+ "Use /Exile bannable <CheckName> to make a check bannable/silent.");
-						sender.sendMessage(Exile.getAC().getPrefix() + Color.Gray
-								+ "Use /Exile status to check the current Exile status.");
+						sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
+						sender.sendMessage(Color.Gold + Color.Bold + "Exile Help:");
+						sender.sendMessage("");
+						sender.sendMessage(Color.White + "/exile alerts           - " + Color.Gray + "Toggles alerts on/off.");
+						sender.sendMessage(Color.White + "/exile toggle <check> -  " + Color.Gray + "Toggle checks.");
+						sender.sendMessage(Color.White + "/exile bans <check>    -" + Color.Gray + "Toggle banning for a check.");
+						sender.sendMessage(Color.White + "/exile info            - " + Color.Gray + "View info on Exile.");
+						sender.sendMessage(Color.White + "/exile violations <player> - " + Color.Gray + "See a player's violations.");
+						sender.sendMessage(Color.Dark_Gray + Color.Italics + "----------------------------------");
 					} else {
-						sender.sendMessage(Color.Red + "This server is using Exile " + Exile.getAC().getDescription().getVersion() + " by funkemunky.");
+						sender.sendMessage(Color.Red + "This server is using Exile v" + Exile.getAC().getDescription().getVersion() + " by funkemunky.");
 					}
 					return;
 				}

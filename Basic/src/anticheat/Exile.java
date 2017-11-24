@@ -9,10 +9,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import anticheat.checks.other.PME;
 import anticheat.commands.CommandManager;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksManager;
@@ -52,7 +55,7 @@ public class Exile extends JavaPlugin {
 	File file = new File(getDataFolder(), "JD.txt");
 
 	public Ping getPing() {
-		return this.ping;
+		return ping;
 	}
 
 	public static Exile getAC() {
@@ -170,6 +173,10 @@ public class Exile extends JavaPlugin {
 		pm.registerEvents(new EventProjectileLaunch(), this);
 		pm.registerEvents(new EventInventory(), this);
 		pm.registerEvents(new EventPacketMoveEvent(), this);
+		
+		PME pme = new PME();
+		this.getServer().getMessenger().registerIncomingPluginChannel((Plugin) this, "LOLIMAHCKER",
+				(PluginMessageListener) pme);
 
 		new BukkitRunnable() {
 			public void run() {

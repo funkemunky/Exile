@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.event.Event;
 
 import anticheat.Exile;
+import anticheat.checks.combat.DoubleClick;
 import anticheat.checks.combat.Fastbow;
 import anticheat.checks.combat.KillAura;
 import anticheat.checks.combat.Reach;
@@ -16,6 +17,7 @@ import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.other.NoSwing;
+import anticheat.checks.other.PME;
 
 public class ChecksManager {
 
@@ -45,9 +47,11 @@ public class ChecksManager {
 		new NoSwing();
 		new Fly();
 		new Jesus();
+		new PME();
 		new Fastbow();
 		new Regen();
 		new NoFall();
+		new DoubleClick();
 	}
 
 	public void event(Event event) {

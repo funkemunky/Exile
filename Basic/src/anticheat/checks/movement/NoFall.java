@@ -110,7 +110,7 @@ public class NoFall extends Checks {
 						.intValue();
 			}
 			if ((player.isOnGround()) || (player.getFallDistance() == 0.0F)) {
-				player.damage(5);
+				player.damage(7);
 				Count += 2;
 			} else {
 				Count--;
