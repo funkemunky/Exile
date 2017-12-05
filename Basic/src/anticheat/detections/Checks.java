@@ -82,7 +82,7 @@ public class Checks {
 		long l = System.currentTimeMillis() - this.delay;
 		if (l > this.interval) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (Exile.getUserManager().getUser(p.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
+				if (Exile.getUserManager().getUser(player.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
 					JsonMessage msg = new JsonMessage();
 					Exile.getAC();
 					msg.addText(Color.translate(Exile.getAC().getConfig().getString("Alert_Message")
@@ -103,6 +103,7 @@ public class Checks {
 
 	public void kick(Player p) {
 		if (Exile.getUserManager().getUser(p.getUniqueId()).needBan(this) && this.isBannable() && !p.isOp() && !Exile.getAC().playersBanned.contains(p)) {
+			Exile.getAC().createLog(p, this);
 			Exile.getAC().getServer().dispatchCommand(Exile.getAC().getServer().getConsoleSender(),
 					Color.translate(Exile.getAC().getConfig().getString("Punish_Cmd")
 							.replaceAll("%player%", p.getName()).replaceAll("%check%", this.getName().toUpperCase())));

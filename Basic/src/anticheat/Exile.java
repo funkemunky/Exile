@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -40,6 +41,7 @@ import anticheat.user.User;
 import anticheat.user.UserManager;
 import anticheat.utils.Color;
 import anticheat.utils.Ping;
+import anticheat.utils.TxtFile;
 
 public class Exile extends JavaPlugin {
 
@@ -207,6 +209,19 @@ public class Exile extends JavaPlugin {
 				getServer().getPluginManager().callEvent(new TickEvent(TickType.SECOND));
 			}
 		}.runTaskTimer(this, 0L, 20L);
+	}
+	
+	public void createLog(Player player, Checks checkBanned) {
+		TxtFile logFile = new TxtFile(this, File.separator + "logs", player.getName());
+		User user = getUserManager().getUser(player.getUniqueId());
+		Map<Checks, Integer> Checks = user.getVLs();
+		logFile.addLine("-=-=-=-=-=-=-=-=-=- " + player.getName() + " was banned for: " + checkBanned.getName() + " -=-=-=-=-=-=-=-=-=-");
+		logFile.addLine("Checks set off:");
+		for (Checks check : Checks.keySet()) {
+			Integer Violations = Checks.get(check);
+			logFile.addLine("- " + check.getName() + " (" + Violations + " VL)");
+		}
+		logFile.write();
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

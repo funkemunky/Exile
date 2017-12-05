@@ -121,7 +121,7 @@ public class Speed extends Checks {
 
 			double ig = 0.28;
 			double speed = PlayerUtils.offset(getHV(to.toVector()), getHV(from.toVector()));
-			double ongroundDiff = (to.getY() - from.getY());
+			double onGroundDiff = (to.getY() - from.getY());
 
 
 			if (p.hasPotionEffect(PotionEffectType.SPEED)) {
@@ -136,6 +136,35 @@ public class Speed extends Checks {
 			Airmaxspeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			maxSpeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			int vl = user.getVL(Speed.this);
+			/** NormalMovements SPEEDS **/
+			if (PlayerUtils.isReallyOnground(p) && (System.currentTimeMillis() - user.getLoginMIllis()) > 1000L && !PlayerUtils.isOnClimbable(p, 0) && !PlayerUtils.isOnClimbable(p, -1) && !user.isTeleported() && !p.hasPotionEffect(PotionEffectType.JUMP)
+					&& above.getBlock().getType() == Material.AIR && loc2.getBlock().getType() == Material.AIR
+					&& onGroundDiff > 0 && onGroundDiff != 0 && onGroundDiff != 0.41999998688697815
+					&& onGroundDiff != 0.33319999363422426 && onGroundDiff != 0.1568672884460831
+					&& onGroundDiff != 0.4044491418477924 && onGroundDiff != 0.4044449141847757
+					&& onGroundDiff != 0.40444491418477746 && onGroundDiff != 0.24813599859094637
+					&& onGroundDiff != 0.1647732812606676 && onGroundDiff != 0.24006865856430082
+					&& onGroundDiff != 0.20000004768370516 && onGroundDiff != 0.19123230896968835
+					&& onGroundDiff != 0.10900766491188207 && onGroundDiff != 0.20000004768371227
+					&& onGroundDiff != 0.40444491418477924 && onGroundDiff != 0.0030162615090425504
+					&& onGroundDiff != 0.05999999821186108 && onGroundDiff != 0.05199999886751172
+					&& onGroundDiff != 0.06159999881982792 && onGroundDiff != 0.06927999889612124
+					&& onGroundDiff != 0.07542399904870933 && onGroundDiff != 0.07532994414328797
+					&& onGroundDiff != 0.08033919924402255 && onGroundDiff != 0.5 && onGroundDiff != 0.08427135945886555
+					&& onGroundDiff != 0.340000110268593 && onGroundDiff != 0.30000001192092896
+					&& onGroundDiff != 0.3955758986732967 && onGroundDiff != 0.019999999105930755
+					&& onGroundDiff != 0.21560001587867816 && onGroundDiff != 0.13283301814746876
+					&& onGroundDiff != 0.05193025879327907 && onGroundDiff != 0.1875 && onGroundDiff != 0.375
+					&& onGroundDiff != 0.08307781780646728 && onGroundDiff != 0.125 && onGroundDiff != 0.25
+					&& onGroundDiff != 0.01250004768371582 && onGroundDiff != 0.1176000022888175
+					&& onGroundDiff != 0.0625 && onGroundDiff != 0.20000004768371582
+					&& onGroundDiff != 0.4044448882341385 && onGroundDiff != 0.40444491418477835 
+					&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
+					&& onGroundDiff != 0.36510663985490055) {
+				user.setVL(Speed.this, vl + 1);
+				Alert(p, "NormalMovements");
+
+			}
 
 			/** ONGROUND SPEEDS **/
 			if (PlayerUtils.isReallyOnground(p) && to.getY() == from.getY()) {
@@ -173,7 +202,7 @@ public class Speed extends Checks {
 			}
 
 			/** Vanilla speeds check **/
-			if (speed > ig && !PlayerUtils.isAir(p) && ongroundDiff <= -0.4 && p.getFallDistance() <= 0.4
+			if (speed > ig && !PlayerUtils.isAir(p) && onGroundDiff <= -0.4 && p.getFallDistance() <= 0.4
 					&& !PlayerUtils.flaggyStuffNear(p.getLocation()) && blockLoc.getBlock().getType() != Material.ICE
 					&& e.getTo().getY() != e.getFrom().getY() && blockLoc.getBlock().getType() != Material.PACKED_ICE
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR

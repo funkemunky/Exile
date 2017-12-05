@@ -25,7 +25,7 @@ public class Reach extends Checks {
 	private Map<UUID, Integer> verbose;
 
 	public Reach() {
-		super("Reach", ChecksType.COMBAT, Exile.getAC(), 11, true, true);
+		super("Reach", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
 
 		this.verbose = new WeakHashMap<UUID, Integer>();
 	}
