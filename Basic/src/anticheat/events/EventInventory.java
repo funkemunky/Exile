@@ -11,13 +11,13 @@ public class EventInventory implements Listener {
 
 	@EventHandler
 	public void onclose(InventoryCloseEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 		Player p = (Player) e.getPlayer();
 	}
 
 	@EventHandler
 	public void onopen(InventoryOpenEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 		Player p = (Player) e.getPlayer();
 	}
 

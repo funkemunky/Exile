@@ -196,7 +196,7 @@ public class Phase extends Checks {
 							PlayerTeleportEvent.TeleportCause.PLUGIN);
 					return;
 				}
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
 				Alert(player, "Block");
@@ -211,7 +211,7 @@ public class Phase extends Checks {
 							PlayerTeleportEvent.TeleportCause.PLUGIN);
 					return;
 				}
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
 				Alert(player, "Block");

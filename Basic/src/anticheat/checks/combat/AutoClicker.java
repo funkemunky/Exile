@@ -51,13 +51,14 @@ public class AutoClicker extends Checks {
 				return;
 			}
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				if(Exile.getAC().getPing().getTPS() > 17 && Exile.getAC().getPing().getPing(player) < 500) {
 					if (user.getLeftClicks() > 20) {
 						if(user.getLeftClicks() >= 30) {
 							user.setVL(this, user.getVL(this) + 2);
+							this.advancedAlert(player, 100D);
 						}
-						
+						this.advancedAlert(player, (user.getLeftClicks() - 19) * 10D);
 						this.Alert(player, Color.Gray + "Reason: " + Color.White + "FastClick " + Color.Gray + "CPS: " + Color.White +  user.getLeftClicks() + "");
 					}
 				}
@@ -113,7 +114,7 @@ public class AutoClicker extends Checks {
 	        }
 	        if (verbose > 4) {
 	            verbose = 0;
-	            User user = Exile.getUserManager().getUser(player.getUniqueId());
+	            User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 	            user.setVL(this, user.getVL(this) + 1);
 	            
 	            Alert(player, Color.Gray + "Reason: " + Color.White + "Continuous Patterns " + Color.Gray + "CPS: " + Color.White + user.getLeftClicks());

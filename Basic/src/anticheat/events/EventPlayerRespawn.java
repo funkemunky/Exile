@@ -10,7 +10,7 @@ public class EventPlayerRespawn implements Listener {
 	
 	@EventHandler
 	public void respawn(PlayerRespawnEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 	}
 
 }

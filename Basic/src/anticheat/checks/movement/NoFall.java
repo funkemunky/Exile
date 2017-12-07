@@ -121,9 +121,10 @@ public class NoFall extends Checks {
 			}
 			if (Count > 4) {
 				Count = 0;
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				this.Alert(player, "*");
+				advancedAlert(player, 99.9);
 				this.FallDistance.put(player.getUniqueId(), Double.valueOf(0.0D));
 				
 			}

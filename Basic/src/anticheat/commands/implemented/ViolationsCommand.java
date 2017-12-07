@@ -33,7 +33,7 @@ public class ViolationsCommand extends Command {
 						return;
 					}
 					sender.sendMessage(Color.Dark_Gray + Color.Strikethrough + "--------------------------------------------");
-					User user = Exile.getUserManager().getUser(target.getUniqueId());
+					User user = Exile.getAC().getUserManager().getUser(target.getUniqueId());
 					if(user.getVLs().size() > 0) {
 						sender.sendMessage(Color.Gold + Color.Bold + target.getName() + "'s Violations/Info");
 						sender.sendMessage("");

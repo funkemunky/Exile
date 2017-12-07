@@ -17,37 +17,37 @@ public class EventPacket implements Listener {
 	
 	@EventHandler
 	public void packet(PacketPlayerEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 	
 	@EventHandler
 	public void swingArm(PacketSwingArmEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 	
 	@EventHandler
 	public void itemChange(PacketHeldItemChangeEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 	
 	@EventHandler
 	public void onKeepAlive(PacketKeepAliveEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 	
 	@EventHandler
 	public void blockPlace(PacketBlockPlacementEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 	
 	@EventHandler
 	public void regainHealth(EntityRegainHealthEvent e) {
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 		
 		if(e.getEntity() instanceof Player) {
 			Player player = (Player) e.getEntity();
 			
-			User user = Exile.getUserManager().getUser(player.getUniqueId());
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 			
 			user.setLastHeal(System.currentTimeMillis());
 		}

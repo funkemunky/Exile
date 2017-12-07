@@ -20,9 +20,14 @@ public class User {
 	private int invb = 0;
 	private boolean hasSwung = false;
 	private boolean hasAlerts = false;
+	private boolean hasAdvancedAlerts = false;
 	private long lastSwing = 0;
 	private boolean teleported = false;
-	private double lastYawDifference = 1.0D;
+	private double lastYaw = 1.0D;
+	private double lastYawDifference = 0.0D;
+	private double lastPitch = 1.0D;
+	private long lastAimB;
+	private double lastPitchDifference = 0.0D;
 	private long loginMillis = 0L;
 	private long lastHeal = 0L;
 	private long isHit = 0L;
@@ -157,7 +162,7 @@ public class User {
 	 */
 	
 	public void setLastYaw(double yaw) {
-		this.lastYawDifference = yaw;
+		this.lastYaw = yaw;
 	}
 	
 	/**
@@ -166,7 +171,79 @@ public class User {
 	 */
 	
 	public double getLastYaw() {
+		return this.lastYaw;
+	}
+	
+	/**
+	 * 
+	 * @param yawDifference
+	 */
+	
+	public void setLastYawDifference(double yawDifference) {
+		this.lastYawDifference = yawDifference;
+	}
+	
+	/**
+	 * 
+	 * @return lastYawDifference
+	 */
+	
+	public double getLastYawDifference() {
 		return this.lastYawDifference;
+	}
+	
+	/**
+	 * 
+	 * @param pitch
+	 */
+	
+	public void setLastPitch(double pitch) {
+		this.lastPitch = pitch;
+	}
+	
+	/**
+	 * 
+	 * @return yaw
+	 */
+	
+	public double getLastPitch() {
+		return this.lastPitch;
+	}
+	
+	/**
+	 * 
+	 * @param pitchDifference
+	 */
+	
+	public void setLastPitchDifference(double pitchDifference) {
+		this.lastPitchDifference = pitchDifference;
+	}
+	
+	/**
+	 * 
+	 * @return lastPitchDifference
+	 */
+	
+	public double getLastPitchDifference() {
+		return this.lastPitchDifference;
+	}
+	
+	/**
+	 * 
+	 * @param millis
+	 */
+
+	public void setLastAimB(long millis) {
+		this.lastAimB = millis;
+	}
+	
+	/**
+	 * 
+	 * @return lastAimB
+	 */
+	
+	public long getLastAimB() {
+		return this.lastAimB;
 	}
 
 	/**
@@ -230,6 +307,24 @@ public class User {
 	 */
 	public void setHasAlerts(boolean hasAlerts) {
 		this.hasAlerts = hasAlerts;
+	}
+	
+	/**
+	 * 
+	 * @return hasAdvancedAlerts
+	 */
+	
+	public boolean hasAdvancedAlerts() {
+		return this.hasAdvancedAlerts;
+	}
+	
+	/**
+	 * 
+	 * @param hasAlerts
+	 */
+	
+	public void setHasAdvancedAlerts(boolean hasAlerts) {
+		this.hasAdvancedAlerts = hasAlerts;
 	}
 
 	/**

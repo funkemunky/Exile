@@ -21,7 +21,7 @@ public class ToggleAlertCommand extends Command {
 			return;
 		}
 		Player p = (Player) sender;
-		User user = Exile.getUserManager().getUser(p.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 			if (args.length > 0) {
 				String subCommand = args[0];
 				if (subCommand.equalsIgnoreCase("Alerts")) {

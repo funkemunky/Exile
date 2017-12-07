@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.event.Event;
 
 import anticheat.Exile;
+import anticheat.checks.combat.AimAssist;
 import anticheat.checks.combat.AutoClicker;
 import anticheat.checks.combat.DoubleClick;
 import anticheat.checks.combat.Fastbow;
@@ -16,7 +17,6 @@ import anticheat.checks.combat.Regen;
 import anticheat.checks.movement.Fly;
 import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
-import anticheat.checks.movement.Phase;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.other.NoSwing;
 import anticheat.checks.other.PME;
@@ -54,6 +54,7 @@ public class ChecksManager {
 		new Regen();
 		new AutoClicker();
 		new NoFall();
+		new AimAssist();
 		new DoubleClick();
 	}
 

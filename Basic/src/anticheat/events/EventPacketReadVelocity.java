@@ -10,7 +10,7 @@ public class EventPacketReadVelocity implements Listener {
 	
 	@EventHandler
 	public void onRead(PacketReadVelocityEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 	}
 
 }

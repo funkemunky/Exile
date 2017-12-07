@@ -82,7 +82,7 @@ public class Checks {
 		long l = System.currentTimeMillis() - this.delay;
 		if (l > this.interval) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (Exile.getUserManager().getUser(player.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
+				if (Exile.getAC().getUserManager().getUser(player.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
 					JsonMessage msg = new JsonMessage();
 					Exile.getAC();
 					msg.addText(Color.translate(Exile.getAC().getConfig().getString("Alert_Message")
@@ -90,7 +90,7 @@ public class Checks {
 							.replaceAll("%check%", getName().toUpperCase()).replaceAll("%info%", value)
 							.replaceAll("%violations%",
 									String.valueOf(
-											Exile.getUserManager().getUser(p.getUniqueId()).getVL(this)))))
+											Exile.getAC().getUserManager().getUser(p.getUniqueId()).getVL(this)))))
 							.addHoverText(Color.Gray + "Teleport to " + p.getName() + "?")
 							.setClickEvent(JsonMessage.ClickableType.RunCommand, "/tp " + p.getName());
 					msg.sendToPlayer(player);
@@ -100,9 +100,29 @@ public class Checks {
 
 		}
 	}
+	
+	public void advancedAlert(Player player, double chance) {
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			if (Exile.getAC().getUserManager().getUser(player.getUniqueId()).hasAdvancedAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
+				JsonMessage msg = new JsonMessage();
+				Exile.getAC();
+				msg.addText(Color.translate(Exile.getAC().getConfig().getString("Advanced_Alert_Message")
+						.replaceAll("%prefix%", Exile.getAC().getPrefix()).replaceAll("%player%", player.getName())
+						.replaceAll("%check%", getName().toUpperCase())
+						.replaceAll("%info%", Color.Gray + "Ping: " + Color.White + Exile.getAC().getPing().getPing(player) + Color.Gray + "TPS: " + Color.White + Exile.getAC().getPing().getTPS())
+						.replaceAll("%chance%", String.valueOf(chance))
+						.replaceAll("%violations%",
+								String.valueOf(
+										Exile.getAC().getUserManager().getUser(player.getUniqueId()).getVL(this)))))
+						.addHoverText(Color.Gray + "Teleport to " + player.getName() + "?")
+						.setClickEvent(JsonMessage.ClickableType.RunCommand, "/tp " + player.getName());
+				msg.sendToPlayer(online);
+			}
+		}
+	}
 
 	public void kick(Player p) {
-		if (Exile.getUserManager().getUser(p.getUniqueId()).needBan(this) && this.isBannable() && !p.isOp() && !Exile.getAC().playersBanned.contains(p)) {
+		if (Exile.getAC().getUserManager().getUser(p.getUniqueId()).needBan(this) && this.isBannable() && !p.isOp() && !Exile.getAC().playersBanned.contains(p)) {
 			Exile.getAC().createLog(p, this);
 			Exile.getAC().getServer().dispatchCommand(Exile.getAC().getServer().getConsoleSender(),
 					Color.translate(Exile.getAC().getConfig().getString("Punish_Cmd")

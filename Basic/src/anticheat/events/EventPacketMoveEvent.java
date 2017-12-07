@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import anticheat.Exile;
 
@@ -16,7 +17,24 @@ public class EventPacketMoveEvent implements Listener {
 	Map<Player, Location> locations;
 	
 	public EventPacketMoveEvent() {
-		this.locations = new HashMap<Player, Location>();
+		locations = new HashMap<Player, Location>();
+		
+		new BukkitRunnable() {
+			public void run() {
+				for(Player online : Bukkit.getOnlinePlayers()) {
+					Location location = online.getLocation();
+					Location lastLocation = online.getLocation();
+					if(locations.containsKey(online)) {
+						lastLocation = locations.get(online);
+					} else {
+						locations.put(online, location);
+					}
+					
+					Bukkit.getPluginManager().callEvent(new PacketedMovementEvent(online, lastLocation, location));
+					locations.put(online, location);
+				}
+			}
+		}.runTaskTimer(Exile.getAC(), 0L, 1L);
 	}
 	
 	@EventHandler
@@ -27,20 +45,20 @@ public class EventPacketMoveEvent implements Listener {
 		for(Player online : Bukkit.getOnlinePlayers()) {
 			Location location = online.getLocation();
 			Location lastLocation = online.getLocation();
-			if(this.locations.containsKey(online)) {
-				lastLocation = this.locations.get(online);
+			if(locations.containsKey(online)) {
+				lastLocation = EventPacketMoveEvent.this.locations.get(online);
 			} else {
-				this.locations.put(online, location);
+				locations.put(online, location);
 			}
 			
 			Bukkit.getPluginManager().callEvent(new PacketedMovementEvent(online, lastLocation, location));
-			this.locations.put(online, location);
+			locations.put(online, location);
 		}
 	}
 	
 	@EventHandler
 	public void onMove(PacketedMovementEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 	}
 
 }

@@ -41,7 +41,7 @@ public class PME extends Checks implements PluginMessageListener {
 			str = "";
 		}
 
-		User user = Exile.getUserManager().getUser(player.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 
 		new BukkitRunnable() {
 			public void run() {

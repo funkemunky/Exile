@@ -66,10 +66,11 @@ public class Fly extends Checks {
 				return;
 			}
 			
-			User user = Exile.getUserManager().getUser(player.getUniqueId());
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 25 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.04
 					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
 				Alert(player, "Type A");
+				advancedAlert(player, 100);
 				user.setVL(this, user.getVL(this) + 1);
 			}
 
@@ -126,6 +127,7 @@ public class Fly extends Checks {
 					if (velocity.containsKey(player.getUniqueId())) {
 						user.setVL(this, user.getVL(this) + 1);
 						this.Alert(player, "Type B");
+						advancedAlert(player, 100);
 					}
 					Time = System.currentTimeMillis();
 				}

@@ -21,7 +21,7 @@ public class ToggleAlertsMainCommand extends Command {
 			return;
 		}
 		Player p = (Player) sender;
-		User user = Exile.getUserManager().getUser(p.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 		if(user.isStaff()) {
 			if(user.isHasAlerts()) {
 				user.setHasAlerts(false);

@@ -97,11 +97,12 @@ public class KillAura extends Checks {
 				Time = TimerUtils.nowlong();
 			}
 			if (Count >= 4) {
-				User user = Exile.getUserManager().getUser(damager.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
 				Count = 0;
 				user.setVL(this, user.getVL(this) + 1);
 				if(user.getVL(this) > 2) {
 					this.Alert(damager, "*");
+					this.advancedAlert(damager, 84.3);
 				}
 			}
 			this.AimbotTicks.put(damager.getUniqueId(),

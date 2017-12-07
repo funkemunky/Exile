@@ -10,7 +10,7 @@ public class EventPlayerVelocity implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerVelocityEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 	}
 
 }

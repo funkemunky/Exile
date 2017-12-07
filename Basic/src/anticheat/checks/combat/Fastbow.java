@@ -76,9 +76,10 @@ public class Fastbow extends Checks {
 							count.put(player, Count - 1);
 						}
 						if (Count > 8) {
-							User user = Exile.getUserManager().getUser(player.getUniqueId());
+							User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 							user.setVL(this, user.getVL(this) + 1);
 							this.Alert(player, "*");
+							this.advancedAlert(player, 100);
 							count.remove(player);
 						}
 					}

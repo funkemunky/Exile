@@ -43,14 +43,13 @@ public class Speed extends Checks {
 	public Map<UUID, Long> lastHit;
 
 	public Speed() {
-		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
+		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 12, true, true);
 		
 		this.lastHit = new WeakHashMap<UUID, Long>();
 		this.tooFastTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 		this.speedTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes" })
 	@Override
 	protected void onEvent(Event event) {
 		if (!this.getState()) {
@@ -64,7 +63,7 @@ public class Speed extends Checks {
 			PlayerMoveEvent e = (PlayerMoveEvent) event;
 			Player p = e.getPlayer();
 
-			User user = Exile.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 
 			Location l = p.getLocation();
 			int x = l.getBlockX();
@@ -162,6 +161,7 @@ public class Speed extends Checks {
 					&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
 					&& onGroundDiff != 0.36510663985490055) {
 				user.setVL(Speed.this, vl + 1);
+				advancedAlert(p, 99.9);
 				Alert(p, "NormalMovements");
 
 			}
@@ -176,7 +176,7 @@ public class Speed extends Checks {
 					user.setVL(this, vl + 1);
 					user.setGroundTicks(0);
 					Alert(p, "Reason: " + Color.Green + "onGround " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
-
+					advancedAlert(p, 99.9);
 				}
 			}
 
@@ -188,6 +188,7 @@ public class Speed extends Checks {
 					&& blockLoc.getBlock().getType() != Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
+				advancedAlert(p, 99.9);
 				Alert(p, "Reason: " + Color.Green + "midAir " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
@@ -197,6 +198,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
+				advancedAlert(p, 100);
 				Alert(p, "Reason: " + Color.Green + "Speed_Limit " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
@@ -208,6 +210,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR
 					&& above3.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
+				advancedAlert(p, 100);
 				Alert(p, "Reason: " + Color.Green + "Vanilla " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
@@ -325,14 +328,15 @@ public class Speed extends Checks {
 			}
 			if (Count >= 3) {
 				Count = 0;
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);
+				advancedAlert(player, 100);
 				Alert(player, "Reason: " + Color.Green + "Overall " + Color.Gray + "Speed: " + Color.Red + "N/A");
 			}
-			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry(Integer.valueOf(TooFastCount),
-					Long.valueOf(System.currentTimeMillis())));
+			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry<Integer, Long>(TooFastCount,
+					System.currentTimeMillis()));
 			this.speedTicks.put(player.getUniqueId(),
-					new AbstractMap.SimpleEntry(Integer.valueOf(Count), Long.valueOf(Time)));
+					new AbstractMap.SimpleEntry<Integer, Long>(Count, Time));
 		}
 	}
 

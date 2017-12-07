@@ -30,7 +30,7 @@ public class Regen extends Checks {
 	}
 
 	public boolean checkFastHeal(Player player) {
-		User user = Exile.getUserManager().getUser(player.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 		if (user.getLastHeal() != 0) {
 			long l = user.getLastHeal();
 			user.setLastHeal(0L);
@@ -86,9 +86,10 @@ public class Regen extends Checks {
 			}
 			if (Count > 4) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
-					User user = Exile.getUserManager().getUser(player.getUniqueId());
+					User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 					user.setVL(this, user.getVL(this) == 0 ? 1 : user.getVL(this) + 1);
 					this.Alert(player, "*");
+					this.advancedAlert(player, 99.9);
 				}
 				Count = 0;
 			}

@@ -18,9 +18,9 @@ public class EventPlayerMove implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 		Player p = event.getPlayer();
-		User user = Exile.getUserManager().getUser(p.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 
 		if (PlayerUtils.isReallyOnground(p)) {
 			user.setGroundTicks(user.getGroundTicks() + 1);

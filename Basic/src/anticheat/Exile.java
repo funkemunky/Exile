@@ -48,9 +48,9 @@ public class Exile extends JavaPlugin {
 	private static ChecksManager checksmanager;
 	private static Exile Exile;
 	public PacketCore packet;
-	private static UserManager userManager;
+	private UserManager userManager;
 	private Ping ping;
-	private static CommandManager commandManager;
+	private CommandManager commandManager;
 	BufferedWriter bw = null;
 	public static String hwid;
 	public ArrayList<Player> playersBanned = new ArrayList<Player>();
@@ -68,12 +68,8 @@ public class Exile extends JavaPlugin {
 		return checksmanager;
 	}
 
-	public static UserManager getUserManager() {
+	public UserManager getUserManager() {
 		return userManager;
-	}
-
-	public ChecksManager getchecksmanager() {
-		return checksmanager;
 	}
 
 	public String getPrefix() {
@@ -134,7 +130,7 @@ public class Exile extends JavaPlugin {
 		}
 
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			getUserManager().add(new User(player));
+			getAC().getUserManager().add(new User(player));
 		}
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f added all online players to User list!"));
 		
@@ -155,7 +151,7 @@ public class Exile extends JavaPlugin {
 
 	public void clearVLS() {
 		for (Player online : Bukkit.getOnlinePlayers()) {
-			getUserManager().getUser(online.getUniqueId()).getVLs().clear();
+			getAC().getUserManager().getUser(online.getUniqueId()).getVLs().clear();
 		}
 	}
 
@@ -198,7 +194,7 @@ public class Exile extends JavaPlugin {
 				getServer().getPluginManager().callEvent(new TickEvent(TickType.FAST));
 
 				for (Player player : Bukkit.getOnlinePlayers()) {
-					for (Checks check : getchecksmanager().getDetections()) {
+					for (Checks check : getAC().getChecks().getDetections()) {
 						check.kick(player);
 					}
 				}
@@ -213,7 +209,7 @@ public class Exile extends JavaPlugin {
 	
 	public void createLog(Player player, Checks checkBanned) {
 		TxtFile logFile = new TxtFile(this, File.separator + "logs", player.getName());
-		User user = getUserManager().getUser(player.getUniqueId());
+		User user = getAC().getUserManager().getUser(player.getUniqueId());
 		Map<Checks, Integer> Checks = user.getVLs();
 		logFile.addLine("-=-=-=-=-=-=-=-=-=- " + player.getName() + " was banned for: " + checkBanned.getName() + " -=-=-=-=-=-=-=-=-=-");
 		logFile.addLine("Checks set off:");

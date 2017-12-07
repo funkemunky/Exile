@@ -39,7 +39,7 @@ public class EventPlayerAttack implements Listener {
 			Exile.getAC().getChecks().event(e);
 			if(e.getEntity() instanceof Player) {
 				Player player = (Player) e.getEntity();
-				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				if(user != null) {
 					user.setIsHit(System.currentTimeMillis());
 				}

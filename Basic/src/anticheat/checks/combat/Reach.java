@@ -32,7 +32,7 @@ public class Reach extends Checks {
 
 	@Override
 	protected void onEvent(Event event) {
-		if (!this.getState()) {
+		if (!getState()) {
 			return;
 		}
 		if(event instanceof PlayerQuitEvent) {
@@ -112,7 +112,7 @@ public class Reach extends Checks {
 			} else if(Ping > 400 && Ping <= 550) {
 				MaxReach += 1.28;
 			} else if(Ping > 550) {
-				MaxReach += 1.5;
+				MaxReach += 1.5 * Ping * 0.00093;
 			}
 			
 			/**
@@ -124,7 +124,7 @@ public class Reach extends Checks {
 			/**
 			 * Adds leniency to reach check based on the combined velocities of both players.
 			 */
-			MaxReach += velocity * 4.5;
+			MaxReach += velocity * 4.2;
 			
 			/**
 			 * Checks if Reach measured above is greater than the leniency given, then adds a ban VL and flags.
@@ -133,15 +133,17 @@ public class Reach extends Checks {
 			
 			if(Reach > MaxReach) {
 				verbose+= 2;
+				this.advancedAlert(player, verbose * 24);
 			} else {
 				verbose = verbose > 0 ? verbose-- : 0;
 			}
 			
 			if(verbose > 5) {
-				User user = Exile.getUserManager().getUser(damager.getUniqueId());
+				User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
-				this.Alert(damager, Color.Green + Reach + Color.Gray + " > " + Color.Green + MaxReach);
+				this.Alert(damager, Color.Green + (Reach - (velocity * 4)) + Color.Gray + " > " + Color.Green + (MaxReach - (velocity * 4)));
+				this.advancedAlert(player, 100);
 				
 				verbose = 0;
 			}

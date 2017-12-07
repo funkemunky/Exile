@@ -13,9 +13,9 @@ public class EventPlayerInteractEvent implements Listener {
 
 	@EventHandler
 	public void onMove(PlayerInteractEvent event) {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 		Player p = (Player) event.getPlayer();
-		User user = Exile.getUserManager().getUser(p.getUniqueId());
+		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 		if (Exile.getAC().getPing().getTPS() < 16) {
 			return;
 		}

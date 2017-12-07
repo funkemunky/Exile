@@ -10,7 +10,7 @@ public class EventProjectileLaunch implements Listener {
 	
 	@EventHandler
 	public void onLaunch(ProjectileLaunchEvent event)  {
-		Exile.getAC().getchecksmanager().event(event);
+		Exile.getAC().getChecks().event(event);
 	}
 
 }

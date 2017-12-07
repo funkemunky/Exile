@@ -17,7 +17,7 @@ import anticheat.utils.TimerUtils;
 public class NoSwing extends Checks {
 
 	public NoSwing() {
-		super("NoSwing", ChecksType.OTHER, Exile.getAC(), 20, true, true);
+		super("NoSwing", ChecksType.OTHER, Exile.getAC(), 20, true, false);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class NoSwing extends Checks {
 
 			Player p = (Player) e.getDamager();
 
-			User user = Exile.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 
 			if (e.getEntity() != null && p != null) {
 				new BukkitRunnable() {
@@ -48,6 +48,7 @@ public class NoSwing extends Checks {
 								if(!(TimerUtils.nowlong() < (user.getLastSwing() + 1500L))) {
 									user.setVL(NoSwing.this, user.getVL(NoSwing.this) + 1);
 									Alert(p, "*");
+									advancedAlert(p, 87.5);
 								}
 							}
 						}
@@ -61,7 +62,7 @@ public class NoSwing extends Checks {
 			PacketSwingArmEvent psav = (PacketSwingArmEvent) event;
 			Player p = psav.getPlayer();
 
-			User user = Exile.getUserManager().getUser(p.getUniqueId());
+			User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 
 			user.setHasSwung(true);
 

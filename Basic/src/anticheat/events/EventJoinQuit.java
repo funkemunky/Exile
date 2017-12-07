@@ -20,8 +20,8 @@ public class EventJoinQuit implements Listener {
 	public void onJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		Exile.getAC();
-		Exile.getUserManager().add(new User(p));
-		User user = Exile.getUserManager().getUser(p.getUniqueId());
+		Exile.getAC().getUserManager().add(new User(p));
+		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 		user.setLoginMillis(System.currentTimeMillis());
 		if(user.isStaff()) {
 			if(!user.isHasAlerts()) {
@@ -29,15 +29,15 @@ public class EventJoinQuit implements Listener {
 				p.sendMessage(Exile.getAC().getPrefix() + Color.Gray + Color.Italics + " Turns on your cheat alerts automatically. Do " + Color.Green + "/Exile alerts " + Color.Gray + Color.Italics + "to toggle them.");
 			}
 		}
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getChecks().event(e);
 	}
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player p = e.getPlayer();
 		Exile.getAC();
-		Exile.getUserManager().remove(Exile.getUserManager().getUser(p.getUniqueId()));
-		Exile.getAC().getchecksmanager().event(e);
+		Exile.getAC().getUserManager().remove(Exile.getAC().getUserManager().getUser(p.getUniqueId()));
+		Exile.getAC().getChecks().event(e);
 	}
 
 }
