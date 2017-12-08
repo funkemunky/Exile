@@ -8,12 +8,7 @@ import org.bukkit.command.CommandSender;
 import anticheat.Exile;
 import anticheat.commands.Command;
 import anticheat.detections.Checks;
-import anticheat.detections.ChecksManager;
 import anticheat.utils.Color;
-
-/**
- * Created by XtasyCode on 11/08/2017.
- */
 
 public class ToggleCommand extends Command {
 
@@ -27,11 +22,11 @@ public class ToggleCommand extends Command {
 				String CheckName = args[1];
 				if (subCommand.equalsIgnoreCase("toggle")) {
 					if(sender.hasPermission("Exile.admin")) {
-						Checks check = ChecksManager.getCheckByName(CheckName);
+						Checks check = Exile.getAC().getChecks().getCheckByName(CheckName);
 						if (check == null) {
 							sender.sendMessage(Exile.getAC().getPrefix() + ChatColor.RED + " Check ' " + CheckName + " ' not found.");
 							ArrayList<String> list = new ArrayList<String>();
-							for(Checks check1 : ChecksManager.getDetections()) {
+							for(Checks check1 : Exile.getAC().getChecks().getDetections()) {
 								list.add(Color.Gray + (check1.getState() ? Color.Green + check1.getName() : Color.Red + check1.getName()).toString() + Color.Gray);
 							}
 							sender.sendMessage(Exile.getAC().getPrefix() + ChatColor.RED + " Available checks: " + Color.Gray + list.toString());

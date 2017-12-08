@@ -101,8 +101,8 @@ public class KillAura extends Checks {
 				Count = 0;
 				user.setVL(this, user.getVL(this) + 1);
 				if(user.getVL(this) > 2) {
-					this.Alert(damager, "*");
-					this.advancedAlert(damager, 84.3);
+					alert(damager, "*");
+					this.advancedalert(damager, 84.3);
 				}
 			}
 			this.AimbotTicks.put(damager.getUniqueId(),

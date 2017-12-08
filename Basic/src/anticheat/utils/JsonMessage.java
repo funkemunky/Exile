@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class JsonMessage {
-	private List<AMText> Text = new ArrayList();
+	private List<AMText> Text = new ArrayList<AMText>();
 
 	public static enum ClickableType {
 		RunCommand("run_command"), SuggestCommand("suggest_command"), OpenURL("open_url");
@@ -25,7 +25,7 @@ public class JsonMessage {
 
 	public class AMText {
 		private String Message = "";
-		private Map<String, Map.Entry<String, String>> Modifiers = new HashMap();
+		private Map<String, Map.Entry<String, String>> Modifiers = new HashMap<String, Map.Entry<String, String>>();
 
 		public AMText(String Text) {
 			this.Message = Text;
@@ -38,7 +38,7 @@ public class JsonMessage {
 		public String getFormattedMessage() {
 			String Chat = "{\"text\":\"" + this.Message + "\"";
 			for (String Event : this.Modifiers.keySet()) {
-				Map.Entry<String, String> Modifier = (Map.Entry) this.Modifiers.get(Event);
+				Map.Entry<String, String> Modifier = this.Modifiers.get(Event);
 				Chat = Chat + ",\"" + Event + "\":{\"action\":\"" + (String) Modifier.getKey() + "\",\"value\":"
 						+ (String) Modifier.getValue() + "}";
 			}
@@ -63,7 +63,7 @@ public class JsonMessage {
 				Value = Value.substring(0, Value.length() - 1);
 				Value = Value + "]}";
 			}
-			Map.Entry<String, String> Values = new AbstractMap.SimpleEntry(Key, Value);
+			Map.Entry<String, String> Values = new AbstractMap.SimpleEntry<String, String>(Key, Value);
 			this.Modifiers.put(Event, Values);
 			return this;
 		}
@@ -76,7 +76,7 @@ public class JsonMessage {
 				Class<?> items = Class.forName("org.bukkit.inventory.ItemStack");
 				Object NMS = craftItemStack.getClass().getMethod("asNMSCopy", items).invoke(Item);
 				String Value = NMS.getClass().getMethod("getTag").toString();
-				Map.Entry<String, String> Values = new AbstractMap.SimpleEntry(Key, Value);
+				Map.Entry<String, String> Values = new AbstractMap.SimpleEntry<String, String>(Key, Value);
 				this.Modifiers.put(Event, Values);
 				return this;
 			} catch (Exception e) {
@@ -88,7 +88,7 @@ public class JsonMessage {
 		public AMText setClickEvent(JsonMessage.ClickableType Type, String Value) {
 			String Event = "clickEvent";
 			String Key = Type.Action;
-			Map.Entry<String, String> Values = new AbstractMap.SimpleEntry(Key, "\"" + Value + "\"");
+			Map.Entry<String, String> Values = new AbstractMap.SimpleEntry<String, String>(Key, "\"" + Value + "\"");
 			this.Modifiers.put(Event, Values);
 			return this;
 		}

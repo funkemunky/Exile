@@ -7,6 +7,7 @@ import java.util.WeakHashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
@@ -18,7 +19,7 @@ import anticheat.user.User;
 import anticheat.utils.MathUtils;
 import anticheat.utils.TimerUtils;
 
-@ChecksListener(events = {PacketPlayerEvent.class})
+@ChecksListener(events = {PacketPlayerEvent.class, PlayerQuitEvent.class})
 public class AimAssist extends Checks {
 	
 	public Map<UUID, Map.Entry<Integer, Long>> aimAVerbose;
@@ -35,6 +36,20 @@ public class AimAssist extends Checks {
 	protected void onEvent(Event event) {
 		if(!getState()) {
 			return;
+		}
+		
+		if(event instanceof PlayerQuitEvent) {
+			PlayerQuitEvent e = (PlayerQuitEvent) event;
+
+			UUID uuid = e.getPlayer().getUniqueId();
+			
+			if(aimAVerbose.containsKey(uuid)) {
+				aimAVerbose.remove(uuid);
+			}
+			
+			if(aimBVerbose.containsKey(uuid)) {
+				aimBVerbose.remove(uuid);
+			}
 		}
 		
 		if(event instanceof PacketPlayerEvent) {
@@ -54,7 +69,7 @@ public class AimAssist extends Checks {
 				Time = ((Long) ( this.aimAVerbose.get(player.getUniqueId())).getValue()).longValue();
 			}
 			
-			if(TimerUtils.elapsed(Time, 15000L)) {
+			if(TimerUtils.elapsed(Time, 14000L)) {
 				verbose = 0;
 				Time = TimerUtils.nowlong();
 				
@@ -64,11 +79,11 @@ public class AimAssist extends Checks {
 				verbose++;
 			}
 			
-			if(verbose > 25) {
+			if(verbose > 29) {
 				user.setVL(this, user.getVL(this) + 1);
 				
-				Alert(player, "Type A");
-				this.advancedAlert(player, 99.999);
+				alert(player, "Type A");
+				this.advancedalert(player, 99.999);
 				verbose = 0;
 			}
 			user.setLastYawDifference(Math.abs(user.getLastYaw() - e.getYaw()));
@@ -93,16 +108,18 @@ public class AimAssist extends Checks {
 				Time = ((Long) ( this.aimBVerbose.get(player.getUniqueId())).getValue()).longValue();
 			}
 			
-			if(TimerUtils.elapsed(Time, 15000L)) {
+			if(TimerUtils.elapsed(Time, 17000L)) {
 				verbose = 0;
+				debug("Verbose reset.");
 				Time = TimerUtils.nowlong();
 				
 			}
 			
-			if(MathUtils.elapsed(user.getLastAimB()) > 500L && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 0.63 && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
+			if(MathUtils.elapsed(user.getLastAimB()) > 500L && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 1.0D && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
 				verbose++;
+				debug("Verbose (+1): " + verbose);
 				user.setLastAimB(System.currentTimeMillis());
-			} else if(MathUtils.elapsed(user.getLastAimB()) <= 500L && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 0.63 && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
+			} else if((MathUtils.elapsed(user.getLastAimB()) <= 500L) && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 1.0D && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
 				user.setLastAimB(System.currentTimeMillis());
 			}
 	        
@@ -110,8 +127,8 @@ public class AimAssist extends Checks {
 			if(verbose > 8) {
 				user.setVL(this, user.getVL(this) + 1);
 				
-				Alert(player, "Type B");
-				this.advancedAlert(player, 98.69);
+				alert(player, "Type B");
+				this.advancedalert(player, 98.69);
 				verbose = 0;
 			}
 			

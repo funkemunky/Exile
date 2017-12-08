@@ -47,8 +47,8 @@ public class NoSwing extends Checks {
 							if(Exile.getAC().isEnabled()) {
 								if(!(TimerUtils.nowlong() < (user.getLastSwing() + 1500L))) {
 									user.setVL(NoSwing.this, user.getVL(NoSwing.this) + 1);
-									Alert(p, "*");
-									advancedAlert(p, 87.5);
+									alert(p, "*");
+									advancedalert(p, 87.5);
 								}
 							}
 						}

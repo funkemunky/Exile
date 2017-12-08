@@ -76,10 +76,10 @@ public class DoubleClick extends Checks {
 					user.setVL(this, user.getVL(this) + 1);
 					
 					if(user.getVL(this) > 50) {
-						Alert(player, "CPS: " + user.getLeftClicks());
-						this.advancedAlert(player, 99.9);
+						alert(player, "CPS: " + user.getLeftClicks());
+						this.advancedalert(player, 99.9);
 					}
-					this.advancedAlert(player, user.getVL(this) * 2);
+					this.advancedalert(player, user.getVL(this) * 2);
 				}
 				secondClick = 0;
 				firstClick = 0;

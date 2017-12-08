@@ -93,8 +93,8 @@ public class Jesus extends Checks {
 				User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
 				count.remove(p);
 				user.setVL(this, user.getVL(this) + 1);
-				this.Alert(p, "*");
-				advancedAlert(p, 100);
+				alert(p, "*");
+				advancedalert(p, 100);
 				
 			}
 			if (!p.isOnGround()) {

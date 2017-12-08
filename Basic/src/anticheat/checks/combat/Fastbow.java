@@ -30,7 +30,6 @@ public class Fastbow extends Checks {
 		this.count = new HashMap<Player, Integer>();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onEvent(Event event) {
 		if (!this.getState()) {
@@ -40,7 +39,7 @@ public class Fastbow extends Checks {
 		if (event instanceof PlayerInteractEvent) {
 			PlayerInteractEvent e = (PlayerInteractEvent) event;
 			Player Player = e.getPlayer();
-			if (Player.getItemInHand() != null && Player.getItemInHand().getType().equals(Material.BOW)) {
+			if (e.getItem() != null && e.getItem().getType().equals(Material.BOW)) {
 				this.bowPull.put(Player, System.currentTimeMillis());
 			}
 		}
@@ -78,8 +77,8 @@ public class Fastbow extends Checks {
 						if (Count > 8) {
 							User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 							user.setVL(this, user.getVL(this) + 1);
-							this.Alert(player, "*");
-							this.advancedAlert(player, 100);
+							alert(player, "*");
+							this.advancedalert(player, 100);
 							count.remove(player);
 						}
 					}

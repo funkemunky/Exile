@@ -25,9 +25,6 @@ import org.bukkit.material.Door;
 import org.bukkit.material.Gate;
 import org.bukkit.material.TrapDoor;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-
 import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
@@ -42,12 +39,6 @@ public class Phase extends Checks {
 	public List<Material> semi;
 	public Set<UUID> teleported;
 	public final Map<UUID, Location> lastLocation;
-
-	private final ImmutableSet<Material> blockedPearlTypes = Sets.immutableEnumSet(Material.THIN_GLASS,
-			Material.IRON_FENCE, Material.FENCE, Material.NETHER_FENCE, Material.FENCE_GATE, Material.ACACIA_STAIRS,
-			Material.BIRCH_WOOD_STAIRS, Material.BRICK_STAIRS, Material.COBBLESTONE_STAIRS, Material.DARK_OAK_STAIRS,
-			Material.JUNGLE_WOOD_STAIRS, Material.NETHER_BRICK_STAIRS, Material.QUARTZ_STAIRS,
-			Material.SANDSTONE_STAIRS, Material.SMOOTH_STAIRS, Material.SPRUCE_WOOD_STAIRS, Material.WOOD_STAIRS);
 
 	public Phase() {
 		super("Phase", ChecksType.MOVEMENT, Exile.getAC(), 50, true, false);
@@ -199,7 +190,7 @@ public class Phase extends Checks {
 				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
-				Alert(player, "Block");
+				alert(player, "Block");
 			} else if (isLegit(playerId, loc1, loc2)) {
 				this.lastLocation.put(playerId, loc2);
 			} else if ((player.hasPermission("daedalus.admin")) || (this.lastLocation.containsKey(playerId))) {
@@ -214,7 +205,7 @@ public class Phase extends Checks {
 				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
 				
-				Alert(player, "Block");
+				alert(player, "Block");
 			}
 		}
 	}
@@ -254,6 +245,7 @@ public class Phase extends Checks {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	private boolean hasPhased(Block block, Location loc1, Location loc2, Player p) {
 		if (((allowed.contains(block.getType())) || (MiscUtils.isStair(block)) || (MiscUtils.isSlab(block))
 				|| (MiscUtils.isClimbableBlock(block)) || (block.isLiquid()))) {

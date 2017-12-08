@@ -8,9 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-
-import anticheat.Exile;
 
 public class PlayerUtils {
 
@@ -66,12 +66,22 @@ public class PlayerUtils {
 		eye.setY(eye.getY() + player.getEyeHeight());
 		return eye;
 	}
+	
+	public static boolean hasPotionEffect(Player player, PotionEffectType type) {
+		if(player.getActivePotionEffects().size() > 0) {
+			for(PotionEffect effect : player.getActivePotionEffects()) {
+				if(effect.getType() == type) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public static double offset(Vector a, Vector b) {
 		return a.subtract(b).length();
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean isReallyOnground(Player p) {
 		Location l = p.getLocation();
 		int x = l.getBlockX();

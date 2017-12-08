@@ -2,11 +2,8 @@ package anticheat.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,12 +20,11 @@ import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public final class MiscUtils {
-	private static final List<Material> INSTANT_BREAK = new ArrayList();
-	private static final List<Material> FOOD = new ArrayList();
-	private static final List<Material> INTERACTABLE = new ArrayList();
-	private static final Map<Material, Material> COMBO = new HashMap();
+	private static final List<Material> INSTANT_BREAK = new ArrayList<Material>();
+	private static final List<Material> FOOD = new ArrayList<Material>();
+	private static final List<Material> INTERACTABLE = new ArrayList<Material>();
+	private static final Map<Material, Material> COMBO = new HashMap<Material, Material>();
 	public static final String SPY_METADATA = "ac-spydata";
-	private static Set<UUID> teleported = new HashSet<UUID>();
 
 	public static double getXDelta(Location one, Location two) {
 		return Math.abs(one.getX() - two.getX());
@@ -377,6 +373,7 @@ public final class MiscUtils {
 		}
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public static boolean isSlab(Block block) {
 		Material type = block.getType();
 		switch (type) {
@@ -387,6 +384,7 @@ public final class MiscUtils {
 		return false;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public static boolean isStair(Block block) {
 		Material type = block.getType();
 		switch (type) {

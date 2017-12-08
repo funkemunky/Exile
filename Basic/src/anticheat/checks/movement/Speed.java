@@ -29,10 +29,6 @@ import anticheat.utils.MiscUtils;
 import anticheat.utils.PlayerUtils;
 import anticheat.utils.TimerUtils;
 
-/**
- * Created by XtasyCode on 11/08/2017.
- */
-
 @ChecksListener(events = { PlayerMoveEvent.class, PacketedMovementEvent.class, EntityDamageByEntityEvent.class, PlayerQuitEvent.class })
 public class Speed extends Checks {
 
@@ -161,8 +157,8 @@ public class Speed extends Checks {
 					&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
 					&& onGroundDiff != 0.36510663985490055) {
 				user.setVL(Speed.this, vl + 1);
-				advancedAlert(p, 99.9);
-				Alert(p, "NormalMovements");
+				advancedalert(p, 99.9);
+				alert(p, "NormalMovements");
 
 			}
 
@@ -175,8 +171,8 @@ public class Speed extends Checks {
 						&& above3.getBlock().getType() == Material.AIR) {
 					user.setVL(this, vl + 1);
 					user.setGroundTicks(0);
-					Alert(p, "Reason: " + Color.Green + "onGround " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
-					advancedAlert(p, 99.9);
+					alert(p, "Reason: " + Color.Green + "onGround " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+					advancedalert(p, 99.9);
 				}
 			}
 
@@ -188,8 +184,8 @@ public class Speed extends Checks {
 					&& blockLoc.getBlock().getType() != Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				advancedAlert(p, 99.9);
-				Alert(p, "Reason: " + Color.Green + "midAir " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+				advancedalert(p, 99.9);
+				alert(p, "Reason: " + Color.Green + "midAir " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 			/** GOING ABOVE THE SPEED LIMIT **/
@@ -198,8 +194,8 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				advancedAlert(p, 100);
-				Alert(p, "Reason: " + Color.Green + "Speed_Limit " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+				advancedalert(p, 100);
+				alert(p, "Reason: " + Color.Green + "Speed_Limit " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 
@@ -210,8 +206,8 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR
 					&& above3.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
-				advancedAlert(p, 100);
-				Alert(p, "Reason: " + Color.Green + "Vanilla " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+				advancedalert(p, 100);
+				alert(p, "Reason: " + Color.Green + "Vanilla " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
 
 			}
 		}
@@ -330,8 +326,8 @@ public class Speed extends Checks {
 				Count = 0;
 				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);
-				advancedAlert(player, 100);
-				Alert(player, "Reason: " + Color.Green + "Overall " + Color.Gray + "Speed: " + Color.Red + "N/A");
+				advancedalert(player, 100);
+				alert(player, "Reason: " + Color.Green + "Overall " + Color.Gray + "Speed: " + Color.Red + "N/A");
 			}
 			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry<Integer, Long>(TooFastCount,
 					System.currentTimeMillis()));

@@ -11,6 +11,7 @@ import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
 import anticheat.user.User;
+import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
 
 @ChecksListener(events = { PlayerJoinEvent.class })
@@ -33,6 +34,7 @@ public class PME extends Checks implements PluginMessageListener {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void onPluginMessageReceived(String s, Player player, byte[] data) {
 		String str;
 		try {
@@ -45,7 +47,8 @@ public class PME extends Checks implements PluginMessageListener {
 
 		new BukkitRunnable() {
 			public void run() {
-				Alert(player, "*");
+				user.setVL(PME.this, user.getVL(PME.this) + 1);
+				alert(player, Color.Gray + "Reason: " + Color.White + "Cracked Vape 2.0");
 			}
 		}.runTaskLater(Exile.getAC(), 15L);
 	}

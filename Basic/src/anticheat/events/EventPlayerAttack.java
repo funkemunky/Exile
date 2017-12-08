@@ -9,13 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import anticheat.Exile;
-import anticheat.packets.events.PacketKillauraEvent;
-import anticheat.packets.events.PacketPlayerType;
 import anticheat.user.User;
-
-/**
- * Created by XtasyCode on 11/08/2017.
- */
 
 public class EventPlayerAttack implements Listener {
 

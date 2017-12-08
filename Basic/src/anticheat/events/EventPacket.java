@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import anticheat.Exile;
 import anticheat.packets.events.PacketBlockPlacementEvent;
+import anticheat.packets.events.PacketEntityActionEvent;
 import anticheat.packets.events.PacketHeldItemChangeEvent;
 import anticheat.packets.events.PacketKeepAliveEvent;
 import anticheat.packets.events.PacketPlayerEvent;
@@ -37,6 +38,11 @@ public class EventPacket implements Listener {
 	
 	@EventHandler
 	public void blockPlace(PacketBlockPlacementEvent e) {
+		Exile.getAC().getChecks().event(e);
+	}
+	
+	@EventHandler
+	public void action(PacketEntityActionEvent e) {
 		Exile.getAC().getChecks().event(e);
 	}
 	

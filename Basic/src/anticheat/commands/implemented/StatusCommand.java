@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import anticheat.Exile;
 import anticheat.commands.Command;
 import anticheat.detections.Checks;
-import anticheat.detections.ChecksManager;
 import anticheat.utils.Color;
 
 public class StatusCommand extends Command {
@@ -22,13 +21,13 @@ public class StatusCommand extends Command {
 				if (subCommand.equalsIgnoreCase("info")) {
 					if(sender.hasPermission("Exile.admin")) {
 						ArrayList<String> bannable = new ArrayList<String>();
-						for(Checks check1 : ChecksManager.getDetections()) {
+						for(Checks check1 : Exile.getAC().getChecks().getDetections()) {
 							if(check1.isBannable()) {
 								bannable.add(Color.Gray + (check1.getState() ? Color.Green + check1.getName() : Color.Red + check1.getName()).toString() + Color.Gray);
 							}
 						}
 						ArrayList<String> notbannable = new ArrayList<String>();
-						for(Checks check1 : ChecksManager.getDetections()) {
+						for(Checks check1 : Exile.getAC().getChecks().getDetections()) {
 							if(!check1.isBannable()) {
 								notbannable.add(Color.Gray + (check1.getState() ? Color.Green + check1.getName() : Color.Red + check1.getName()).toString() + Color.Gray);
 							}

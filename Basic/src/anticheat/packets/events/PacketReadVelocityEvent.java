@@ -3,7 +3,6 @@ package anticheat.packets.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.util.Vector;
 
 public class PacketReadVelocityEvent extends Event {
 	private Player Player;

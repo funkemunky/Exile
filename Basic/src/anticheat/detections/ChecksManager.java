@@ -9,6 +9,7 @@ import org.bukkit.event.Event;
 import anticheat.Exile;
 import anticheat.checks.combat.AimAssist;
 import anticheat.checks.combat.AutoClicker;
+import anticheat.checks.combat.Criticals;
 import anticheat.checks.combat.DoubleClick;
 import anticheat.checks.combat.Fastbow;
 import anticheat.checks.combat.KillAura;
@@ -17,22 +18,24 @@ import anticheat.checks.combat.Regen;
 import anticheat.checks.movement.Fly;
 import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
+import anticheat.checks.movement.NoSlowdown;
 import anticheat.checks.movement.Speed;
+import anticheat.checks.other.InvalidPackets;
 import anticheat.checks.other.NoSwing;
 import anticheat.checks.other.PME;
 
 public class ChecksManager {
 
-	private static List<Checks> detections = new ArrayList<>();
+	private List<Checks> detections = new ArrayList<>();
 
 	public ChecksManager(Exile ac) {
 	}
 
-	public static List<Checks> getDetections() {
+	public List<Checks> getDetections() {
 		return detections;
 	}
 
-	public static Checks getCheckByName(String name) {
+	public Checks getCheckByName(String name) {
 		for (Checks check : getDetections()) {
 			if (check.getName().equalsIgnoreCase(name)) {
 				return check;
@@ -47,13 +50,16 @@ public class ChecksManager {
 		new Speed();
 		new KillAura();
 		new NoSwing();
+		new Criticals();
 		new Fly();
 		new Jesus();
 		new PME();
 		new Fastbow();
 		new Regen();
 		new AutoClicker();
+		new NoSlowdown();
 		new NoFall();
+		new InvalidPackets();
 		new AimAssist();
 		new DoubleClick();
 	}

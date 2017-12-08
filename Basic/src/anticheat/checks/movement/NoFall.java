@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Damageable;
@@ -34,12 +35,11 @@ public class NoFall extends Checks {
 	public NoFall() {
 		super("NoFall", ChecksType.MOVEMENT, Exile.getAC(), 6, true, true);
 
-		this.NoFallTicks = new HashMap<UUID, Map.Entry<Long, Integer>>();
+		this.NoFallTicks = new WeakHashMap<UUID, Map.Entry<Long, Integer>>();
 		this.FallDistance = new HashMap<UUID, Double>();
 		this.cancel = new ArrayList<Player>();
 	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@Override
 	protected void onEvent(Event event) {
 		if (!this.getState()) {
@@ -123,13 +123,13 @@ public class NoFall extends Checks {
 				Count = 0;
 				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(this, user.getVL(this) + 1);
-				this.Alert(player, "*");
-				advancedAlert(player, 99.9);
+				alert(player, "*");
+				advancedalert(player, 99.9);
 				this.FallDistance.put(player.getUniqueId(), Double.valueOf(0.0D));
 				
 			}
 			this.NoFallTicks.put(player.getUniqueId(),
-					new AbstractMap.SimpleEntry(Long.valueOf(Time), Integer.valueOf(Count)));
+					new AbstractMap.SimpleEntry<Long, Integer>(Time, Count));
 		}
 	}
 

@@ -72,6 +72,9 @@ public class Regen extends Checks {
 			if (player.getWorld().getDifficulty().equals(Difficulty.PEACEFUL)) {
 				return;
 			}
+			if(player.getFoodLevel() < 20) {
+				return;
+			}
 			int Count = 0;
 			long Time = System.currentTimeMillis();
 			if (this.FastHealTicks.containsKey(player.getUniqueId())) {
@@ -88,8 +91,8 @@ public class Regen extends Checks {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
 					User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 					user.setVL(this, user.getVL(this) == 0 ? 1 : user.getVL(this) + 1);
-					this.Alert(player, "*");
-					this.advancedAlert(player, 99.9);
+					alert(player, "*");
+					this.advancedalert(player, 99.9);
 				}
 				Count = 0;
 			}

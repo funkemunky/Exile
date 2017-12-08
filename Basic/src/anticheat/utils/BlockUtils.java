@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockUtils {
-	public static HashSet<Byte> blockPassSet = new HashSet();
+	public static HashSet<Byte> blockPassSet = new HashSet<Byte>();
 
 	public static Block getLowestBlockAt(Location Location) {
 		Block Block = Location.getWorld().getBlockAt((int) Location.getX(), 0, (int) Location.getZ());
@@ -36,6 +36,7 @@ public class BlockUtils {
 				|| block.getType() == Material.LAVA || block.getType() == Material.STATIONARY_LAVA);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isSolid(Block material) {
 		return material != null && isSolid(material.getTypeId());
 	}
@@ -124,7 +125,7 @@ public class BlockUtils {
 	}
 
 	public static ArrayList<Block> getBlocksAroundCenter(Location loc, double radius) {
-		ArrayList<Block> blocks = new ArrayList();
+		ArrayList<Block> blocks = new ArrayList<Block>();
 		for (double x = loc.getBlockX() - radius; x <= loc.getBlockX() + radius; x++) {
 			for (double y = loc.getBlockY() - radius; y <= loc.getBlockY() + radius; y++) {
 				for (double z = loc.getBlockZ() - radius; z <= loc.getBlockZ() + radius; z++) {
@@ -154,6 +155,7 @@ public class BlockUtils {
 				+ "," + Location.getPitch() + "," + Location.getYaw();
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean solid(Block block) {
 		if (block == null) {
 			return false;
@@ -224,8 +226,9 @@ public class BlockUtils {
 		return !blockPassSet.contains(Byte.valueOf(block));
 	}
 
-	public static HashSet<Byte> blockAirFoliageSet = new HashSet();
+	public static HashSet<Byte> blockAirFoliageSet = new HashSet<Byte>();
 
+	@SuppressWarnings("deprecation")
 	public static boolean airFoliage(Block block) {
 		if (block == null) {
 			return false;
@@ -258,8 +261,9 @@ public class BlockUtils {
 		return blockAirFoliageSet.contains(Byte.valueOf(block));
 	}
 
-	public static HashSet<Byte> fullSolid = new HashSet();
+	public static HashSet<Byte> fullSolid = new HashSet<Byte>();
 
+	@SuppressWarnings("deprecation")
 	public static boolean fullSolid(Block block) {
 		if (block == null) {
 			return false;
@@ -346,8 +350,9 @@ public class BlockUtils {
 		return fullSolid.contains(Byte.valueOf(block));
 	}
 
-	public static HashSet<Byte> blockUseSet = new HashSet();
+	public static HashSet<Byte> blockUseSet = new HashSet<Byte>();
 
+	@SuppressWarnings("deprecation")
 	public static boolean usable(Block block) {
 		if (block == null) {
 			return false;
@@ -393,7 +398,7 @@ public class BlockUtils {
 	}
 
 	public static HashMap<Block, Double> getInRadius(Location loc, double dR, double heightLimit) {
-		HashMap<Block, Double> blockList = new HashMap();
+		HashMap<Block, Double> blockList = new HashMap<Block, Double>();
 		int iR = (int) dR + 1;
 		for (int x = -iR; x <= iR; x++) {
 			for (int z = -iR; z <= iR; z++) {
@@ -414,7 +419,7 @@ public class BlockUtils {
 	}
 
 	public static HashMap<Block, Double> getInRadius(Block block, double dR) {
-		HashMap<Block, Double> blockList = new HashMap();
+		HashMap<Block, Double> blockList = new HashMap<Block, Double>();
 		int iR = (int) dR + 1;
 		for (int x = -iR; x <= iR; x++) {
 			for (int z = -iR; z <= iR; z++) {
@@ -431,6 +436,7 @@ public class BlockUtils {
 		return blockList;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isBlock(ItemStack item) {
 		if (item == null) {
 			return false;
@@ -466,7 +472,7 @@ public class BlockUtils {
 	}
 
 	public static ArrayList<Block> getSurrounding(Block block, boolean diagonals) {
-		ArrayList<Block> blocks = new ArrayList();
+		ArrayList<Block> blocks = new ArrayList<Block>();
 		if (diagonals) {
 			for (int x = -1; x <= 1; x++) {
 				for (int y = -1; y <= 1; y++) {
@@ -489,7 +495,7 @@ public class BlockUtils {
 	}
 
 	public static ArrayList<Block> getSurroundingB(Block block) {
-		ArrayList<Block> blocks = new ArrayList();
+		ArrayList<Block> blocks = new ArrayList<Block>();
 		for (double x = -0.5; x <= 0.5; x += 0.5) {
 			for (double y = -0.5; y <= 0.5; y += 0.5) {
 				for (double z = -0.5; z <= 0.5; z += 0.5) {
@@ -503,7 +509,7 @@ public class BlockUtils {
 	}
 
 	public static ArrayList<Block> getSurroundingXZ(Block block) {
-		ArrayList<Block> blocks = new ArrayList();
+		ArrayList<Block> blocks = new ArrayList<Block>();
 		blocks.add(block.getRelative(BlockFace.NORTH));
 		blocks.add(block.getRelative(BlockFace.NORTH_EAST));
 		blocks.add(block.getRelative(BlockFace.NORTH_WEST));
@@ -517,7 +523,7 @@ public class BlockUtils {
 	}
 
 	public static ArrayList<Block> getSurroundingXZ(Block block, boolean diagonals) {
-		ArrayList<Block> blocks = new ArrayList();
+		ArrayList<Block> blocks = new ArrayList<Block>();
 		if (diagonals) {
 			blocks.add(block.getRelative(BlockFace.NORTH));
 			blocks.add(block.getRelative(BlockFace.NORTH_EAST));

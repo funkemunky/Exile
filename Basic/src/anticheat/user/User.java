@@ -28,6 +28,7 @@ public class User {
 	private double lastPitch = 1.0D;
 	private long lastAimB;
 	private double lastPitchDifference = 0.0D;
+	private boolean tookVelocity = false;
 	private long loginMillis = 0L;
 	private long lastHeal = 0L;
 	private long isHit = 0L;
@@ -87,6 +88,24 @@ public class User {
 		setIceTicks(0);
 		setRightClicks(0);
 		setLeftClicks(0);
+	}
+	
+	/**
+	 * 
+	 * @return tookVelocity;
+	 */
+	
+	public boolean isVelocity() {
+		return this.tookVelocity;
+	}
+	
+	/**
+	 * 
+	 * @param took
+	 */
+	
+	public void setTookVelocity(boolean took) {
+		this.tookVelocity = took;
 	}
 
 	/**

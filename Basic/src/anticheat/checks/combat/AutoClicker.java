@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
@@ -24,7 +25,7 @@ import anticheat.user.User;
 import anticheat.utils.Color;
 import anticheat.utils.TimerUtils;
 
-@ChecksListener(events = {TickEvent.class, PacketKillauraEvent.class})
+@ChecksListener(events = {TickEvent.class, PacketKillauraEvent.class, PlayerQuitEvent.class})
 public class AutoClicker extends Checks {
 	
     public Map<UUID, Long> LastMillis;
@@ -45,6 +46,24 @@ public class AutoClicker extends Checks {
 			return;
 		}
 		
+		if(event instanceof PlayerQuitEvent) {
+			PlayerQuitEvent e = (PlayerQuitEvent) event;
+			
+			UUID uuid = e.getPlayer().getUniqueId();
+			
+			if(LastMillis.containsKey(uuid)) {
+				LastMillis.remove(uuid);
+			}
+			
+			if(ClickTimes.containsKey(uuid)) {
+				ClickTimes.remove(uuid);
+			}
+			
+			if(ClickTimestuff.containsKey(uuid)) {
+				ClickTimestuff.containsKey(uuid);
+			}
+		}
+		
 		if (event instanceof TickEvent) {
 			TickEvent e = (TickEvent) event;
 			if(e.getType() != TickType.SECOND) {
@@ -56,10 +75,10 @@ public class AutoClicker extends Checks {
 					if (user.getLeftClicks() > 20) {
 						if(user.getLeftClicks() >= 30) {
 							user.setVL(this, user.getVL(this) + 2);
-							this.advancedAlert(player, 100D);
+							this.advancedalert(player, 100D);
 						}
-						this.advancedAlert(player, (user.getLeftClicks() - 19) * 10D);
-						this.Alert(player, Color.Gray + "Reason: " + Color.White + "FastClick " + Color.Gray + "CPS: " + Color.White +  user.getLeftClicks() + "");
+						this.advancedalert(player, (user.getLeftClicks() - 19) * 10D);
+						alert(player, Color.Gray + "Reason: " + Color.White + "FastClick " + Color.Gray + "CPS: " + Color.White +  user.getLeftClicks() + "");
 					}
 				}
 				user.setLeftClicks(0);
@@ -117,7 +136,7 @@ public class AutoClicker extends Checks {
 	            User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 	            user.setVL(this, user.getVL(this) + 1);
 	            
-	            Alert(player, Color.Gray + "Reason: " + Color.White + "Continuous Patterns " + Color.Gray + "CPS: " + Color.White + user.getLeftClicks());
+	            alert(player, Color.Gray + "Reason: " + Color.White + "Continuous Patterns " + Color.Gray + "CPS: " + Color.White + user.getLeftClicks());
 	            ClickTimestuff.remove(player.getUniqueId());
 	        }
 	        this.LastMillis.put(player.getUniqueId(), TimerUtils.nowlong());

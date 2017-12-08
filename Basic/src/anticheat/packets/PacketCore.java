@@ -1,7 +1,12 @@
 package anticheat.packets;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
@@ -13,22 +18,27 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.events.PacketListener;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 
 import anticheat.Exile;
 import anticheat.packets.events.PacketBlockPlacementEvent;
 import anticheat.packets.events.PacketEntityActionEvent;
 import anticheat.packets.events.PacketHeldItemChangeEvent;
 import anticheat.packets.events.PacketKeepAliveEvent;
+import anticheat.packets.events.PacketKeepAliveEvent.PacketKeepAliveType;
 import anticheat.packets.events.PacketKillauraEvent;
 import anticheat.packets.events.PacketPlayerEvent;
 import anticheat.packets.events.PacketPlayerType;
 import anticheat.packets.events.PacketReadVelocityEvent;
 import anticheat.packets.events.PacketSwingArmEvent;
 import anticheat.packets.events.PacketUseEntityEvent;
-import anticheat.packets.events.PacketKeepAliveEvent.PacketKeepAliveType;
 
 public class PacketCore {
+	
 	public Exile Exile;
+	
+	private HashSet<EntityType> enabled;
 
 	public PacketCore(Exile Exile) {
 		super();
@@ -39,6 +49,8 @@ public class PacketCore {
 			public void onPacketReceiving(final PacketEvent event) {
 				final PacketContainer packet = event.getPacket();
 				final Player player = event.getPlayer();
+				enabled = new HashSet<EntityType>();
+				enabled.add(EntityType.valueOf("PLAYER"));
 				if (player == null) {
 					return;
 				}
@@ -150,6 +162,33 @@ public class PacketCore {
 				}
 				Bukkit.getServer().getPluginManager()
 						.callEvent((Event) new PacketEntityActionEvent(player, (int) packet.getIntegers().read(1)));
+			}
+		});
+		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(Exile, new PacketType[] { PacketType.Play.Server.SPAWN_ENTITY_LIVING,
+				PacketType.Play.Server.NAMED_ENTITY_SPAWN, PacketType.Play.Server.ENTITY_METADATA }) {
+
+			public void onPacketSending(PacketEvent event) {
+				PacketContainer packet = event.getPacket();
+				Entity e = (Entity) packet.getEntityModifier(event).read(0);
+				if (e instanceof LivingEntity && enabled.contains((Object) e.getType())
+						&& packet.getWatchableCollectionModifier().read(0) != null
+						&& e.getUniqueId() != event.getPlayer().getUniqueId()) {
+					packet = packet.deepClone();
+					event.setPacket(packet);
+					if (event.getPacket().getType() == PacketType.Play.Server.ENTITY_METADATA) {
+						WrappedDataWatcher watcher = new WrappedDataWatcher(
+								packet.getWatchableCollectionModifier().read(0));
+						this.processDataWatcher(watcher);
+						packet.getWatchableCollectionModifier().write(0,
+								(List<WrappedWatchableObject>) watcher.getWatchableObjects());
+					}
+				}
+			}
+
+			private void processDataWatcher(WrappedDataWatcher watcher) {
+				if (watcher != null && watcher.getObject(6) != null && watcher.getFloat(6) != 0.0F) {
+					watcher.setObject(6, 69.0f);
+				}
 			}
 		});
 		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,

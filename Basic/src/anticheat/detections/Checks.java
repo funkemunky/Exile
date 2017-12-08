@@ -10,10 +10,6 @@ import anticheat.Exile;
 import anticheat.utils.Color;
 import anticheat.utils.JsonMessage;
 
-/**
- * Created by XtasyCode on 11/08/2017.
- */
-
 public class Checks {
 
 	public static Exile ac;
@@ -35,7 +31,7 @@ public class Checks {
 		this.bannable = bannable;
 		this.state = state;
 		ac.getChecks();
-		ChecksManager.getDetections().add(this);
+		Exile.getAC().getChecks().getDetections().add(this);
 	}
 
 	public int getWeight() {
@@ -78,7 +74,7 @@ public class Checks {
 	protected void onEvent(Event event) {
 	}
 
-	public void Alert(Player p, String value) {
+	public void alert(Player p, String value) {
 		long l = System.currentTimeMillis() - this.delay;
 		if (l > this.interval) {
 			for (Player player : Bukkit.getOnlinePlayers()) {
@@ -101,7 +97,7 @@ public class Checks {
 		}
 	}
 	
-	public void advancedAlert(Player player, double chance) {
+	public void advancedalert(Player player, double chance) {
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			if (Exile.getAC().getUserManager().getUser(player.getUniqueId()).hasAdvancedAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
 				JsonMessage msg = new JsonMessage();

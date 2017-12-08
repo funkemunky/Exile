@@ -45,7 +45,7 @@ import anticheat.utils.TxtFile;
 
 public class Exile extends JavaPlugin {
 
-	private static ChecksManager checksmanager;
+	private ChecksManager checksmanager;
 	private static Exile Exile;
 	public PacketCore packet;
 	private UserManager userManager;
@@ -79,8 +79,7 @@ public class Exile extends JavaPlugin {
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
-
-	@SuppressWarnings({ "static-access" })
+	
 	public void onEnable() {
 		this.getServer().getConsoleSender()
 				.sendMessage(Color.translate("&7------------------------------------------"));
@@ -140,7 +139,6 @@ public class Exile extends JavaPlugin {
 
 	}
 
-	@SuppressWarnings("static-access")
 	public void onDisable() {
 		for (Checks check : checksmanager.getDetections()) {
 			getConfig().set("checks." + check.getName() + ".enabled", check.getState());
@@ -172,8 +170,8 @@ public class Exile extends JavaPlugin {
 		pm.registerEvents(new EventInventory(), this);
 		pm.registerEvents(new EventPacketMoveEvent(), this);
 		
-		PME pme = new PME();
-		this.getServer().getMessenger().registerIncomingPluginChannel((Plugin) this, "LOLIMAHCKER",
+		PME pme = (PME) getChecks().getCheckByName("PME");
+		this.getServer().getMessenger().registerIncomingPluginChannel((Plugin) this, "LOLIMAHACKER",
 				(PluginMessageListener) pme);
 
 		new BukkitRunnable() {
@@ -189,7 +187,6 @@ public class Exile extends JavaPlugin {
 			}
 		}.runTaskTimer(this, 0L, 1L);
 		new BukkitRunnable() {
-			@SuppressWarnings("static-access")
 			public void run() {
 				getServer().getPluginManager().callEvent(new TickEvent(TickType.FAST));
 

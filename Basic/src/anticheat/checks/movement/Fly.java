@@ -1,7 +1,6 @@
 package anticheat.checks.movement;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -28,18 +27,19 @@ import anticheat.utils.PlayerUtils;
 public class Fly extends Checks {
 
 	public Map<UUID, Map.Entry<Long, Double>> AscensionTicks;
+	public Map<UUID, Double> glideVerbose;
 	public Map<UUID, Double> velocity;
 
 	public Fly() {
-		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 10, true, true);
-		this.AscensionTicks = new HashMap<UUID, Map.Entry<Long, Double>>();
-		this.velocity = new WeakHashMap<UUID, Double>();
+		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
+		AscensionTicks = new WeakHashMap<UUID, Map.Entry<Long, Double>>();
+		velocity = new WeakHashMap<UUID, Double>();
+		glideVerbose = new WeakHashMap<UUID, Double>();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes", "unlikely-arg-type" })
 	@Override
 	protected void onEvent(Event event) {
-		if (!this.getState()) {
+		if (!getState()) {
 			return;
 		}
 
@@ -48,11 +48,14 @@ public class Fly extends Checks {
 			Player p = e.getPlayer();
 			UUID uuid = p.getUniqueId();
 
-			if (this.AscensionTicks.containsKey(uuid)) {
-				this.AscensionTicks.remove(uuid);
+			if (AscensionTicks.containsKey(uuid)) {
+				AscensionTicks.remove(uuid);
 			}
-			if (this.velocity.containsKey(uuid)) {
-				this.velocity.remove(uuid);
+			if (velocity.containsKey(uuid)) {
+				velocity.remove(uuid);
+			}
+			if(glideVerbose.containsKey(uuid)) {
+				glideVerbose.remove(uuid);
 			}
 		}
 
@@ -67,12 +70,35 @@ public class Fly extends Checks {
 			}
 			
 			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
-			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 25 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.04
-					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
-				Alert(player, "Type A");
-				advancedAlert(player, 100);
-				user.setVL(this, user.getVL(this) + 1);
+			
+			double Speed = MathUtils.offset(MathUtils.getVerticalVector(e.getFrom().toVector()),
+					MathUtils.getVerticalVector(e.getTo().toVector()));
+			double glideVerbose = this.glideVerbose.getOrDefault(player.getUniqueId(), 0D);
+			
+			if(!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) 
+					&& !MiscUtils.blocksNear(player.getLocation().add(0.0D, 1.0D, 0.0D)) && user.getAirTicks() > 25
+					&& (e.getFrom().getY() - e.getTo().getY()) > 0 && Speed < 1.0D) {
+				glideVerbose++;
+			} else {
+				glideVerbose= glideVerbose > -10 ? glideVerbose-- : -10;
 			}
+			
+			if(glideVerbose > 15) {
+				user.setVL(this, user.getVL(this) + 1);
+				
+				alert(player, "Fall Speed");
+				
+				glideVerbose = 0;
+			}
+			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 21 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
+					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
+				
+                user.setVL(this, user.getVL(this) + 1);
+                
+				alert(player, "Invalid");
+			}
+			
+			this.glideVerbose.put(player.getUniqueId(), glideVerbose);
 
 			if (e.getFrom().getY() >= e.getTo().getY()) {
 				return;
@@ -84,10 +110,10 @@ public class Fly extends Checks {
 
 			long Time = System.currentTimeMillis();
 			double TotalBlocks = 0.0D;
-			if (this.AscensionTicks.containsKey(player.getUniqueId())) {
-				Time = ((Long) (this.AscensionTicks.get(player.getUniqueId())).getKey()).longValue();
+			if (AscensionTicks.containsKey(player.getUniqueId())) {
+				Time = ((Long) (AscensionTicks.get(player.getUniqueId())).getKey()).longValue();
 				TotalBlocks = Double.valueOf(
-						((Double) (this.AscensionTicks.get(player.getUniqueId())).getValue()).doubleValue())
+						((Double) (AscensionTicks.get(player.getUniqueId())).getValue()).doubleValue())
 						.doubleValue();
 			}
 			long MS = System.currentTimeMillis() - Time;
@@ -123,23 +149,22 @@ public class Fly extends Checks {
 				}
 			}
 			if (TotalBlocks > Limit) {
-				if (MS > 200L) {
+				if (MS > 150L) {
 					if (velocity.containsKey(player.getUniqueId())) {
 						user.setVL(this, user.getVL(this) + 1);
-						this.Alert(player, "Type B");
-						advancedAlert(player, 100);
+						alert(player, ChatColor.GREEN + "Flew up " + MathUtils.trim(2, TotalBlocks) + " blocks.");
 					}
 					Time = System.currentTimeMillis();
 				}
 			} else {
 				Time = System.currentTimeMillis();
 			}
-			this.AscensionTicks.put(player.getUniqueId(),
-					new AbstractMap.SimpleEntry(Long.valueOf(Time), Double.valueOf(TotalBlocks)));
-			if (!player.isOnGround() && !player.getActivePotionEffects().contains(PotionEffectType.POISON)) {
-				this.velocity.put(player.getUniqueId(), player.getVelocity().length());
+			AscensionTicks.put(player.getUniqueId(),
+					new AbstractMap.SimpleEntry<Long, Double>(Time, TotalBlocks));
+			if (!player.isOnGround() && !PlayerUtils.hasPotionEffect(player, PotionEffectType.POISON)) {
+				velocity.put(player.getUniqueId(), player.getVelocity().length());
 			} else {
-				this.velocity.put(player.getUniqueId(), -1.0D);
+				velocity.put(player.getUniqueId(), -1.0D);
 			}
 		}
 	}

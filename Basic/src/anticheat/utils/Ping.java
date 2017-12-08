@@ -11,7 +11,7 @@ import anticheat.Exile;
 
 public class Ping {
 
-	private static double tps;
+	private double tps;
 
 	public Ping(Exile Exile) {
 		new BukkitRunnable() {
