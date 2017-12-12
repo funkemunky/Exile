@@ -24,8 +24,11 @@ public class User {
 	private long lastSwing = 0;
 	private boolean teleported = false;
 	private double lastYaw = 1.0D;
+	private int usePackets = 0;
+	private int swingPackets = 0;
 	private double lastYawDifference = 0.0D;
 	private double lastPitch = 1.0D;
+	private long lastPotionSplash = 0L;
 	private long lastAimB;
 	private double lastPitchDifference = 0.0D;
 	private boolean tookVelocity = false;
@@ -76,6 +79,24 @@ public class User {
 
 	public int clearVL(Checks check) {
 		return getVLs().put(check, 0);
+	}
+	
+	/**
+	 * 
+	 * @return lastPotionSplash
+	 */
+	
+	public long getLastPotionSplash() {
+		return this.lastPotionSplash;
+	}
+	
+	/**
+	 * 
+	 * @param millis
+	 */
+	
+	public void setLastPotionSplash(long millis) {
+		this.lastPotionSplash = millis;
 	}
 
 	public void clearData() {
@@ -129,7 +150,7 @@ public class User {
 	 */
 	
 	public void setLoginMillis(long millis) {
-		this.loginMillis = millis;
+		loginMillis = millis;
 	}
 	
 	/**
@@ -138,7 +159,42 @@ public class User {
 	 */
 	
 	public long getLoginMIllis() {
-		return this.loginMillis;
+		return loginMillis;
+	}
+	
+	
+	public void resetUsePackets() {
+		usePackets = 0;
+	}
+	
+	public void addUsePackets() {
+	    usePackets++;
+	}
+	
+	/**
+	 * 
+	 * @return usePackets
+	 */
+	
+	public int getUsePackets() {
+		return usePackets;
+	}
+	
+	public void resetSwingPackets() {
+	    swingPackets = 0;
+	}
+	
+	public void addSwingPackets() {
+	    swingPackets++;
+	}
+	
+	/**
+	 * 
+	 * @return swingPackets
+	 */
+	
+	public int getSwingPackets() {
+		return swingPackets;
 	}
 	
 	/**

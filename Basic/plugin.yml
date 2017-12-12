@@ -1,7 +1,7 @@
 name: Exile
-version: ALPHA~2
+version: ALPHA~3
 main: anticheat.Exile
-description: Basic Plan.
+description: An anticheat that trumps clients.
 website: http://Code66.zone
 author: [funkemunky]
 commands:

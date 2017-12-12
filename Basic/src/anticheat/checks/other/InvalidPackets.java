@@ -52,8 +52,8 @@ public class InvalidPackets extends Checks {
 			int verbose = 0;
 			long Time = -1L;
 			if (this.verbose.containsKey(player)) {
-				verbose = ((Integer) (this.verbose.get(player)).getKey()).intValue();
-				Time = ((Long) (this.verbose.get(player)).getValue()).longValue();
+				verbose = this.verbose.get(player).getKey().intValue();
+				Time = this.verbose.get(player).getValue().longValue();
 			}
 			verbose++;
 			if (this.verbose.containsKey(player)) {

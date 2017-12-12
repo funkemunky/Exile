@@ -36,6 +36,8 @@ import anticheat.events.EventProjectileLaunch;
 import anticheat.events.EventTick;
 import anticheat.events.TickEvent;
 import anticheat.events.TickType;
+import anticheat.gui.GUI;
+import anticheat.gui.GUIListener;
 import anticheat.packets.PacketCore;
 import anticheat.user.User;
 import anticheat.user.UserManager;
@@ -50,18 +52,19 @@ public class Exile extends JavaPlugin {
 	public PacketCore packet;
 	private UserManager userManager;
 	private Ping ping;
+	private GUI gui;
 	private CommandManager commandManager;
 	BufferedWriter bw = null;
 	public static String hwid;
 	public ArrayList<Player> playersBanned = new ArrayList<Player>();
 	File file = new File(getDataFolder(), "JD.txt");
 
-	public Ping getPing() {
-		return ping;
-	}
-
 	public static Exile getAC() {
 		return Exile;
+	}
+	
+	public Ping getPing() {
+		return ping;
 	}
 
 	public ChecksManager getChecks() {
@@ -71,6 +74,10 @@ public class Exile extends JavaPlugin {
 	public UserManager getUserManager() {
 		return userManager;
 	}
+	
+	public GUI getGUIManager() {
+		return gui;
+	}
 
 	public String getPrefix() {
 		return Color.translate(getConfig().getString("Prefix") + " ");
@@ -79,13 +86,14 @@ public class Exile extends JavaPlugin {
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}
-	
+
 	public void onEnable() {
 		this.getServer().getConsoleSender()
 				.sendMessage(Color.translate("&7------------------------------------------"));
 		Exile = this;
 		this.userManager = new UserManager();
 		this.ping = new Ping(this);
+		this.gui = new GUI();
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Main class!"));
 		checksmanager = new ChecksManager(this);
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded checks!"));
@@ -97,7 +105,7 @@ public class Exile extends JavaPlugin {
 			saveDefaultConfig();
 		}
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Configuration!"));
-		
+
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded players data's!"));
 		commandManager.init();
 		checksmanager.init();
@@ -131,8 +139,9 @@ public class Exile extends JavaPlugin {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			getAC().getUserManager().add(new User(player));
 		}
-		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f added all online players to User list!"));
-		
+		this.getServer().getConsoleSender()
+				.sendMessage(Color.translate("&6 Exile &f added all online players to User list!"));
+
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Exile!"));
 		this.getServer().getConsoleSender()
 				.sendMessage(Color.translate("&7------------------------------------------"));
@@ -169,7 +178,8 @@ public class Exile extends JavaPlugin {
 		pm.registerEvents(new EventProjectileLaunch(), this);
 		pm.registerEvents(new EventInventory(), this);
 		pm.registerEvents(new EventPacketMoveEvent(), this);
-		
+		pm.registerEvents(new GUIListener(), this);
+
 		PME pme = (PME) getChecks().getCheckByName("PME");
 		this.getServer().getMessenger().registerIncomingPluginChannel((Plugin) this, "LOLIMAHACKER",
 				(PluginMessageListener) pme);
@@ -203,12 +213,13 @@ public class Exile extends JavaPlugin {
 			}
 		}.runTaskTimer(this, 0L, 20L);
 	}
-	
+
 	public void createLog(Player player, Checks checkBanned) {
 		TxtFile logFile = new TxtFile(this, File.separator + "logs", player.getName());
 		User user = getAC().getUserManager().getUser(player.getUniqueId());
 		Map<Checks, Integer> Checks = user.getVLs();
-		logFile.addLine("-=-=-=-=-=-=-=-=-=- " + player.getName() + " was banned for: " + checkBanned.getName() + " -=-=-=-=-=-=-=-=-=-");
+		logFile.addLine("-=-=-=-=-=-=-=-=-=- " + player.getName() + " was banned for: " + checkBanned.getName()
+				+ " -=-=-=-=-=-=-=-=-=-");
 		logFile.addLine("Checks set off:");
 		for (Checks check : Checks.keySet()) {
 			Integer Violations = Checks.get(check);

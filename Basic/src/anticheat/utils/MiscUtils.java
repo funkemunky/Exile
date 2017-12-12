@@ -220,6 +220,10 @@ public final class MiscUtils {
 		return (!canStand(block.getRelative(BlockFace.NORTH))) && (!canStand(block.getRelative(BlockFace.EAST)))
 				&& (!canStand(block.getRelative(BlockFace.SOUTH))) && (!canStand(block.getRelative(BlockFace.WEST)));
 	}
+	
+	public static double getYawDifference(Location newLoc, Location previous) {
+		return Math.abs(newLoc.getYaw() - previous.getYaw());
+	}
 
 	public static boolean cantStandFar(Block block) {
 		return (!canStand(block.getRelative(BlockFace.NORTH_WEST)))
@@ -372,6 +376,7 @@ public final class MiscUtils {
 			return null;
 		}
 	}
+
 
 	@SuppressWarnings("incomplete-switch")
 	public static boolean isSlab(Block block) {

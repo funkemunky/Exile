@@ -1,136 +1,93 @@
 package anticheat.checks.movement;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.util.Vector;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
 import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
 import anticheat.user.User;
-import anticheat.utils.PlayerUtils;
-import anticheat.utils.TimerUtils;
+import anticheat.utils.MathUtils;
 
-@ChecksListener(events = {PlayerMoveEvent.class, PlayerQuitEvent.class, PlayerTeleportEvent.class, PlayerDeathEvent.class})
+@ChecksListener(events = { PlayerMoveEvent.class, PlayerQuitEvent.class })
 public class NoFall extends Checks {
-
-	public Map<UUID, Map.Entry<Long, Integer>> NoFallTicks;
-	public Map<UUID, Double> FallDistance;
-	public ArrayList<Player> cancel;
+	
+	public Map<UUID, Integer> violations;
 
 	public NoFall() {
-		super("NoFall", ChecksType.MOVEMENT, Exile.getAC(), 6, true, true);
-
-		this.NoFallTicks = new WeakHashMap<UUID, Map.Entry<Long, Integer>>();
-		this.FallDistance = new HashMap<UUID, Double>();
-		this.cancel = new ArrayList<Player>();
+		super("NoFall", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
+		
+		this.violations = new WeakHashMap<UUID, Integer>();
 	}
-	
+
 	@Override
 	protected void onEvent(Event event) {
+
 		if (!this.getState()) {
 			return;
-		}
-		if (event instanceof PlayerQuitEvent) {
+	    }
+		
+		if(event instanceof PlayerQuitEvent) {
 			PlayerQuitEvent e = (PlayerQuitEvent) event;
-			if (FallDistance.containsKey(e.getPlayer().getUniqueId())) {
-				FallDistance.remove(e.getPlayer().getUniqueId());
-			}
-			if (FallDistance.containsKey(e.getPlayer().getUniqueId())) {
-				FallDistance.containsKey(e.getPlayer().getUniqueId());
+			if(this.violations.containsKey(e.getPlayer().getUniqueId())) {
+				this.violations.remove(e.getPlayer().getUniqueId());
 			}
 		}
-		if (event instanceof PlayerTeleportEvent) {
-			PlayerTeleportEvent e = (PlayerTeleportEvent) event;
-			if (e.getCause() == TeleportCause.ENDER_PEARL) {
-				cancel.add(e.getPlayer());
-			}
-		}
-		if (event instanceof PlayerDeathEvent) {
-			PlayerDeathEvent e = (PlayerDeathEvent) event;
-			cancel.add(e.getEntity());
-		}
+
 		if (event instanceof PlayerMoveEvent) {
 			PlayerMoveEvent e = (PlayerMoveEvent) event;
-			Player player = e.getPlayer();
-			Damageable dplayer = (Damageable) e.getPlayer();
-			if (this.cancel.contains(player)) {
-				cancel.remove(player);
+			Player p = e.getPlayer();
+
+			Location from = e.getFrom().clone();
+			Location to = e.getTo().clone();
+			Vector v = to.toVector();
+			double diff = v.distance(from.toVector());
+			Location l = p.getLocation();
+			int x = l.getBlockX();
+			int y = l.getBlockY();
+			int z = l.getBlockZ();
+			int violations = this.violations.getOrDefault(p.getUniqueId(), 0);
+			Location blockLoc = new Location(p.getWorld(), x, y - 1, z);
+
+			if (p.getRemainingAir() == 300 && MathUtils.elapsed(Exile.getAC().getUserManager().getUser(p.getUniqueId()).isHit()) < 1000L) {
 				return;
 			}
-			if (player.getAllowFlight()) {
+
+			if (p.getGameMode().equals(GameMode.CREATIVE) || p.getVehicle() != null || p.getAllowFlight()) {
 				return;
 			}
-			if (player.getGameMode().equals(GameMode.CREATIVE)) {
-				return;
-			}
-			if (player.getVehicle() != null) {
-				return;
-			}
-			if (dplayer.getHealth() <= 0.0D) {
-				return;
-			}
-			if (PlayerUtils.isOnClimbable(player, 0)) {
-				return;
-			}
-			if (PlayerUtils.isInWater(player)) {
-				return;
-			}
-			double Falling = 0.0D;
-			if ((!PlayerUtils.isOnGround(player)) && (e.getFrom().getY() > e.getTo().getY())) {
-				if (this.FallDistance.containsKey(player.getUniqueId())) {
-					Falling = ((Double) this.FallDistance.get(player.getUniqueId())).doubleValue();
-				}
-				Falling += e.getFrom().getY() - e.getTo().getY();
-			}
-			this.FallDistance.put(player.getUniqueId(), Double.valueOf(Falling));
-			if (Falling < 3.0D) {
-				return;
-			}
-			long Time = System.currentTimeMillis();
-			int Count = 0;
-			if (this.NoFallTicks.containsKey(player.getUniqueId())) {
-				Time = ((Long) (this.NoFallTicks.get(player.getUniqueId())).getKey()).longValue();
-				Count = Integer.valueOf(
-						((Integer) (this.NoFallTicks.get(player.getUniqueId())).getValue()).intValue())
-						.intValue();
-			}
-			if ((player.isOnGround()) || (player.getFallDistance() == 0.0F)) {
-				player.damage(7);
-				Count += 2;
+			
+			User user = Exile.getAC().getUserManager().getUser(e.getPlayer().getUniqueId());
+
+			if (p.isOnGround() && diff > 0.8 && blockLoc.getBlock().getType() == Material.AIR) {
+				violations++;
+				Damageable dmg = (Damageable) p;
+				dmg.setHealth(dmg.getHealth() - (diff * 1.96) > 0 ? dmg.getHealth() - (diff * 1.96) : 0);
 			} else {
-				Count--;
+				violations = violations > 0 ? violations-- : violations;
 			}
-			if ((this.NoFallTicks.containsKey(player.getUniqueId())) && (TimerUtils.elapsed(Time, 10000L))) {
-				Count = 0;
-				Time = System.currentTimeMillis();
-			}
-			if (Count > 4) {
-				Count = 0;
-				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+			
+			if(violations > 2) {
 				user.setVL(this, user.getVL(this) + 1);
-				alert(player, "*");
-				advancedalert(player, 99.9);
-				this.FallDistance.put(player.getUniqueId(), Double.valueOf(0.0D));
+				alert(p, "Spoofed onGround");
 				
+				violations = 0;
 			}
-			this.NoFallTicks.put(player.getUniqueId(),
-					new AbstractMap.SimpleEntry<Long, Integer>(Time, Count));
+			
+			this.violations.put(p.getUniqueId(), violations);
 		}
 	}
-
 }

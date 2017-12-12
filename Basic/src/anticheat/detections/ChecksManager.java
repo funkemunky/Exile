@@ -20,6 +20,7 @@ import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.NoSlowdown;
 import anticheat.checks.movement.Speed;
+import anticheat.checks.movement.VClip;
 import anticheat.checks.other.InvalidPackets;
 import anticheat.checks.other.NoSwing;
 import anticheat.checks.other.PME;
@@ -61,6 +62,7 @@ public class ChecksManager {
 		new NoFall();
 		new InvalidPackets();
 		new AimAssist();
+		new VClip();
 		new DoubleClick();
 	}
 

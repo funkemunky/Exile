@@ -27,5 +27,9 @@ public class Color {
 	public static String translate(String string) {
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
+	
+	public static String strip(String string) {
+		return ChatColor.stripColor(string);
+	}
 
 }

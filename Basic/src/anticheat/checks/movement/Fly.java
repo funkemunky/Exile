@@ -90,12 +90,25 @@ public class Fly extends Checks {
 				
 				glideVerbose = 0;
 			}
-			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 21 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
+			if (!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) && user.getAirTicks() > 24 && Math.abs(e.getFrom().getY() - e.getTo().getY()) < 0.05
 					&& player.getNoDamageTicks() == 0.0 && user.getGroundTicks() == 0.0 && !player.hasPotionEffect(PotionEffectType.JUMP)) {
 				
                 user.setVL(this, user.getVL(this) + 1);
                 
-				alert(player, "Invalid");
+				if(user.getVL(this) > 2) {
+					alert(player, "Invalid");
+				}
+			}
+			
+			double yDif = e.getTo().getY() - e.getFrom().getY();
+			if(MiscUtils.blocksNear(player) && user.getAirTicks() > 40 && user.getGroundTicks() == 0.0D 
+					&& PlayerUtils.isAir(player) && !player.hasPotionEffect(PotionEffectType.JUMP)
+					&& yDif > 0.0) {
+				user.setVL(this, user.getVL(this) + 1);
+				
+				if(user.getVL(this) > 2) {
+					alert(player, "Vertical Solids Ascension");
+				}
 			}
 			
 			this.glideVerbose.put(player.getUniqueId(), glideVerbose);

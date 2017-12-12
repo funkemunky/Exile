@@ -72,8 +72,8 @@ public class Speed extends Checks {
 			Location above3 = new Location(p.getWorld(), x - 1, y + 2, z - 1);
 			long lastHitDiff = this.lastHit.containsKey(p.getUniqueId())
 					? this.lastHit.get(p.getUniqueId()) - System.currentTimeMillis()
-					: 2101L;
-			if (lastHitDiff < 2100L) {
+					: 201L;
+			if (lastHitDiff < 1200L) {
 				return;
 			}
 			
@@ -261,8 +261,8 @@ public class Speed extends Checks {
 				double OffsetXZ = MathUtils.offset(MathUtils.getHorizontalVector(e.getFrom().toVector()),
 						MathUtils.getHorizontalVector(e.getTo().toVector())) / 2;
 				double LimitXZ = 0.0D;
-				if ((PlayerUtils.isOnGround(player)) && (player.getVehicle() == null)) {
-					LimitXZ = 0.34D;
+				if (player.isOnGround() && player.getVehicle() == null) {
+					LimitXZ = 0.335D;
 				} else {
 					LimitXZ = 0.39D;
 				}
@@ -306,7 +306,7 @@ public class Speed extends Checks {
 					}
 				}
 				if ((OffsetXZ > LimitXZ) && (!TimerUtils.elapsed(
-						((Long) ( this.tooFastTicks.get(player.getUniqueId())).getValue()).longValue(),
+						( this.tooFastTicks.get(player.getUniqueId())).getValue().longValue(),
 						150L))) {
 					TooFastCount = ((Integer) ( this.tooFastTicks.get(player.getUniqueId())).getKey())
 							.intValue() + 3;
@@ -314,7 +314,7 @@ public class Speed extends Checks {
 					TooFastCount = TooFastCount > -150 ? TooFastCount-- : -150;
 				}
 			}
-			if (TooFastCount >= 11) {
+			if (TooFastCount > 10) {
 				TooFastCount = 0;
 				Count++;
 			}
@@ -322,7 +322,7 @@ public class Speed extends Checks {
 				Count = 0;
 				Time = TimerUtils.nowlong();
 			}
-			if (Count >= 3) {
+			if (Count > 2) {
 				Count = 0;
 				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);

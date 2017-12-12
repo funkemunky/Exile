@@ -58,6 +58,10 @@ public class Checks {
 	public void setState(boolean state) {
 		this.state = state;
 	}
+	
+	public ChecksType getType() {
+		return this.type;
+	}
 
 	public void toggle() {
 		this.setState(!this.state);

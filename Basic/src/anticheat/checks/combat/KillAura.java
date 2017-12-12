@@ -5,25 +5,35 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
+import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
+import anticheat.events.TickEvent;
+import anticheat.events.TickType;
+import anticheat.packets.events.PacketKillauraEvent;
+import anticheat.packets.events.PacketPlayerType;
 import anticheat.packets.events.PacketUseEntityEvent;
 import anticheat.user.User;
+import anticheat.utils.MiscUtils;
 import anticheat.utils.TimerUtils;
 
+@ChecksListener(events = {PacketUseEntityEvent.class, TickEvent.class, PacketKillauraEvent.class})
 public class KillAura extends Checks {
 	
 	public Map<UUID, Map.Entry<Integer, Long>> AimbotTicks;
 	public Map<UUID, Double> Differences;
 	public Map<UUID, Location> LastLocation;
+    public Map<UUID, Location> lastMovementLocation;
 	
 	public KillAura() {
 		super("KillAura", ChecksType.COMBAT, Exile.getAC(), 10, true, true);
@@ -31,6 +41,7 @@ public class KillAura extends Checks {
 		this.AimbotTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 		this.Differences = new WeakHashMap<UUID, Double>();
 		this.LastLocation = new WeakHashMap<UUID, Location>();
+		this.lastMovementLocation = new WeakHashMap<UUID, Location>();
 	}
 	
 	@Override
@@ -38,7 +49,69 @@ public class KillAura extends Checks {
 		if(!this.getState()) {
 			return;
 		}
+		if(event instanceof PacketUseEntityEvent) {
+			PacketUseEntityEvent e = (PacketUseEntityEvent) event;
+			
+			if(!(e.getAttacked() instanceof Player)) {
+				return;
+			}
+			Player player = e.getAttacker();
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+			
+			if(MiscUtils.getYawDifference(player.getLocation(), lastMovementLocation.getOrDefault(player.getUniqueId(), player.getLocation())) > 90) {
+				user.setVL(this, user.getVL(this) + 1);
+				
+				alert(player, "Direction");
+			}
+			
+		}
 		
+		if(event instanceof PlayerMoveEvent) {
+			PlayerMoveEvent e = (PlayerMoveEvent) event;
+			if(e.getFrom().getYaw() == e.getTo().getYaw()) {
+				return;
+			}
+			lastMovementLocation.put(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
+		}
+		if(event instanceof TickEvent) {
+			TickEvent e = (TickEvent) event;
+			
+			if(e.getType() != TickType.SECOND) {
+				return;
+			}
+			
+			if(Exile.getAC().getPing().getTPS() < 17) {
+				return;
+			}
+			
+			for(Player player : Bukkit.getOnlinePlayers()) {
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+				
+				if(user.getUsePackets() > user.getSwingPackets()) {
+					user.setVL(this, user.getVL(this) + 1);
+					
+					alert(player, "Invalid Swing");
+				}
+				user.resetSwingPackets();
+				user.resetUsePackets();
+			}
+		}
+		if(event instanceof PacketKillauraEvent) {
+			PacketKillauraEvent e = (PacketKillauraEvent) event;
+			
+			if(Exile.getAC().getPing().getTPS() < 17) {
+				return;
+			}
+			Player player = e.getPlayer();
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+			
+			if(e.getType() == PacketPlayerType.USE) {
+				user.addUsePackets();
+			}
+			if(e.getType() == PacketPlayerType.ARM_SWING) {
+				user.addSwingPackets();
+			}
+		}
 		if (event instanceof PacketUseEntityEvent) {
 			PacketUseEntityEvent e = (PacketUseEntityEvent) event;
 			if (e.getAction() != EnumWrappers.EntityUseAction.ATTACK) {
@@ -101,7 +174,7 @@ public class KillAura extends Checks {
 				Count = 0;
 				user.setVL(this, user.getVL(this) + 1);
 				if(user.getVL(this) > 2) {
-					alert(damager, "*");
+					alert(damager, "Aimbot");
 					this.advancedalert(damager, 84.3);
 				}
 			}

@@ -26,7 +26,7 @@ public class AimAssist extends Checks {
 	public Map<UUID, Map.Entry<Integer, Long>> aimBVerbose;
 	
 	public AimAssist() {
-		super("AimAssist", ChecksType.COMBAT, Exile.getAC(), 3, true, true);
+		super("AimAssist", ChecksType.COMBAT, Exile.getAC(), 0, true, true);
 		
 		this.aimAVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 		this.aimBVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
@@ -69,7 +69,7 @@ public class AimAssist extends Checks {
 				Time = ((Long) ( this.aimAVerbose.get(player.getUniqueId())).getValue()).longValue();
 			}
 			
-			if(TimerUtils.elapsed(Time, 14000L)) {
+			if(TimerUtils.elapsed(Time, 10000L)) {
 				verbose = 0;
 				Time = TimerUtils.nowlong();
 				
@@ -110,14 +110,12 @@ public class AimAssist extends Checks {
 			
 			if(TimerUtils.elapsed(Time, 17000L)) {
 				verbose = 0;
-				debug("Verbose reset.");
 				Time = TimerUtils.nowlong();
 				
 			}
 			
 			if(MathUtils.elapsed(user.getLastAimB()) > 500L && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 1.0D && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
 				verbose++;
-				debug("Verbose (+1): " + verbose);
 				user.setLastAimB(System.currentTimeMillis());
 			} else if((MathUtils.elapsed(user.getLastAimB()) <= 500L) && user.getLastYawDifference() / 2 > user.getLastPitchDifference() / 3 && Math.abs(user.getLastYawDifference() - Math.abs(e.getYaw() - user.getLastYaw())) > 1.0D && user.getLastPitchDifference() != Math.abs(user.getLastPitch() - e.getPitch()) && Math.abs(user.getLastPitch() - e.getPitch()) > 0.004D && Math.abs(user.getLastPitchDifference() - Math.abs(e.getPitch() - user.getLastPitch())) < 0.008) {
 				user.setLastAimB(System.currentTimeMillis());

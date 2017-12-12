@@ -43,14 +43,15 @@ public class PacketCore {
 	public PacketCore(Exile Exile) {
 		super();
 		this.Exile = Exile;
+		
+		enabled = new HashSet<EntityType>();
+		enabled.add(EntityType.valueOf("PLAYER"));
 
 		ProtocolLibrary.getProtocolManager().addPacketListener((PacketListener) new PacketAdapter(this.Exile,
 				new PacketType[] { PacketType.Play.Client.USE_ENTITY }) {
 			public void onPacketReceiving(final PacketEvent event) {
 				final PacketContainer packet = event.getPacket();
 				final Player player = event.getPlayer();
-				enabled = new HashSet<EntityType>();
-				enabled.add(EntityType.valueOf("PLAYER"));
 				if (player == null) {
 					return;
 				}
@@ -170,7 +171,7 @@ public class PacketCore {
 			public void onPacketSending(PacketEvent event) {
 				PacketContainer packet = event.getPacket();
 				Entity e = (Entity) packet.getEntityModifier(event).read(0);
-				if (e instanceof LivingEntity && enabled.contains((Object) e.getType())
+				if (e instanceof LivingEntity && enabled.contains(e.getType())
 						&& packet.getWatchableCollectionModifier().read(0) != null
 						&& e.getUniqueId() != event.getPlayer().getUniqueId()) {
 					packet = packet.deepClone();
@@ -187,7 +188,7 @@ public class PacketCore {
 
 			private void processDataWatcher(WrappedDataWatcher watcher) {
 				if (watcher != null && watcher.getObject(6) != null && watcher.getFloat(6) != 0.0F) {
-					watcher.setObject(6, 69.0f);
+					watcher.setObject(6, 20.0f);
 				}
 			}
 		});

@@ -34,7 +34,7 @@ public class Regen extends Checks {
 		if (user.getLastHeal() != 0) {
 			long l = user.getLastHeal();
 			user.setLastHeal(0L);
-			if (System.currentTimeMillis() - l < 2800L) {
+			if (System.currentTimeMillis() - l < 2500L) {
 				return true;
 			}
 		}
@@ -68,11 +68,14 @@ public class Regen extends Checks {
 				return;
 			}
 			Player player = (Player) e.getEntity();
-
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 			if (player.getWorld().getDifficulty().equals(Difficulty.PEACEFUL)) {
 				return;
 			}
 			if(player.getFoodLevel() < 20) {
+				return;
+			}
+			if((System.currentTimeMillis() - user.getLastPotionSplash()) < 215L) {
 				return;
 			}
 			int Count = 0;
@@ -89,7 +92,6 @@ public class Regen extends Checks {
 			}
 			if (Count > 4) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
-					User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 					user.setVL(this, user.getVL(this) == 0 ? 1 : user.getVL(this) + 1);
 					alert(player, "*");
 					this.advancedalert(player, 99.9);
