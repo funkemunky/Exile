@@ -1,9 +1,9 @@
 name: Exile
-version: ALPHA~3
+version: ALPHA~4
 main: anticheat.Exile
 description: An anticheat that trumps clients.
 website: http://Code66.zone
 author: [funkemunky]
 commands:
-    Exile:
-    alerts:
+  Exile:
+  alerts:

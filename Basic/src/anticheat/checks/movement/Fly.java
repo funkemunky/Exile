@@ -1,9 +1,10 @@
 package anticheat.checks.movement;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,10 +32,10 @@ public class Fly extends Checks {
 	public Map<UUID, Double> velocity;
 
 	public Fly() {
-		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
-		AscensionTicks = new WeakHashMap<UUID, Map.Entry<Long, Double>>();
-		velocity = new WeakHashMap<UUID, Double>();
-		glideVerbose = new WeakHashMap<UUID, Double>();
+		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
+		AscensionTicks = new HashMap<UUID, Map.Entry<Long, Double>>();
+		velocity = new ConcurrentHashMap<UUID, Double>();
+		glideVerbose = new HashMap<UUID, Double>();
 	}
 
 	@Override
@@ -75,15 +76,19 @@ public class Fly extends Checks {
 					MathUtils.getVerticalVector(e.getTo().toVector()));
 			double glideVerbose = this.glideVerbose.getOrDefault(player.getUniqueId(), 0D);
 			
+			if (player.getVelocity().length() < velocity.getOrDefault(player.getUniqueId(), -1.0D)) {
+				return;
+			}
+			
 			if(!MiscUtils.blocksNear(player) && !MiscUtils.blocksNear(player.getLocation().subtract(0.0D, 1.0D, 0.0D)) && PlayerUtils.isAir(player) 
-					&& !MiscUtils.blocksNear(player.getLocation().add(0.0D, 1.0D, 0.0D)) && user.getAirTicks() > 25
+					&& !MiscUtils.blocksNear(player.getLocation().add(0.0D, 1.0D, 0.0D)) && user.getAirTicks() > 30
 					&& (e.getFrom().getY() - e.getTo().getY()) > 0 && Speed < 1.0D) {
 				glideVerbose++;
 			} else {
 				glideVerbose= glideVerbose > -10 ? glideVerbose-- : -10;
 			}
 			
-			if(glideVerbose > 15) {
+			if(glideVerbose > 18) {
 				user.setVL(this, user.getVL(this) + 1);
 				
 				alert(player, "Fall Speed");
@@ -100,24 +105,9 @@ public class Fly extends Checks {
 				}
 			}
 			
-			double yDif = e.getTo().getY() - e.getFrom().getY();
-			if(MiscUtils.blocksNear(player) && user.getAirTicks() > 40 && user.getGroundTicks() == 0.0D 
-					&& PlayerUtils.isAir(player) && !player.hasPotionEffect(PotionEffectType.JUMP)
-					&& yDif > 0.0) {
-				user.setVL(this, user.getVL(this) + 1);
-				
-				if(user.getVL(this) > 2) {
-					alert(player, "Vertical Solids Ascension");
-				}
-			}
-			
 			this.glideVerbose.put(player.getUniqueId(), glideVerbose);
 
 			if (e.getFrom().getY() >= e.getTo().getY()) {
-				return;
-			}
-
-			if (player.getVelocity().length() < velocity.getOrDefault(player.getUniqueId(), -1.0D)) {
 				return;
 			}
 
@@ -165,6 +155,7 @@ public class Fly extends Checks {
 				if (MS > 150L) {
 					if (velocity.containsKey(player.getUniqueId())) {
 						user.setVL(this, user.getVL(this) + 1);
+						
 						alert(player, ChatColor.GREEN + "Flew up " + MathUtils.trim(2, TotalBlocks) + " blocks.");
 					}
 					Time = System.currentTimeMillis();

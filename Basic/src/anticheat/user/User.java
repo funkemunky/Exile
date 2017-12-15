@@ -18,6 +18,8 @@ public class User {
 	private int IceTicks = 0;
 	private int inva = 0;
 	private int invb = 0;
+	private double deltaXZ = 0D;
+	private double deltaY = 0D;
 	private boolean hasSwung = false;
 	private boolean hasAlerts = false;
 	private boolean hasAdvancedAlerts = false;
@@ -30,6 +32,7 @@ public class User {
 	private double lastPitch = 1.0D;
 	private long lastPotionSplash = 0L;
 	private long lastAimB;
+	private int hits;
 	private double lastPitchDifference = 0.0D;
 	private boolean tookVelocity = false;
 	private long loginMillis = 0L;
@@ -79,6 +82,18 @@ public class User {
 
 	public int clearVL(Checks check) {
 		return getVLs().put(check, 0);
+	}
+	
+	public int getHits() {
+		return hits;
+	}
+	
+	public void addHit() {
+		hits++;
+	}
+	
+	public void resetHits() {
+		hits = 0;
 	}
 	
 	/**
@@ -283,6 +298,22 @@ public class User {
 	
 	public double getLastPitch() {
 		return this.lastPitch;
+	}
+	
+	public void setDeltaXZ(double offset) {
+		deltaXZ = offset;
+	}
+	
+	public double getDeltaXZ() {
+		return deltaXZ;
+	}
+	
+	public void setDeltaY(double offset) {
+		deltaY = offset;
+	}
+	
+	public double getDeltaY() {
+		return deltaY;
 	}
 	
 	/**

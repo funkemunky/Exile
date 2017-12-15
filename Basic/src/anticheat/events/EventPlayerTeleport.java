@@ -15,7 +15,9 @@ public class EventPlayerTeleport implements Listener {
 		Exile.getAC().getChecks().event(event);
 		
 		User user = Exile.getAC().getUserManager().getUser(event.getPlayer().getUniqueId());
-		user.setTeleported(true);
+		if(user != null) {
+			user.setTeleported(true);
+		}
 		
 		new BukkitRunnable() {
 			public void run() {

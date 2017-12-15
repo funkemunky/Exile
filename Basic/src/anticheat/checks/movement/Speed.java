@@ -1,9 +1,10 @@
 package anticheat.checks.movement;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -39,11 +40,11 @@ public class Speed extends Checks {
 	public Map<UUID, Long> lastHit;
 
 	public Speed() {
-		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 12, true, true);
+		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
 		
-		this.lastHit = new WeakHashMap<UUID, Long>();
-		this.tooFastTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
-		this.speedTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
+		this.lastHit = new ConcurrentHashMap<UUID, Long>();
+		this.tooFastTicks = new HashMap<UUID, Map.Entry<Integer, Long>>();
+		this.speedTicks = new HashMap<UUID, Map.Entry<Integer, Long>>();
 	}
 
 	@Override
@@ -70,17 +71,16 @@ public class Speed extends Checks {
 			Location loc2 = new Location(p.getWorld(), x, y + 1, z);
 			Location above = new Location(p.getWorld(), x, y + 2, z);
 			Location above3 = new Location(p.getWorld(), x - 1, y + 2, z - 1);
-			long lastHitDiff = this.lastHit.containsKey(p.getUniqueId())
-					? this.lastHit.get(p.getUniqueId()) - System.currentTimeMillis()
-					: 201L;
-			if (lastHitDiff < 1200L) {
+			long lastHitDiff = Math.abs(System.currentTimeMillis() - user.isHit());
+			long loginDiff = Math.abs(System.currentTimeMillis() - user.getLoginMIllis());
+			if (lastHitDiff < 1500L || p.getNoDamageTicks() != 0) {
 				return;
 			}
 			
-			if(p.getNoDamageTicks() > 3) {
+			if(loginDiff < 1250L) {
 				return;
 			}
-
+			
 			if (p.getVehicle() != null) {
 				return;
 			}
@@ -107,8 +107,8 @@ public class Speed extends Checks {
 				user.setIceTicks(user.getIceTicks() - 1);
 			}
 
-			double Airmaxspeed = 0.38;
-			double maxSpeed = 0.415;
+			double Airmaxspeed = 0.4;
+			double maxSpeed = 0.42;
 			double newmaxspeed = 0.75;
 			if (user.getIceTicks() >= 100) {
 				newmaxspeed = 1.0;
@@ -131,35 +131,38 @@ public class Speed extends Checks {
 			Airmaxspeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			maxSpeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			int vl = user.getVL(Speed.this);
-			/** NormalMovements SPEEDS **/
-			if (PlayerUtils.isReallyOnground(p) && (System.currentTimeMillis() - user.getLoginMIllis()) > 1000L && !PlayerUtils.isOnClimbable(p, 0) && !PlayerUtils.isOnClimbable(p, -1) && !user.isTeleported() && !p.hasPotionEffect(PotionEffectType.JUMP)
-					&& above.getBlock().getType() == Material.AIR && loc2.getBlock().getType() == Material.AIR
-					&& onGroundDiff > 0 && onGroundDiff != 0 && onGroundDiff != 0.41999998688697815
-					&& onGroundDiff != 0.33319999363422426 && onGroundDiff != 0.1568672884460831
-					&& onGroundDiff != 0.4044491418477924 && onGroundDiff != 0.4044449141847757
-					&& onGroundDiff != 0.40444491418477746 && onGroundDiff != 0.24813599859094637
-					&& onGroundDiff != 0.1647732812606676 && onGroundDiff != 0.24006865856430082
-					&& onGroundDiff != 0.20000004768370516 && onGroundDiff != 0.19123230896968835
-					&& onGroundDiff != 0.10900766491188207 && onGroundDiff != 0.20000004768371227
-					&& onGroundDiff != 0.40444491418477924 && onGroundDiff != 0.0030162615090425504
-					&& onGroundDiff != 0.05999999821186108 && onGroundDiff != 0.05199999886751172
-					&& onGroundDiff != 0.06159999881982792 && onGroundDiff != 0.06927999889612124
-					&& onGroundDiff != 0.07542399904870933 && onGroundDiff != 0.07532994414328797
-					&& onGroundDiff != 0.08033919924402255 && onGroundDiff != 0.5 && onGroundDiff != 0.08427135945886555
-					&& onGroundDiff != 0.340000110268593 && onGroundDiff != 0.30000001192092896
-					&& onGroundDiff != 0.3955758986732967 && onGroundDiff != 0.019999999105930755
-					&& onGroundDiff != 0.21560001587867816 && onGroundDiff != 0.13283301814746876
-					&& onGroundDiff != 0.05193025879327907 && onGroundDiff != 0.1875 && onGroundDiff != 0.375
-					&& onGroundDiff != 0.08307781780646728 && onGroundDiff != 0.125 && onGroundDiff != 0.25
-					&& onGroundDiff != 0.01250004768371582 && onGroundDiff != 0.1176000022888175
-					&& onGroundDiff != 0.0625 && onGroundDiff != 0.20000004768371582
-					&& onGroundDiff != 0.4044448882341385 && onGroundDiff != 0.40444491418477835 
-					&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
-					&& onGroundDiff != 0.36510663985490055) {
-				user.setVL(Speed.this, vl + 1);
-				advancedalert(p, 99.9);
-				alert(p, "NormalMovements");
+			
 
+			/** MOTION Y RELEATED HACKS **/
+			if(Exile.getAC().getPing().getTPS() > 18.2) {
+				if (PlayerUtils.isReallyOnground(p) && !e.isCancelled() && !PlayerUtils.isOnClimbable(p, 0) && !PlayerUtils.isOnClimbable(p, -1) && !user.isTeleported() && !p.hasPotionEffect(PotionEffectType.JUMP)
+						&& above.getBlock().getType() == Material.AIR && loc2.getBlock().getType() == Material.AIR
+						&& onGroundDiff > 0 && onGroundDiff != 0 && onGroundDiff != 0.41999998688697815
+						&& onGroundDiff != 0.33319999363422426 && onGroundDiff != 0.1568672884460831
+						&& onGroundDiff != 0.4044491418477924 && onGroundDiff != 0.4044449141847757
+						&& onGroundDiff != 0.40444491418477746 && onGroundDiff != 0.24813599859094637
+						&& onGroundDiff != 0.1647732812606676 && onGroundDiff != 0.24006865856430082
+						&& onGroundDiff != 0.20000004768370516 && onGroundDiff != 0.19123230896968835
+						&& onGroundDiff != 0.10900766491188207 && onGroundDiff != 0.20000004768371227
+						&& onGroundDiff != 0.40444491418477924 && onGroundDiff != 0.0030162615090425504
+						&& onGroundDiff != 0.05999999821186108 && onGroundDiff != 0.05199999886751172
+						&& onGroundDiff != 0.06159999881982792 && onGroundDiff != 0.06927999889612124
+						&& onGroundDiff != 0.07542399904870933 && onGroundDiff != 0.07532994414328797
+						&& onGroundDiff != 0.08033919924402255 && onGroundDiff != 0.5 && onGroundDiff != 0.08427135945886555
+						&& onGroundDiff != 0.340000110268593 && onGroundDiff != 0.30000001192092896
+						&& onGroundDiff != 0.3955758986732967 && onGroundDiff != 0.019999999105930755
+						&& onGroundDiff != 0.21560001587867816 && onGroundDiff != 0.13283301814746876
+						&& onGroundDiff != 0.05193025879327907 && onGroundDiff != 0.1875 && onGroundDiff != 0.375
+						&& onGroundDiff != 0.08307781780646728 && onGroundDiff != 0.125 && onGroundDiff != 0.25
+						&& onGroundDiff != 0.01250004768371582 && onGroundDiff != 0.1176000022888175
+						&& onGroundDiff != 0.0625 && onGroundDiff != 0.20000004768371582
+						&& onGroundDiff != 0.4044448882341385 && onGroundDiff != 0.40444491418477835 
+						&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
+						&& onGroundDiff != 0.36510663985490055 && onGroundDiff != 0.4641593749554431
+						&& onGroundDiff != 0.3841593618424213) {
+					user.setVL(Speed.this, vl + 1);
+					alert(p, Color.Gray + "Reason: " + Color.White + "NormalMovements " + Color.Gray + "Illegal Value: " + Color.White + onGroundDiff);
+				}
 			}
 
 			/** ONGROUND SPEEDS **/
@@ -171,22 +174,23 @@ public class Speed extends Checks {
 						&& above3.getBlock().getType() == Material.AIR) {
 					user.setVL(this, vl + 1);
 					user.setGroundTicks(0);
-					alert(p, "Reason: " + Color.Green + "onGround " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
-					advancedalert(p, 99.9);
+					alert(p, Color.Gray + "Reason: " + Color.White + "onGround " + Color.Gray + "Speed: " + Color.White + speed + Color.Gray + " > " + Color.White + maxSpeed);
+
 				}
 			}
 
 			/** MIDAIR MODIFIED SPEEDS **/
-			if (!PlayerUtils.isReallyOnground(p) && speed >= Airmaxspeed && user.getIceTicks() < 10
-					&& blockLoc.getBlock().getType() != Material.ICE && !blockLoc.getBlock().isLiquid()
-					&& !loc.getBlock().isLiquid() && blockLoc.getBlock().getType() != Material.PACKED_ICE
-					&& above.getBlock().getType() == Material.AIR && above3.getBlock().getType() == Material.AIR
-					&& blockLoc.getBlock().getType() != Material.AIR) {
-				user.setVL(this, vl + 1);
-				user.setIceTicks(0);
-				advancedalert(p, 99.9);
-				alert(p, "Reason: " + Color.Green + "midAir " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+			if(Exile.getAC().getPing().getTPS() > 17.5) {
+				if (!PlayerUtils.isReallyOnground(p) && speed >= Airmaxspeed && user.getIceTicks() < 10
+						&& blockLoc.getBlock().getType() != Material.ICE && !blockLoc.getBlock().isLiquid()
+						&& !loc.getBlock().isLiquid() && blockLoc.getBlock().getType() != Material.PACKED_ICE
+						&& above.getBlock().getType() == Material.AIR && above3.getBlock().getType() == Material.AIR
+						&& blockLoc.getBlock().getType() != Material.AIR) {
+					user.setVL(this, vl + 1);
+					user.setIceTicks(0);
+					alert(p, Color.Gray + "Reason: " + Color.White + "midAir " + Color.Gray + "Speed: " + Color.White + speed + Color.Gray + " > " + Color.White + maxSpeed);
 
+				}
 			}
 			/** GOING ABOVE THE SPEED LIMIT **/
 			if (speed >= newmaxspeed && user.getIceTicks() < 10 && p.getFallDistance() < 0.6
@@ -194,8 +198,7 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
 				user.setIceTicks(0);
-				advancedalert(p, 100);
-				alert(p, "Reason: " + Color.Green + "Speed_Limit " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+				alert(p, Color.Gray + "Reason: " + Color.White + "Limit " + Color.Gray + "Speed: " + Color.White + speed + Color.Gray + " > " + Color.White + maxSpeed);
 
 			}
 
@@ -206,17 +209,8 @@ public class Speed extends Checks {
 					&& loc2.getBlock().getType() != Material.TRAP_DOOR && above.getBlock().getType() == Material.AIR
 					&& above3.getBlock().getType() == Material.AIR) {
 				user.setVL(this, vl + 1);
-				advancedalert(p, 100);
-				alert(p, "Reason: " + Color.Green + "Vanilla " + Color.Gray + "Speed: " + Color.Green + MathUtils.trim(4, speed) + Color.Gray + " > " + Color.Green + maxSpeed);
+				alert(p, Color.Gray + "Reason: " + Color.White + "Vanilla " + Color.Gray + "Speed: " + Color.White + speed + Color.Gray + " > " + Color.White + maxSpeed);
 
-			}
-		}
-		if (event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-			if (e.getEntity() instanceof Player) {
-				Player player = (Player) e.getEntity();
-
-				lastHit.put(player.getUniqueId(), System.currentTimeMillis());
 			}
 		}
 		if (event instanceof PlayerQuitEvent) {
@@ -245,10 +239,9 @@ public class Speed extends Checks {
 			if (player.getVehicle() != null) {
 				return;
 			}
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 
-			long lastHitDiff = this.lastHit.containsKey(player.getUniqueId())
-					? this.lastHit.get(player.getUniqueId()) - System.currentTimeMillis()
-					: 2001L;
+			long lastHitDiff = Math.abs(System.currentTimeMillis() - user.isHit());
 
 			int Count = 0;
 			long Time = TimerUtils.nowlong();
@@ -259,10 +252,10 @@ public class Speed extends Checks {
 			int TooFastCount = 0;
 			if (this.tooFastTicks.containsKey(player.getUniqueId())) {
 				double OffsetXZ = MathUtils.offset(MathUtils.getHorizontalVector(e.getFrom().toVector()),
-						MathUtils.getHorizontalVector(e.getTo().toVector())) / 2;
+						MathUtils.getHorizontalVector(e.getTo().toVector())) / 1.9;
 				double LimitXZ = 0.0D;
-				if (player.isOnGround() && player.getVehicle() == null) {
-					LimitXZ = 0.335D;
+				if ((PlayerUtils.isOnGround(player)) && (player.getVehicle() == null)) {
+					LimitXZ = 0.34D;
 				} else {
 					LimitXZ = 0.39D;
 				}
@@ -306,7 +299,7 @@ public class Speed extends Checks {
 					}
 				}
 				if ((OffsetXZ > LimitXZ) && (!TimerUtils.elapsed(
-						( this.tooFastTicks.get(player.getUniqueId())).getValue().longValue(),
+						((Long) ( this.tooFastTicks.get(player.getUniqueId())).getValue()).longValue(),
 						150L))) {
 					TooFastCount = ((Integer) ( this.tooFastTicks.get(player.getUniqueId())).getKey())
 							.intValue() + 3;
@@ -314,7 +307,7 @@ public class Speed extends Checks {
 					TooFastCount = TooFastCount > -150 ? TooFastCount-- : -150;
 				}
 			}
-			if (TooFastCount > 10) {
+			if (TooFastCount > 7) {
 				TooFastCount = 0;
 				Count++;
 			}
@@ -324,10 +317,8 @@ public class Speed extends Checks {
 			}
 			if (Count > 2) {
 				Count = 0;
-				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 				user.setVL(Speed.this, user.getVL(this) + 1);
-				advancedalert(player, 100);
-				alert(player, "Reason: " + Color.Green + "Overall " + Color.Gray + "Speed: " + Color.Red + "N/A");
+				alert(player, Color.Gray + "Reason: " + Color.White + "Overall " + Color.White + Color.Gray +  "Speed: " + "N/A");
 			}
 			this.tooFastTicks.put(player.getUniqueId(), new AbstractMap.SimpleEntry<Integer, Long>(TooFastCount,
 					System.currentTimeMillis()));

@@ -1,5 +1,7 @@
 package anticheat.events;
 
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
@@ -10,12 +12,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import anticheat.Exile;
 import anticheat.packets.events.PacketKillauraEvent;
-import anticheat.packets.events.PacketPlayerType;
 import anticheat.user.User;
 
 public class EventPlayerAttack implements Listener {
 
 	public static ConcurrentHashMap<Player, String> hasAttacked = new ConcurrentHashMap<>();
+	private Map<Player, Long> lastHit = new WeakHashMap<Player, Long>();
 
 	@EventHandler
 	public void onAttack(EntityDamageByEntityEvent e) {
@@ -37,6 +39,14 @@ public class EventPlayerAttack implements Listener {
 					user.setIsHit(System.currentTimeMillis());
 				}
 			}
+			User user = Exile.getAC().getUserManager().getUser(((Player) e.getDamager()).getUniqueId());
+
+			if ((System.currentTimeMillis() - lastHit.getOrDefault((Player) e.getDamager(), 0L)) > 800L) {
+				user.resetHits();
+			} else {
+				user.addHit();
+			}
+			lastHit.put((Player) e.getDamager(), System.currentTimeMillis());
 		}
 	}
 

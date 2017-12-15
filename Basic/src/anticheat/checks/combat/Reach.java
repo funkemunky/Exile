@@ -1,16 +1,17 @@
 package anticheat.checks.combat;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;
@@ -20,28 +21,22 @@ import anticheat.packets.events.PacketUseEntityEvent;
 import anticheat.user.User;
 import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
-import anticheat.utils.MiscUtils;
 import anticheat.utils.PlayerUtils;
 import anticheat.utils.TimerUtils;
 
-@ChecksListener(events = { PlayerMoveEvent.class, EntityDamageByEntityEvent.class, PacketUseEntityEvent.class,
-		PlayerQuitEvent.class })
+@ChecksListener(events = { EntityDamageByEntityEvent.class, PlayerQuitEvent.class })
 public class Reach extends Checks {
 
-	public Map<Player, Integer> count;
-	public Map<Player, Map.Entry<Double, Double>> offsets;
-	public Map<Player, Long> reachTicks;
-	public Map<Player, Map.Entry<Integer, Long>> reachbTicks;
-	private Map<Player, Long> lastHit;
+	public Map<Player, Map.Entry<Integer, Long>> count;
+	public Map<Player, Integer> bCount;
+	public Map<Player, Integer> useCount;
 
 	public Reach() {
-		super("Reach", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
+		super("Reach", ChecksType.COMBAT, Exile.getAC(), 3, true, true);
 
-		this.count = new HashMap<Player, Integer>();
-		this.offsets = new WeakHashMap<Player, Map.Entry<Double, Double>>();
-		this.reachTicks = new HashMap<Player, Long>();
-		this.lastHit = new WeakHashMap<Player, Long>();
-		this.reachbTicks = new HashMap<Player, Map.Entry<Integer, Long>>();
+		this.count = new WeakHashMap<Player, Map.Entry<Integer, Long>>();
+		this.bCount = new WeakHashMap<Player, Integer>();
+		this.useCount = new WeakHashMap<Player, Integer>();
 	}
 
 	@Override
@@ -49,24 +44,26 @@ public class Reach extends Checks {
 		if (!this.getState()) {
 			return;
 		}
-		
-		if (event instanceof PacketUseEntityEvent) {
+
+		if (event instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-			
+
 			if (e.getCause() != DamageCause.ENTITY_ATTACK) {
-				return;
-			}
-			if (!(e.getEntity() instanceof Player)) {
 				return;
 			}
 			if (!(e.getDamager() instanceof Player)) {
 				return;
 			}
+			if (!(e.getEntity() instanceof Player)) {
+				return;
+			}
+
 			Player damager = (Player) e.getDamager();
 			Player player = (Player) e.getEntity();
-			double yDif = Math.abs(PlayerUtils.getEyeLocation(damager).getY() - PlayerUtils.getEyeLocation(player).getY());
+			double yDif = Math
+					.abs(PlayerUtils.getEyeLocation(damager).getY() - PlayerUtils.getEyeLocation(player).getY());
 			double Reach = MathUtils.trim(2,
-					damager.getEyeLocation().distance(player.getEyeLocation()));
+					PlayerUtils.getEyeLocation(damager).distance(PlayerUtils.getEyeLocation(player)) - 0.32);
 
 			if (Exile.getAC().getPing().getTPS() < 17D) {
 				return;
@@ -82,189 +79,181 @@ public class Reach extends Checks {
 				return;
 			}
 
-			if (!count.containsKey(damager)) {
-				count.put(damager, 0);
+			int verbose = 0;
+			long Time = System.currentTimeMillis();
+			if (count.containsKey(player)) {
+				verbose = count.get(player).getKey().intValue();
+				Time = count.get(player).getValue().longValue();
+			}
+			double MaxReach = 3.0D;
+			double YawDifference = Math
+					.abs(180 - Math.abs(damager.getLocation().getYaw() - player.getLocation().getYaw()));
+			User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
+			double lastHorizontal = user.getDeltaXZ();
+
+			int PingD = Exile.getAC().getPing().getPing(damager);
+			int PingP = Exile.getAC().getPing().getPing(player);
+
+			MaxReach += YawDifference > 100 && user.getDeltaY() < 0.2 ? YawDifference * 0.01 : YawDifference * 0.001;
+			MaxReach += damager.getWalkSpeed() <= 0.2 ? 0 : damager.getWalkSpeed() - 0.2;
+			Reach -= yDif > 2.0 ? yDif * 0.9 : yDif > 1.0 ? yDif * 0.5 : yDif > 0 ? yDif * 0.2 : 0;
+			MaxReach += lastHorizontal * 0.5;
+			MaxReach += ((PingD + PingP) / 2) * 0.0024;
+			MaxReach += user.getHits() > 2 && player.getVelocity().length() > 0.21 && user.getDeltaXZ() > 0.21 ? 1.0D
+					: 0D;
+
+			if (Reach > MaxReach) {
+				verbose = user.getHits() < 3 ? verbose + 2 : verbose + 1;
+			} else {
+				verbose = verbose > -5 ? verbose-- : verbose;
 			}
 
-			int Count = count.get(damager);
-			long Time = System.currentTimeMillis();
-			double MaxReach = 2.9;
-			double YawDifference = Math.abs(damager.getEyeLocation().getYaw() - player.getEyeLocation().getYaw());
-			double lastHorizontal = 0.0D;
-			if (this.offsets.containsKey(damager)) {
-				lastHorizontal = ((Double) (this.offsets.get(damager)).getValue()).doubleValue();
+			if (TimerUtils.elapsed(Time, 13000L)) {
+				verbose = 0;
+				Time = TimerUtils.nowlong();
 			}
-			MaxReach += YawDifference > 100  && player.getVelocity().getY() < 0.2 ? YawDifference * 0.01 : YawDifference * 0.001;
-			MaxReach += lastHorizontal * 0.8;
-			
-			MaxReach += yDif > 1.0 ? 1.0 : yDif > 0.0 ? yDif * 0.28 : 0D;
+
+			if (verbose > 24 && Reach > MaxReach) {
+				user.setVL(this, user.getVL(this) + 1);
+
+				verbose = 0;
+
+				alert(damager, Color.Gray + "Reason: " + Color.White + "Counted" + Color.Gray + " Surplus: "
+						+ Color.White + MathUtils.trim(2, Reach - MaxReach));
+			}
+
+			count.put(player, new AbstractMap.SimpleEntry<Integer, Long>(verbose, Time));
+		}
+		if (event instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
+
+			if (e.getCause() != DamageCause.ENTITY_ATTACK) {
+				return;
+			}
+			if (!(e.getDamager() instanceof Player)) {
+				return;
+			}
+			if (!(e.getEntity() instanceof Player)) {
+				return;
+			}
+
+			Player damager = (Player) e.getDamager();
+			Player player = (Player) e.getEntity();
+			double yDif = Math
+					.abs(PlayerUtils.getEyeLocation(damager).getY() - PlayerUtils.getEyeLocation(player).getY());
+			double Reach = MathUtils.trim(2,
+					(PlayerUtils.getEyeLocation(damager).distance(player.getEyeLocation()) - 0.32) - yDif);
+
+			if (Exile.getAC().getPing().getTPS() < 17D) {
+				return;
+			}
+			if (damager.getAllowFlight()) {
+				return;
+			}
+			if (player.getAllowFlight()) {
+				return;
+			}
+
+			if (Exile.getAC().getPing().getPing(player) > 550 || Exile.getAC().getPing().getPing(damager) > 550) {
+				return;
+			}
+
+			if (!bCount.containsKey(damager)) {
+				bCount.put(damager, 0);
+			}
+
+			int Count = bCount.get(damager);
+
+			double MaxReach = 3.05D;
+			double YawDifference = Math
+					.abs(180 - Math.abs(damager.getLocation().getYaw() - player.getLocation().getYaw()));
+			User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
+			double lastHorizontal = user.getDeltaXZ();
+
+			MaxReach += YawDifference > 100 && player.getVelocity().getY() < 0.2 ? YawDifference * 0.01
+					: YawDifference * 0.001;
+			MaxReach += lastHorizontal * 0.7;
+
 			MaxReach += damager.getWalkSpeed() <= 0.2 ? 0 : damager.getWalkSpeed() - 0.2;
 			int PingD = Exile.getAC().getPing().getPing(damager);
 			int PingP = Exile.getAC().getPing().getPing(player);
 			MaxReach += ((PingD + PingP) / 2) * 0.0024;
-			if (TimerUtils.elapsed(Time, 30000)) {
-				count.remove(damager);
-				Time = System.currentTimeMillis();
-			}
+
 			if (Reach > MaxReach) {
-				count.put(damager, Count + 2);
+				bCount.put(damager, Count + 1);
 			} else {
-				if (Count >= -2) {
-					count.put(damager, Count - 1);
+				if (Count > -2) {
+					bCount.put(damager, Count - 1);
 				}
 			}
-			User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
 			if (Count > 6 && Reach > MaxReach) {
-				count.remove(damager);
-				this.alert(damager, Color.Gray + "Reason: " + Color.White + "Counted " + Color.Gray + "Ping: " + Color.White + Exile.getAC().getPing().getPing(damager) +  Color.Gray + " Reach: " + Color.White
-						+ Reach + Color.Gray + " > " + Color.White + MaxReach);
+				bCount.remove(damager);
+				alert(damager,
+						Color.Gray + "Reason: " + Color.White + "Ogre " + Color.Gray + "Ping: " + Color.White
+								+ Exile.getAC().getPing().getPing(damager) + Color.Gray + " Reach: " + Color.White
+								+ Reach + Color.Gray + " > " + Color.White + MaxReach);
 				user.setVL(this, user.getVL(this) + 1);
 				return;
 			}
 		}
-		if(event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-			
-			if (e.getCause() != DamageCause.ENTITY_ATTACK) {
-				return;
-			}
-			if (!(e.getEntity() instanceof Player)) {
-				return;
-			}
-			if (!(e.getDamager() instanceof Player)) {
-				return;
-			}
-			
-			Player damager = (Player) e.getDamager();
-			Player player = (Player) e.getEntity();
-			User userPlayer = Exile.getAC().getUserManager().getUser(player.getUniqueId());
-			User userDamager = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
-			
-			double reach = MathUtils.trim(2,
-					damager.getEyeLocation().distance(player.getEyeLocation()));
-			
-			if (Exile.getAC().getPing().getTPS() < 17D) {
-				return;
-			}
-			if(userPlayer.isTeleported() || userDamager.isTeleported()) {
-				return;
-			}
-			if (damager.getAllowFlight()) {
-				return;
-			}
-			if (player.getAllowFlight()) {
+		if (event instanceof PacketUseEntityEvent) {
+			PacketUseEntityEvent e = (PacketUseEntityEvent) event;
+
+			if (e.getAction() != EntityUseAction.ATTACK) {
 				return;
 			}
 
-			if (Exile.getAC().getPing().getPing(player) > 550 || Exile.getAC().getPing().getPing(damager) > 550) {
-				return;
-			}
+			Player player = e.getAttacker();
+			Entity damaged = e.getAttacked();
+			double yDif = Math.abs(PlayerUtils.getEyeLocation(player).getY()
+					- damaged.getLocation().clone().add(0.0D, 1.0D, 0.0D).getY());
+			double Reach = MathUtils.trim(2,
+					(PlayerUtils.getEyeLocation(player).distance(damaged.getLocation().clone().add(0.0D, 1.0D, 0.0D))
+							- 0.32) - yDif);
 
-			double maxReach = 3.0D;
-			double yDif = Math.abs(PlayerUtils.getEyeLocation(damager).getY() - PlayerUtils.getEyeLocation(player).getY());
-			
-			int PingD = Exile.getAC().getPing().getPing(damager);
-			int PingP = Exile.getAC().getPing().getPing(player);
-			
-			if (Exile.getAC().getPing().getPing(player) > 550 || Exile.getAC().getPing().getPing(damager) > 550) {
+			if (Exile.getAC().getPing().getPing(player) > 425) {
 				return;
 			}
 			
-			double lastHorizontal = 0.0D;
-			if (this.offsets.containsKey(damager)) {
-				lastHorizontal = ((Double) (this.offsets.get(damager)).getValue()).doubleValue();
-			}
-			
-			maxReach += yDif > 1.0 ? 1.0 : yDif > 0.0 ? yDif * 0.28 : 0D;
-			maxReach += lastHorizontal * 0.442;
-			maxReach += (PingD + PingP) * 0.00113;
-			maxReach += MiscUtils.getOffsetOffCursor(damager, player) * 0.0008;
-			
-			if(reach > maxReach) {
-				userDamager.setVL(this, userDamager.getVL(this) + 1);
-				
-				alert(damager, Color.Gray + "Reason: " + Color.White + "First Hit " + Color.Gray + "Ping: " + Color.White + Exile.getAC().getPing().getPing(damager) +  Color.Gray + " Reach: " + Color.White
-						+ reach + Color.Gray + " > " + Color.White + maxReach);
-			}
-		}
-		if (event instanceof PlayerQuitEvent) {
-			PlayerQuitEvent e = (PlayerQuitEvent) event;
-			if (offsets.containsKey(e.getPlayer())) {
-				offsets.remove(e.getPlayer());
-			}
-			if (count.containsKey(e.getPlayer())) {
-				count.remove(e.getPlayer());
-			}
-			if (reachTicks.containsKey(e.getPlayer())) {
-				reachTicks.remove(e.getPlayer());
-			}
-			if (this.lastHit.containsKey(e.getPlayer())) {
-				this.lastHit.remove(e.getPlayer());
-			}
-		}
-		if (event instanceof PlayerMoveEvent) {
-			PlayerMoveEvent e = (PlayerMoveEvent) event;
-			if (e.getFrom().getX() == e.getTo().getX() && e.getFrom().getZ() == e.getTo().getZ()) {
-				return;
-			}
-			double OffsetXZ = MathUtils.offset(MathUtils.getHorizontalVector(e.getFrom().toVector()),
-					MathUtils.getHorizontalVector(e.getTo().toVector()));
-			double horizontal = Math.sqrt(Math.pow(e.getTo().getX() - e.getFrom().getX(), 2.0)
-					+ Math.pow(e.getTo().getZ() - e.getFrom().getZ(), 2.0));
-			this.offsets.put(e.getPlayer(),
-					new AbstractMap.SimpleEntry<Double, Double>(OffsetXZ, horizontal));
-		}
-		if(event instanceof EntityDamageByEntityEvent) {
-			EntityDamageByEntityEvent e = (EntityDamageByEntityEvent) event;
-			if(!(e.getEntity() instanceof Player) || !(e.getDamager() instanceof Player)) {
-				return;
-			}
-			
-			if(e.getCause() != DamageCause.ENTITY_ATTACK) {
-				return;
+			if(e.getAttacked() instanceof Player) {
+				if(Exile.getAC().getPing().getPing((Player) e.getAttacked()) > 425) {
+					return;
+				}
 			}
 			
 			if(Exile.getAC().getPing().getTPS() < 17) {
 				return;
 			}
 			
-			Player player = (Player) e.getDamager();
-			Player damaged = (Player) e.getEntity();
+			int verbose = this.useCount.getOrDefault(player, 0);
 			
-		    User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
-			
-			if(Exile.getAC().getPing().getPing(player) > 500 || Exile.getAC().getPing().getPing(damaged) > 500) {
-				return;
-			}
-			double yDif = Math.abs(PlayerUtils.getEyeLocation(player).getY() - PlayerUtils.getEyeLocation(damaged).getY());
-			double Reach = MathUtils.trim(2, PlayerUtils.getEyeLocation(player).distance(damaged.getEyeLocation()) - yDif);
-			
-			int verbose = 0;
-			long Time = System.currentTimeMillis();
-
-			if (this.reachbTicks.containsKey(player)) {
-				verbose = ((Integer) ( this.reachbTicks.get(player)).getKey()).intValue();
-				Time = ((Long) ( this.reachbTicks.get(player)).getValue()).longValue();
-			}
-			
-			if(Reach > 3.08 && TimerUtils.elapsed(this.lastHit.getOrDefault(player.getUniqueId(), System.currentTimeMillis()), 1080L)) {
+			if(Reach > 6.0) {
 				verbose++;
-				Time = TimerUtils.nowlong();
 			}
 			
-			if(TimerUtils.elapsed(Time, 45000L)) {
-				verbose = 0;
-			}
-			
-			if(verbose > 7) {
+			if(verbose > 5) {
+				User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+				
 				user.setVL(this, user.getVL(this) + 1);
 				
-				alert(player, Color.Gray + "Reason: " + Color.Green + "Average Hits " + Color.Gray + "Ping: " + Color.White + Exile.getAC().getPing().getPing(player) +  Color.Gray + " Reach: " + Color.Green
-						+ Reach + Color.Gray + " > " + Color.Green + "3.08");
+				alert(player,
+						Color.Gray + "Reason: " + Color.White + "Blatant " + Color.Gray + "Ping: " + Color.White
+								+ Exile.getAC().getPing().getPing(player) + Color.Gray + " Reach: " + Color.White
+								+ Reach + Color.Gray + " > " + Color.White + "6.0");
 			}
-			
-			reachbTicks.put(player, new AbstractMap.SimpleEntry<Integer, Long>(verbose, Time));
-			lastHit.put(player, System.currentTimeMillis());
+
+		}
+		if (event instanceof PlayerQuitEvent) {
+			PlayerQuitEvent e = (PlayerQuitEvent) event;
+			if (count.containsKey(e.getPlayer())) {
+				count.remove(e.getPlayer());
+			}
+			if (bCount.containsKey(e.getPlayer())) {
+				bCount.remove(e.getPlayer());
+			}
+			if(useCount.containsKey(e.getPlayer())) {
+				useCount.remove(e.getPlayer());
+			}
 		}
 	}
 }

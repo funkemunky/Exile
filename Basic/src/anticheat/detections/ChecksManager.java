@@ -21,8 +21,8 @@ import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.NoSlowdown;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.movement.VClip;
+import anticheat.checks.movement.Velocity;
 import anticheat.checks.other.InvalidPackets;
-import anticheat.checks.other.NoSwing;
 import anticheat.checks.other.PME;
 
 public class ChecksManager {
@@ -50,7 +50,6 @@ public class ChecksManager {
 		new Reach();
 		new Speed();
 		new KillAura();
-		new NoSwing();
 		new Criticals();
 		new Fly();
 		new Jesus();
@@ -64,6 +63,7 @@ public class ChecksManager {
 		new AimAssist();
 		new VClip();
 		new DoubleClick();
+		new Velocity();
 	}
 
 	public void event(Event event) {

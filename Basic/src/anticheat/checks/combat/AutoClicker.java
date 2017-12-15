@@ -80,6 +80,7 @@ public class AutoClicker extends Checks {
 						this.advancedalert(player, (user.getLeftClicks() - 19) * 10D);
 						alert(player, Color.Gray + "Reason: " + Color.White + "FastClick " + Color.Gray + "CPS: " + Color.White +  user.getLeftClicks() + "");
 					}
+					
 				}
 				user.setLeftClicks(0);
 				user.setRightClicks(0);

@@ -7,6 +7,7 @@ import java.util.WeakHashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import anticheat.Exile;
@@ -26,7 +27,7 @@ public class AimAssist extends Checks {
 	public Map<UUID, Map.Entry<Integer, Long>> aimBVerbose;
 	
 	public AimAssist() {
-		super("AimAssist", ChecksType.COMBAT, Exile.getAC(), 0, true, true);
+		super("AimAssist", ChecksType.COMBAT, Exile.getAC(), 1, true, true);
 		
 		this.aimAVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 		this.aimBVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
@@ -79,7 +80,7 @@ public class AimAssist extends Checks {
 				verbose++;
 			}
 			
-			if(verbose > 29) {
+			if(verbose > 33) {
 				user.setVL(this, user.getVL(this) + 1);
 				
 				alert(player, "Type A");
@@ -91,6 +92,23 @@ public class AimAssist extends Checks {
 			
 			this.aimAVerbose.put(player.getUniqueId(), new AbstractMap.SimpleEntry<Integer, Long>(verbose, Time));
 		}
+	    if(event instanceof PlayerMoveEvent) {
+            PlayerMoveEvent e = (PlayerMoveEvent) event;
+
+            if(e.getFrom().getYaw() == e.getTo().getYaw()) {
+            	    return;
+            }
+            double yawDelta = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
+            double pitchDelta = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
+
+            if (yawDelta % 1 == 0 && yawDelta >= 5) {
+                alert(e.getPlayer(), "TestYaw");
+            }
+            
+            if (pitchDelta % 1 == 0 && pitchDelta >= 5) {
+                alert(e.getPlayer(), "TestPitch");
+            }
+        }
 		if(event instanceof PacketPlayerEvent) {
             PacketPlayerEvent e = (PacketPlayerEvent) event;
 			

@@ -24,7 +24,7 @@ public class Fastbow extends Checks {
 	public Map<Player, Integer> count;
 
 	public Fastbow() {
-		super("Fastbow", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
+		super("Fastbow", ChecksType.COMBAT, Exile.getAC(), 3, true, true);
 
 		this.bowPull = new HashMap<Player, Long>();
 		this.count = new HashMap<Player, Integer>();

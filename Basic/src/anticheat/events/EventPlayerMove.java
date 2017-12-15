@@ -21,6 +21,12 @@ public class EventPlayerMove implements Listener {
 		Exile.getAC().getChecks().event(event);
 		Player p = event.getPlayer();
 		User user = Exile.getAC().getUserManager().getUser(p.getUniqueId());
+		
+		double horizontal = Math.sqrt(Math.pow(event.getTo().getX() - event.getFrom().getX(), 2.0)
+				+ Math.pow(event.getTo().getZ() - event.getFrom().getZ(), 2.0));
+		double vertical = Math.sqrt(Math.pow(event.getTo().getY() - event.getFrom().getY(), 2.0));
+		user.setDeltaXZ(horizontal);
+		user.setDeltaY(vertical);
 
 		if (PlayerUtils.isReallyOnground(p)) {
 			user.setGroundTicks(user.getGroundTicks() + 1);

@@ -65,7 +65,10 @@ public class GUIListener implements Listener {
 			}
 			if (gui.hasSameName(clickedItem, Color.Red + "Exile Info")
 					&& event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-				openDiscord();
+				  player.closeInventory();
+				  player.sendMessage("");
+				  player.sendMessage(Color.Gray + "Discord: " + Color.White + "https://discord.gg/x6DZf3c");
+				  player.sendMessage("");
 			}
 			event.setCancelled(true);
 		}
@@ -83,13 +86,13 @@ public class GUIListener implements Listener {
 		}
 		if(event.getInventory().equals(gui.checksToggleGUI)) {
 			if(gui.hasSameName(clickedItem,  Color.Red + "Combat")) {
-				gui.openBannableChecks(player, ChecksType.COMBAT);
+				gui.openToggleChecks(player, ChecksType.COMBAT);
 			}
 			if(gui.hasSameName(clickedItem, Color.Red + "Movement")) {
-				gui.openBannableChecks(player, ChecksType.MOVEMENT);
+				gui.openToggleChecks(player, ChecksType.MOVEMENT);
 			}
 			if(gui.hasSameName(clickedItem, Color.Red  + "Miscellaneous")) {
-				gui.openBannableChecks(player, ChecksType.OTHER);
+				gui.openToggleChecks(player, ChecksType.OTHER);
 			}
 			event.setCancelled(true);
 		}
@@ -108,15 +111,6 @@ public class GUIListener implements Listener {
 			    event.setCurrentItem(gui.createItem(check.isBannable() ? Material.EMERALD_BLOCK : Material.REDSTONE_BLOCK, event.getCurrentItem().getAmount(), check.isBannable() ? Color.Green + check.getName() : Color.Red + check.getName()));
 			}
 			event.setCancelled(true);
-		}
-	}
-
-	public void openDiscord() {
-		try {
-			Desktop d = Desktop.getDesktop();
-			d.browse(new URI("[url]https://discord.gg/x6DZf3c[/url]"));
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

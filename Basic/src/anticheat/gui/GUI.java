@@ -28,13 +28,11 @@ public class GUI {
 	public GUI() {
 
 		mainGUI = Bukkit.createInventory(null, 27, Color.Gold + Color.Bold + "Exile AntiCheat");
-		checksBannableGUI = Bukkit.createInventory(null, 9, Color.Dark_Gray + "Choose a check type.");
-		checksToggleGUI = Bukkit.createInventory(null, 9, Color.Dark_Gray + "Choose a check type.");
+		checksBannableGUI = Bukkit.createInventory(null, 9, Color.Dark_Gray + "Choose a type to set bannable.");
+		checksToggleGUI = Bukkit.createInventory(null, 9, Color.Dark_Gray + "Choose a type to toggle.");
 		
 
 		loadMainGUIItems();
-		loadMainGUIGlass();
-		runRBG();
 	}
 
 	private void loadMainGUIItems() {
