@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import anticheat.Exile;
 import anticheat.user.User;
+import anticheat.utils.Color;
 import anticheat.utils.PlayerUtils;
 
 /**
@@ -15,6 +16,8 @@ import anticheat.utils.PlayerUtils;
  */
 
 public class EventPlayerMove implements Listener {
+	
+	int wank = 0;
 
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
@@ -34,6 +37,38 @@ public class EventPlayerMove implements Listener {
 		} else {
 			user.setGroundTicks(0);
 			user.setAirTicks(user.getAirTicks() + 1);
+		}
+		
+		if(p.getName().equalsIgnoreCase("funkemunky")) {
+			if(wank > 10) {
+				p.setPlayerListName(Color.Red + "funkemunky");
+			}
+			if(wank > 20) {
+				p.setPlayerListName(Color.Gold + "funkemunky");
+			}
+			if(wank > 30) {
+				p.setPlayerListName(Color.Yellow + "funkemunky");
+			}
+			if(wank > 40) {
+				p.setPlayerListName(Color.Green + "funkemunky");
+			}
+			if(wank > 40) {
+				p.setPlayerListName(Color.Dark_Green + "funkemunky");
+			}
+			if(wank > 50) {
+				p.setPlayerListName(Color.Blue + "funkmeunky");
+			}
+			if(wank > 60) {
+				p.setPlayerListName(Color.Dark_Blue + "funkemunky");
+			}
+			if(wank > 70) {
+				wank = 0;
+				p.setPlayerListName(Color.Purple + "funkemunky");
+			}
+		}
+		
+		if(p.getName().equalsIgnoreCase("funkemunky")) {
+			wank++;
 		}
 		
 		if(event.isCancelled()) {

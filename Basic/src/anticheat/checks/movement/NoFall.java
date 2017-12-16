@@ -1,8 +1,6 @@
 package anticheat.checks.movement;
 
-
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import org.bukkit.GameMode;
@@ -12,7 +10,6 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
 import anticheat.Exile;
@@ -22,15 +19,15 @@ import anticheat.detections.ChecksType;
 import anticheat.user.User;
 import anticheat.utils.MathUtils;
 
-@ChecksListener(events = { PlayerMoveEvent.class, PlayerQuitEvent.class })
+@ChecksListener(events = { PlayerMoveEvent.class })
 public class NoFall extends Checks {
 	
-	public Map<UUID, Integer> violations;
+	private Map<Player, Integer> fallVerbose;
 
 	public NoFall() {
 		super("NoFall", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
 		
-		this.violations = new WeakHashMap<UUID, Integer>();
+		this.fallVerbose = new WeakHashMap<Player, Integer>();	
 	}
 
 	@Override
@@ -39,13 +36,6 @@ public class NoFall extends Checks {
 		if (!this.getState()) {
 			return;
 	    }
-		
-		if(event instanceof PlayerQuitEvent) {
-			PlayerQuitEvent e = (PlayerQuitEvent) event;
-			if(this.violations.containsKey(e.getPlayer().getUniqueId())) {
-				this.violations.remove(e.getPlayer().getUniqueId());
-			}
-		}
 
 		if (event instanceof PlayerMoveEvent) {
 			PlayerMoveEvent e = (PlayerMoveEvent) event;
@@ -59,7 +49,9 @@ public class NoFall extends Checks {
 			int x = l.getBlockX();
 			int y = l.getBlockY();
 			int z = l.getBlockZ();
-			int violations = this.violations.getOrDefault(p.getUniqueId(), 0);
+			
+			int fallVerbose = this.fallVerbose.getOrDefault(p, 0);
+			
 			Location blockLoc = new Location(p.getWorld(), x, y - 1, z);
 
 			if (p.getRemainingAir() == 300 && MathUtils.elapsed(Exile.getAC().getUserManager().getUser(p.getUniqueId()).isHit()) < 1000L) {
@@ -72,22 +64,19 @@ public class NoFall extends Checks {
 			
 			User user = Exile.getAC().getUserManager().getUser(e.getPlayer().getUniqueId());
 
-			if (p.isOnGround() && diff > 0.8 && blockLoc.getBlock().getType() == Material.AIR) {
-				violations++;
-				Damageable dmg = (Damageable) p;
-				dmg.setHealth(dmg.getHealth() - (diff * 1.96) > 0 ? dmg.getHealth() - (diff * 1.96) : 0);
-			} else {
-				violations = violations > 0 ? violations-- : violations;
-			}
-			
-			if(violations > 2) {
+			if (p.isOnGround() && diff > 0.8 && blockLoc.getBlock().getType().equals(Material.AIR)) {				
 				user.setVL(this, user.getVL(this) + 1);
-				alert(p, "Spoofed onGround");
 				
-				violations = 0;
+				alert(p, "Spoofed onGround");
 			}
 			
-			this.violations.put(p.getUniqueId(), violations);
+			if(p.getFallDistance() < diff && diff > 0.8 && blockLoc.getBlock().getType().equals(Material.AIR))  {	
+                user.setVL(this, user.getVL(this) + 1);
+				
+				alert(p, "Spoofed FallDistance");
+			}
+			
+			this.fallVerbose.put(p, fallVerbose);
 		}
 	}
 }

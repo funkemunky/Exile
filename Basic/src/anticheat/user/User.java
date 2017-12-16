@@ -26,6 +26,8 @@ public class User {
 	private long lastSwing = 0;
 	private boolean teleported = false;
 	private double lastYaw = 1.0D;
+	private double lastPitchDifferenceAimC;
+	private double lastPitchAimC;
 	private int usePackets = 0;
 	private int swingPackets = 0;
 	private double lastYawDifference = 0.0D;
@@ -293,11 +295,29 @@ public class User {
 	
 	/**
 	 * 
-	 * @return yaw
+	 * @return lastPitch
 	 */
 	
 	public double getLastPitch() {
 		return this.lastPitch;
+	}
+	
+	/**
+	 * 
+	 * @param pitch
+	 */
+	
+	public void setLastPitchAimC(double pitch) {
+		this.lastPitchAimC = pitch;
+	}
+	
+	/**
+	 * 
+	 * @return lastPitch
+	 */
+	
+	public double getLastPitchAimC() {
+		return this.lastPitchAimC;
 	}
 	
 	public void setDeltaXZ(double offset) {
@@ -332,6 +352,24 @@ public class User {
 	
 	public double getLastPitchDifference() {
 		return this.lastPitchDifference;
+	}
+	
+	/**
+	 * 
+	 * @param pitchDifference
+	 */
+	
+	public void setLastPitchDifferenceAimC(double pitchDifference) {
+		this.lastPitchDifferenceAimC = pitchDifference;
+	}
+	
+	/**
+	 * 
+	 * @return lastPitchDifference
+	 */
+	
+	public double getLastPitchDifferenceAimC() {
+		return this.lastPitchDifferenceAimC;
 	}
 	
 	/**

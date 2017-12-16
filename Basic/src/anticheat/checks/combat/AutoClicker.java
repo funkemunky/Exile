@@ -107,7 +107,7 @@ public class AutoClicker extends Checks {
 	            }
 	            if (this.ClickTimes.containsKey(player.getUniqueId())) {
 	                final List<Long> ClickTimes = this.ClickTimes.get(player.getUniqueId());
-	                if (ClickTimes.size() == 3) {
+	                if (ClickTimes.size() == 8) {
 	                    this.ClickTimes.remove(player.getUniqueId());
 	                    Collections.sort(ClickTimes);
 	                    long Range = ClickTimes.get(ClickTimes.size() - 1) - ClickTimes.get(0);

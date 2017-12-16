@@ -159,7 +159,7 @@ public class Speed extends Checks {
 						&& onGroundDiff != 0.4044448882341385 && onGroundDiff != 0.40444491418477835 
 						&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
 						&& onGroundDiff != 0.36510663985490055 && onGroundDiff != 0.4641593749554431
-						&& onGroundDiff != 0.3841593618424213) {
+						&& onGroundDiff != 0.3841593618424213 && onGroundDiff != 0.2000000476837016) {
 					user.setVL(Speed.this, vl + 1);
 					alert(p, Color.Gray + "Reason: " + Color.White + "NormalMovements " + Color.Gray + "Illegal Value: " + Color.White + onGroundDiff);
 				}

@@ -41,7 +41,7 @@ public class Velocity extends Checks {
 				return;
 			}
 			double ping = Exile.getAC().getPing().getPing(e.getPlayer());
-			long ticks = ping < 100 ? 5 : ping < 200 ? 10 : 14;
+			long ticks = ping < 500 ? Long.valueOf(Math.round(ping / 25)) : Long.valueOf(Math.round(ping / 40));
 			
 			if(Exile.getAC().getPing().getTPS() < 18) {
 				return;
@@ -56,9 +56,6 @@ public class Velocity extends Checks {
 				return;
 			}
 			
-			if(ping > 300) {
-				return;
-			}
 			new BukkitRunnable() {
 				public void run() {
 					double serverVelocity = e.getVelocity().getY();

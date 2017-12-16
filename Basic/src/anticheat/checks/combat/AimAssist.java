@@ -1,9 +1,9 @@
 package anticheat.checks.combat;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -17,20 +17,23 @@ import anticheat.detections.ChecksType;
 import anticheat.packets.events.PacketPlayerEvent;
 import anticheat.packets.events.PacketPlayerType;
 import anticheat.user.User;
+import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
 import anticheat.utils.TimerUtils;
 
-@ChecksListener(events = {PacketPlayerEvent.class, PlayerQuitEvent.class})
+@ChecksListener(events = {PacketPlayerEvent.class, PlayerQuitEvent.class, PlayerMoveEvent.class})
 public class AimAssist extends Checks {
 	
 	public Map<UUID, Map.Entry<Integer, Long>> aimAVerbose;
 	public Map<UUID, Map.Entry<Integer, Long>> aimBVerbose;
+	public Map<UUID, Integer> aimCVerbose;
 	
 	public AimAssist() {
-		super("AimAssist", ChecksType.COMBAT, Exile.getAC(), 1, true, true);
+		super("AimPattern", ChecksType.COMBAT, Exile.getAC(), 1, true, true);
 		
-		this.aimAVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
-		this.aimBVerbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
+		this.aimAVerbose = new HashMap<UUID, Map.Entry<Integer, Long>>();
+		this.aimBVerbose = new HashMap<UUID, Map.Entry<Integer, Long>>();
+		this.aimCVerbose = new HashMap<UUID, Integer>();
 	}
 	
 	@Override
@@ -83,7 +86,7 @@ public class AimAssist extends Checks {
 			if(verbose > 33) {
 				user.setVL(this, user.getVL(this) + 1);
 				
-				alert(player, "Type A");
+				alert(player, Color.Gray + "Reason: " + Color.White + "Yaw Patterns");
 				this.advancedalert(player, 99.999);
 				verbose = 0;
 			}
@@ -98,15 +101,13 @@ public class AimAssist extends Checks {
             if(e.getFrom().getYaw() == e.getTo().getYaw()) {
             	    return;
             }
-            double yawDelta = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
-            double pitchDelta = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
-
-            if (yawDelta % 1 == 0 && yawDelta >= 5) {
-                alert(e.getPlayer(), "TestYaw");
-            }
             
-            if (pitchDelta % 1 == 0 && pitchDelta >= 5) {
-                alert(e.getPlayer(), "TestPitch");
+            double yawDelta = Math.abs(e.getFrom().getYaw() - e.getTo().getYaw());
+            
+            if(yawDelta > 0 && yawDelta < 360) {
+                if (yawDelta % 1 == 0 && yawDelta >= 5) {
+                   	alert(e.getPlayer(), Color.Gray + "Reason: " + Color.Red + "Experimental");
+                }
             }
         }
 		if(event instanceof PacketPlayerEvent) {
@@ -143,7 +144,7 @@ public class AimAssist extends Checks {
 			if(verbose > 8) {
 				user.setVL(this, user.getVL(this) + 1);
 				
-				alert(player, "Type B");
+				alert(player, Color.Gray + "Reason: " + Color.White + "Pitch Patterns");
 				this.advancedalert(player, 98.69);
 				verbose = 0;
 			}
@@ -152,6 +153,37 @@ public class AimAssist extends Checks {
 			user.setLastPitch(e.getPitch());
 			
 			this.aimBVerbose.put(player.getUniqueId(), new AbstractMap.SimpleEntry<Integer, Long>(verbose, Time));
+		}
+		if(event instanceof PacketPlayerEvent) {
+			PacketPlayerEvent e = (PacketPlayerEvent) event;
+			
+			if(e.getType() != PacketPlayerType.POSLOOK) {
+				return;
+			}
+			
+			Player player = e.getPlayer();
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+			
+			int verbose = this.aimCVerbose.getOrDefault(player.getUniqueId(), 0);
+			double pitchDifference = Math.abs(e.getPitch() - user.getLastPitchAimC());
+			
+			if(Math.abs(pitchDifference - user.getLastPitchDifferenceAimC()) < 0.000001) {
+				verbose++;
+			} else {
+				verbose = 0;
+			}
+			
+			if(verbose > 10) {
+				user.setVL(this, user.getVL(this) + 1);
+				
+				verbose = 0;
+				
+				alert(player, Color.Gray + "Reason: " + Color.White + "Impossible Pitch Movement");
+			}
+			
+			this.aimCVerbose.put(player.getUniqueId(), verbose);
+			user.setLastPitchAimC(e.getPitch());
+			user.setLastPitchDifferenceAimC(pitchDifference);
 		}
 	}
 

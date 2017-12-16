@@ -164,7 +164,7 @@ public class Reach extends Checks {
 
 			int Count = bCount.get(damager);
 
-			double MaxReach = 3.05D;
+			double MaxReach = 3.0D;
 			double YawDifference = Math
 					.abs(180 - Math.abs(damager.getLocation().getYaw() - player.getLocation().getYaw()));
 			User user = Exile.getAC().getUserManager().getUser(damager.getUniqueId());
