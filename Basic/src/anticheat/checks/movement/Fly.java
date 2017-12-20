@@ -32,7 +32,7 @@ public class Fly extends Checks {
 	public Map<UUID, Double> velocity;
 
 	public Fly() {
-		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 9, true, true);
+		super("Fly", ChecksType.MOVEMENT, Exile.getAC(), 6, true, true);
 		AscensionTicks = new HashMap<UUID, Map.Entry<Long, Double>>();
 		velocity = new ConcurrentHashMap<UUID, Double>();
 		glideVerbose = new HashMap<UUID, Double>();
@@ -71,7 +71,9 @@ public class Fly extends Checks {
 			}
 			
 			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
-			
+			if((System.currentTimeMillis() - user.getTookVelocity()) < 2000L) {
+				return;
+			}
 			double Speed = MathUtils.offset(MathUtils.getVerticalVector(e.getFrom().toVector()),
 					MathUtils.getVerticalVector(e.getTo().toVector()));
 			double glideVerbose = this.glideVerbose.getOrDefault(player.getUniqueId(), 0D);

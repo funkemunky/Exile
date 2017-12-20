@@ -22,6 +22,7 @@ import anticheat.checks.movement.NoSlowdown;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.movement.VClip;
 import anticheat.checks.movement.Velocity;
+import anticheat.checks.other.AutoInventory;
 import anticheat.checks.other.InvalidPackets;
 import anticheat.checks.other.PME;
 
@@ -64,6 +65,7 @@ public class ChecksManager {
 		new VClip();
 		new DoubleClick();
 		new Velocity();
+		new AutoInventory();
 	}
 
 	public void event(Event event) {

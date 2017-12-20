@@ -1,5 +1,6 @@
 package anticheat.events;
 
+import org.bukkit.Achievement;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ import anticheat.utils.Color;
 /**
  * Created by XtasyCode on 11/08/2017.
  */
-
+@SuppressWarnings("deprecation")
 public class EventJoinQuit implements Listener {
 
 	@EventHandler
@@ -29,6 +30,8 @@ public class EventJoinQuit implements Listener {
 				p.sendMessage(Exile.getAC().getPrefix() + Color.Gray + Color.Italics + " Turns on your cheat alerts automatically. Do " + Color.Green + "/Exile alerts " + Color.Gray + Color.Italics + "to toggle them.");
 			}
 		}
+		
+		if(p.hasAchievement(Achievement.OPEN_INVENTORY)) p.removeAchievement(Achievement.OPEN_INVENTORY);
 		Exile.getAC().getChecks().event(e);
 	}
 

@@ -11,6 +11,7 @@ import anticheat.packets.events.PacketEntityActionEvent;
 import anticheat.packets.events.PacketHeldItemChangeEvent;
 import anticheat.packets.events.PacketKeepAliveEvent;
 import anticheat.packets.events.PacketPlayerEvent;
+import anticheat.packets.events.PacketPlayerType;
 import anticheat.packets.events.PacketSwingArmEvent;
 import anticheat.user.User;
 

@@ -40,7 +40,7 @@ public class Speed extends Checks {
 	public Map<UUID, Long> lastHit;
 
 	public Speed() {
-		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 15, true, true);
+		super("Speed", ChecksType.MOVEMENT, Exile.getAC(), 3, true, true);
 		
 		this.lastHit = new ConcurrentHashMap<UUID, Long>();
 		this.tooFastTicks = new HashMap<UUID, Map.Entry<Integer, Long>>();
@@ -77,6 +77,10 @@ public class Speed extends Checks {
 				return;
 			}
 			
+			if((System.currentTimeMillis() - user.getTookVelocity()) < 1800L) {
+				return;
+			}
+			
 			if(loginDiff < 1250L) {
 				return;
 			}
@@ -90,6 +94,10 @@ public class Speed extends Checks {
 			}
 
 			if (p.getAllowFlight()) {
+				return;
+			}
+			
+			if(PlayerUtils.hasPistonsNear(p)) {
 				return;
 			}
 
@@ -132,10 +140,9 @@ public class Speed extends Checks {
 			maxSpeed += p.getWalkSpeed() > 0.2 ? p.getWalkSpeed() * 0.8 : 0;
 			int vl = user.getVL(Speed.this);
 			
-
 			/** MOTION Y RELEATED HACKS **/
-			if(Exile.getAC().getPing().getTPS() > 18.2) {
-				if (PlayerUtils.isReallyOnground(p) && !e.isCancelled() && !PlayerUtils.isOnClimbable(p, 0) && !PlayerUtils.isOnClimbable(p, -1) && !user.isTeleported() && !p.hasPotionEffect(PotionEffectType.JUMP)
+			if(Exile.getAC().getPing().getTPS() > 17.4) {
+				if (PlayerUtils.isReallyOnground(p) && !e.isCancelled() && !PlayerUtils.isOnClimbable(p, 0) && !PlayerUtils.isOnClimbable(p, -1) && (System.currentTimeMillis() - user.getTeleported()) > 1200L && !p.hasPotionEffect(PotionEffectType.JUMP)
 						&& above.getBlock().getType() == Material.AIR && loc2.getBlock().getType() == Material.AIR
 						&& onGroundDiff > 0 && onGroundDiff != 0 && onGroundDiff != 0.41999998688697815
 						&& onGroundDiff != 0.33319999363422426 && onGroundDiff != 0.1568672884460831
@@ -159,7 +166,10 @@ public class Speed extends Checks {
 						&& onGroundDiff != 0.4044448882341385 && onGroundDiff != 0.40444491418477835 
 						&& onGroundDiff != 0.019999999105934307 && onGroundDiff != 0.4375
 						&& onGroundDiff != 0.36510663985490055 && onGroundDiff != 0.4641593749554431
-						&& onGroundDiff != 0.3841593618424213 && onGroundDiff != 0.2000000476837016) {
+						&& onGroundDiff != 0.3841593618424213 && onGroundDiff != 0.2000000476837016
+						&& onGroundDiff != 0.011929668006757765
+						&& onGroundDiff != 0.4053654548823289 && onGroundDiff != 0.07840000152587834
+						&& onGroundDiff != 0.40444491418477213) {
 					user.setVL(Speed.this, vl + 1);
 					alert(p, Color.Gray + "Reason: " + Color.White + "NormalMovements " + Color.Gray + "Illegal Value: " + Color.White + onGroundDiff);
 				}
@@ -252,7 +262,7 @@ public class Speed extends Checks {
 			int TooFastCount = 0;
 			if (this.tooFastTicks.containsKey(player.getUniqueId())) {
 				double OffsetXZ = MathUtils.offset(MathUtils.getHorizontalVector(e.getFrom().toVector()),
-						MathUtils.getHorizontalVector(e.getTo().toVector())) / 1.9;
+						MathUtils.getHorizontalVector(e.getTo().toVector())) / 2.0;
 				double LimitXZ = 0.0D;
 				if ((PlayerUtils.isOnGround(player)) && (player.getVehicle() == null)) {
 					LimitXZ = 0.34D;

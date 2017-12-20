@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,6 +20,15 @@ public class EventPlayerAttack implements Listener {
 	public static ConcurrentHashMap<Player, String> hasAttacked = new ConcurrentHashMap<>();
 	private Map<Player, Long> lastHit = new WeakHashMap<Player, Long>();
 
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onCombat(EntityDamageByEntityEvent e) {
+		if(e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+			Player player = (Player) e.getDamager();
+			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
+			
+			user.setLastPlayer(player);
+		}
+	}
 	@EventHandler
 	public void onAttack(EntityDamageByEntityEvent e) {
 		if (e.getDamager() instanceof Player) {
@@ -41,12 +51,13 @@ public class EventPlayerAttack implements Listener {
 			}
 			User user = Exile.getAC().getUserManager().getUser(((Player) e.getDamager()).getUniqueId());
 
-			if ((System.currentTimeMillis() - lastHit.getOrDefault((Player) e.getDamager(), 0L)) > 800L) {
+			if ((System.currentTimeMillis() - lastHit.getOrDefault((Player) e.getDamager(), 0L)) > 1000L) {
 				user.resetHits();
 			} else {
 				user.addHit();
 			}
 			lastHit.put((Player) e.getDamager(), System.currentTimeMillis());
+			user.setAttackTime(System.currentTimeMillis());
 		}
 	}
 

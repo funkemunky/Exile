@@ -7,14 +7,67 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 public class PlayerUtils {
 
 	public static final double PLAYER_WIDTH = .6;
+	private static ImmutableSet<Material> ground = Sets.immutableEnumSet(Material.SUGAR_CANE, Material.SUGAR_CANE_BLOCK,
+			Material.TORCH, Material.ACTIVATOR_RAIL, Material.AIR, Material.CARROT, Material.CROPS, Material.DEAD_BUSH,
+			Material.DETECTOR_RAIL, Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON, Material.DOUBLE_PLANT,
+			Material.FIRE, Material.GOLD_PLATE, Material.IRON_PLATE, Material.LAVA, Material.LEVER, Material.LONG_GRASS,
+			Material.MELON_STEM, Material.NETHER_WARTS, Material.PORTAL, Material.POTATO, Material.POWERED_RAIL,
+			Material.PUMPKIN_STEM, Material.RAILS, Material.RED_ROSE, Material.REDSTONE_COMPARATOR_OFF,
+			Material.REDSTONE_COMPARATOR_ON, Material.REDSTONE_TORCH_OFF, Material.REDSTONE_TORCH_ON,
+			Material.REDSTONE_WIRE, Material.SAPLING, Material.SEEDS, Material.SIGN, Material.SIGN_POST,
+			Material.STATIONARY_LAVA, Material.STATIONARY_WATER, Material.STONE_BUTTON, Material.STONE_PLATE,
+			Material.SUGAR_CANE_BLOCK, Material.TORCH, Material.TRIPWIRE, Material.TRIPWIRE_HOOK, Material.WALL_SIGN,
+			Material.WATER, Material.WEB, Material.WOOD_BUTTON, Material.WOOD_PLATE, Material.YELLOW_FLOWER);
+
+	static {
+		String bukkit = Bukkit.getServer().getClass().getPackage().getName().substring(23);
+		if (bukkit.contains("1_8") || bukkit.contains("1_9") | bukkit.contains("1_1")) {
+			ground = Sets.immutableEnumSet(Material.SUGAR_CANE, Material.SUGAR_CANE_BLOCK,
+					Material.TORCH, Material.ACTIVATOR_RAIL, Material.AIR, Material.CARROT, Material.CROPS, Material.DEAD_BUSH,
+					Material.DETECTOR_RAIL, Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON, Material.DOUBLE_PLANT,
+					Material.FIRE, Material.GOLD_PLATE, Material.IRON_PLATE, Material.LAVA, Material.LEVER, Material.LONG_GRASS,
+					Material.MELON_STEM, Material.NETHER_WARTS, Material.PORTAL, Material.POTATO, Material.POWERED_RAIL,
+					Material.PUMPKIN_STEM, Material.RAILS, Material.RED_ROSE, Material.REDSTONE_COMPARATOR_OFF,
+					Material.REDSTONE_COMPARATOR_ON, Material.REDSTONE_TORCH_OFF, Material.REDSTONE_TORCH_ON,
+					Material.REDSTONE_WIRE, Material.SAPLING, Material.SEEDS, Material.SIGN, Material.SIGN_POST,
+					Material.STATIONARY_LAVA, Material.STATIONARY_WATER, Material.STONE_BUTTON, Material.STONE_PLATE,
+					Material.SUGAR_CANE_BLOCK, Material.TORCH, Material.TRIPWIRE, Material.TRIPWIRE_HOOK, Material.WALL_SIGN,
+					Material.WATER, Material.WEB, Material.WOOD_BUTTON, Material.WOOD_PLATE, Material.YELLOW_FLOWER,
+					Material.getMaterial("ARMOR_STAND"), Material.getMaterial("BANNER"), Material.getMaterial("STANDING_BANNER")
+					, Material.getMaterial("WALL_BANNER"));
+		}
+	}
+
+	public static boolean isGround(Material material) {
+		return ground.contains(material);
+	}
+
+	public static boolean isOnGround(Location loc) {
+		double diff = .3;
+
+		return !isGround(loc.clone().add(0, -.1, 0).getBlock().getType())
+				|| !isGround(loc.clone().add(diff, -.1, 0).getBlock().getType())
+				|| !isGround(loc.clone().add(-diff, -.1, 0).getBlock().getType())
+				|| !isGround(loc.clone().add(0, -.1, diff).getBlock().getType())
+				|| !isGround(loc.clone().add(0, -.1, -diff).getBlock().getType())
+				|| !isGround(loc.clone().add(diff, -.1, diff).getBlock().getType())
+				|| !isGround(loc.clone().add(diff, -.1, -diff).getBlock().getType())
+				|| !isGround(loc.clone().add(-diff, -.1, diff).getBlock().getType())
+				|| !isGround(loc.clone().add(-diff, -.1, -diff).getBlock().getType());
+	}
 
 	public static void kick(Player p, String reason) {
 		if (p.isOnline()) {
@@ -24,53 +77,65 @@ public class PlayerUtils {
 		}
 	}
 	
-	public static boolean isOnClimbable(Player player, int blocks) {
-    	if(blocks == 0) {
-            for (Block block : BlockUtils.getSurrounding(player.getLocation().getBlock(), false)) {
-                if (block.getType() == Material.LADDER || block.getType() == Material.VINE) {
-                    return true;
-                }
-            }
-    	} else {
-            for (Block block : BlockUtils.getSurrounding(player.getLocation().clone().add(0.0D, 1.0D, 0.0D).getBlock(), false)) {
-                if (block.getType() == Material.LADDER || block.getType() == Material.VINE) {
-                    return true;
-                }
-            }
-    	}
-        return player.getLocation().getBlock().getType() == Material.LADDER || player.getLocation().getBlock().getType() == Material.VINE;
-    }
-	
+	public static boolean hasPistonsNear(Player player) {
+		boolean is = false;
+		for(Block block : BlockUtils.getBlocksAroundCenter(player.getLocation(), 2.0)) {
+			is = block.getType().equals(Material.PISTON_BASE) 
+					|| block.getType().equals(Material.PISTON_STICKY_BASE) ? true : false;
+		}
+		return is;
+	}
 
-    public static boolean isOnGround(Player player) {
-        if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
-            return true;
-        }
-        Location a = player.getLocation().clone();
-        a.setY(a.getY() - 0.5);
-        if (a.getBlock().getType() != Material.AIR) {
-            return true;
-        }
-        a = player.getLocation().clone();
-        a.setY(a.getY() + 0.5);
-        return a.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR || MiscUtils.isBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN), new Material[] { Material.FENCE, Material.FENCE_GATE, Material.COBBLE_WALL, Material.LADDER });
-    }
-	
-    public static boolean isInWater(Player player) {
-        final Material m = player.getLocation().getBlock().getType();
-        return m == Material.STATIONARY_WATER || m == Material.WATER;
-    }
+	public static boolean isOnClimbable(Player player, int blocks) {
+		if (blocks == 0) {
+			for (Block block : BlockUtils.getSurrounding(player.getLocation().getBlock(), false)) {
+				if (block.getType() == Material.LADDER || block.getType() == Material.VINE) {
+					return true;
+				}
+			}
+		} else {
+			for (Block block : BlockUtils.getSurrounding(player.getLocation().clone().add(0.0D, 1.0D, 0.0D).getBlock(),
+					false)) {
+				if (block.getType() == Material.LADDER || block.getType() == Material.VINE) {
+					return true;
+				}
+			}
+		}
+		return player.getLocation().getBlock().getType() == Material.LADDER
+				|| player.getLocation().getBlock().getType() == Material.VINE;
+	}
+
+	public static boolean isOnGround(Player player) {
+		if (player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
+			return true;
+		}
+		Location a = player.getLocation().clone();
+		a.setY(a.getY() - 0.5);
+		if (a.getBlock().getType() != Material.AIR) {
+			return true;
+		}
+		a = player.getLocation().clone();
+		a.setY(a.getY() + 0.5);
+		return a.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR
+				|| MiscUtils.isBlock(player.getLocation().getBlock().getRelative(BlockFace.DOWN),
+						new Material[] { Material.FENCE, Material.FENCE_GATE, Material.COBBLE_WALL, Material.LADDER });
+	}
+
+	public static boolean isInWater(Player player) {
+		final Material m = player.getLocation().getBlock().getType();
+		return m == Material.STATIONARY_WATER || m == Material.WATER;
+	}
 
 	public static Location getEyeLocation(final Player player) {
 		final Location eye = player.getLocation();
 		eye.setY(eye.getY() + player.getEyeHeight());
 		return eye;
 	}
-	
+
 	public static boolean hasPotionEffect(Player player, PotionEffectType type) {
-		if(player.getActivePotionEffects().size() > 0) {
-			for(PotionEffect effect : player.getActivePotionEffects()) {
-				if(effect.getType() == type) {
+		if (player.getActivePotionEffects().size() > 0) {
+			for (PotionEffect effect : player.getActivePotionEffects()) {
+				if (effect.getType() == type) {
 					return true;
 				}
 			}
@@ -156,6 +221,17 @@ public class PlayerUtils {
 			}
 		}
 		return false;
+	}
+
+	public static Player getClosestPlayer(Location loc, double distance) {
+		for (Entity entity : new ArrayList<Entity>(loc.getWorld().getEntities())) {
+			if (entity instanceof Player) {
+				if(entity.getLocation().distance(loc) > distance) {
+					return (Player) entity;
+				}
+			}
+		}
+		return null;
 	}
 
 	public static boolean isAir(final Player player) {

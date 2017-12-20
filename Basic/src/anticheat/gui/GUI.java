@@ -44,19 +44,16 @@ public class GUI {
 	}
 
 	private void loadMainGUIGlass() {
-		if (!Exile.getAC().getConfig().getBoolean("GUI.RGB")) {
 			for(int i = 0 ; i < 27 ; i++) {
 				if(mainGUI.getItem(i) == null || mainGUI.getItem(i).getType().equals(Material.STAINED_GLASS_PANE)) {
 					mainGUI.setItem(i, new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 7));
 				}
 			}
-		}
 	}
 
 	private void runRBG() {
 		new BukkitRunnable() {
 			public void run() {
-				if (Exile.getAC().getConfig().getBoolean("GUI.RGB")) {
 					for (int i = 0; i < 27; i++) {
 						if(mainGUI.getItem(i) == null || mainGUI.getItem(i).getType().equals(Material.STAINED_GLASS_PANE)) {
 							switch (color) {
@@ -102,7 +99,6 @@ public class GUI {
 							}
 						}
 					}
-				}
 			}
 		}.runTaskTimerAsynchronously(Exile.getAC(), 0L, 10L);
 	}

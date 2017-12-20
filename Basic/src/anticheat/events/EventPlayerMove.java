@@ -4,11 +4,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import anticheat.Exile;
 import anticheat.user.User;
 import anticheat.utils.Color;
+import anticheat.utils.MathUtils;
 import anticheat.utils.PlayerUtils;
 
 /**
@@ -30,6 +30,20 @@ public class EventPlayerMove implements Listener {
 		double vertical = Math.sqrt(Math.pow(event.getTo().getY() - event.getFrom().getY(), 2.0));
 		user.setDeltaXZ(horizontal);
 		user.setDeltaY(vertical);
+	    if(MathUtils.elapsed(user.getLastMove()) > 105L
+	    		|| p.getVehicle() != null || MathUtils.elapsed(user.getTookVelocity()) < 1000L
+	    		|| user.getIceTicks() > 0 || vertical > horizontal + 0.1 || PlayerUtils.isInWater(p)
+	         || p.isFlying()) {
+			if(Exile.getAC().getUserManager().getUser(p.getUniqueId()).isInventoryOpen()) {
+				Exile.getAC().getUserManager().getUser(p.getUniqueId()).setInventoryOpen(false);
+			}
+	    }
+		user.setLastMove(System.currentTimeMillis());
+		  double deltaX = Math.abs(event.getFrom().getX() - event.getTo().getX());
+	        double deltaY = Math.abs(event.getFrom().getY() - event.getTo().getY());
+	        double deltaZ = Math.abs(event.getFrom().getZ() - event.getTo().getZ());
+	        user.setDeltaXZ2(deltaX + deltaZ);
+	        user.setDeltaY2(deltaY);
 
 		if (PlayerUtils.isReallyOnground(p)) {
 			user.setGroundTicks(user.getGroundTicks() + 1);
@@ -72,14 +86,7 @@ public class EventPlayerMove implements Listener {
 		}
 		
 		if(event.isCancelled()) {
-			user.setTeleported(true);
-			new BukkitRunnable() {
-				public void run() {
-					if(user.isTeleported()) {
-						user.setTeleported(false);
-					}
-				}
-			}.runTaskLaterAsynchronously(Exile.getAC(), 20L);
+			user.setTeleported(System.currentTimeMillis());
 		}
 	}
 }

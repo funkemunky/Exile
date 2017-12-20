@@ -2,11 +2,9 @@ Alert_Message: '%prefix% &c%player% &7failed &c%check% &7(%info%&7) &7[&c%violat
   VL&7]'
 Advanced_Alert_Message: '%prefix% &c%player% &7has failed &c%check% &7(%info%&7) &7[&c%violations%
   VL&7]'
+debug:
 Prefix: "&8[&c&lExile&8]"
 Punish_Cmd: ban %player% Cheating -s
 Punish_Broadcast: '&6&lExile &7has detected &6%player% &7to be cheating and has
   been removed from the network.'
-
-GUI:
-  RBG: true
 checks:

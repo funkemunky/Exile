@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import anticheat.Exile;
+import anticheat.commands.implemented.CreateCommand;
 import anticheat.commands.implemented.HelpCommand;
 import anticheat.commands.implemented.StatusCommand;
 import anticheat.commands.implemented.ToggleAlertCommand;
@@ -25,6 +26,7 @@ public class CommandManager {
 		addCommand(new StatusCommand());
 		addCommand(new ViolationsCommand());
 		addCommand(new HelpCommand());
+		addCommand(new CreateCommand());
 	}
 
 	private List<Command> getCommands() {

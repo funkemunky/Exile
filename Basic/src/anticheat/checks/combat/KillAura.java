@@ -36,6 +36,7 @@ public class KillAura extends Checks {
 	public Map<UUID, List<Long>> Clicks;
 	public Map<UUID, Map.Entry<Integer, Long>> ClickTicks;
 	public Map<UUID, Long> LastMS;
+	public Map<UUID, Integer> heuristicVerbose;
 	
 	public KillAura() {
 		super("KillAura", ChecksType.COMBAT, Exile.getAC(), 10, true, true);
@@ -44,6 +45,7 @@ public class KillAura extends Checks {
 		this.Clicks = new HashMap<UUID, List<Long>>();
 		this.ClickTicks = new HashMap<UUID, Map.Entry<Integer, Long>>();
 		directionHit = new WeakHashMap<Player, Long>();
+		heuristicVerbose = new HashMap<UUID, Integer>();
 	}
 	
 	@Override

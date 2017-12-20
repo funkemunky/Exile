@@ -79,8 +79,28 @@ public class Checks {
 	}
 
 	public void alert(Player p, String value) {
-		long l = System.currentTimeMillis() - this.delay;
-		if (l > this.interval) {
+		if(!Exile.getAC().getConfig().getBoolean("debug")) {
+			long l = System.currentTimeMillis() - this.delay;
+			if (l > this.interval) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (Exile.getAC().getUserManager().getUser(player.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
+						JsonMessage msg = new JsonMessage();
+						Exile.getAC();
+						msg.addText(Color.translate(Exile.getAC().getConfig().getString("Alert_Message")
+								.replaceAll("%prefix%", Exile.getAC().getPrefix()).replaceAll("%player%", p.getName())
+								.replaceAll("%check%", getName().toUpperCase()).replaceAll("%info%", value)
+								.replaceAll("%violations%",
+										String.valueOf(
+												Exile.getAC().getUserManager().getUser(p.getUniqueId()).getVL(this)))))
+								.addHoverText(Color.Gray + "Teleport to " + p.getName() + "?")
+								.setClickEvent(JsonMessage.ClickableType.RunCommand, "/tp " + p.getName());
+						msg.sendToPlayer(player);
+					}
+				}
+				this.delay = System.currentTimeMillis();
+
+			}
+		} else {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (Exile.getAC().getUserManager().getUser(player.getUniqueId()).isHasAlerts() && (player.isOp() || player.hasPermission("Exile.staff"))) {
 					JsonMessage msg = new JsonMessage();
@@ -96,8 +116,6 @@ public class Checks {
 					msg.sendToPlayer(player);
 				}
 			}
-			this.delay = System.currentTimeMillis();
-
 		}
 	}
 	

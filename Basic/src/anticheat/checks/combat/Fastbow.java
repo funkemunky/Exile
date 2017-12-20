@@ -64,7 +64,7 @@ public class Fastbow extends Checks {
 					if (this.bowPull.containsKey(player)) {
 						Long time = System.currentTimeMillis() - this.bowPull.get(player);
 						double power = arrow.getVelocity().length();
-						Long timeLimit = 300L;
+						Long timeLimit = 450L;
 						int Count = 0;
 						if (count.containsKey(player)) {
 							Count = count.get(player);

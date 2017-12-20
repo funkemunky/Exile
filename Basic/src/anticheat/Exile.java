@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.comphenix.protocol.ProtocolLibrary;
+
 import anticheat.checks.other.PME;
 import anticheat.commands.CommandManager;
 import anticheat.detections.Checks;
@@ -43,6 +45,7 @@ import anticheat.user.User;
 import anticheat.user.UserManager;
 import anticheat.utils.Color;
 import anticheat.utils.Ping;
+import anticheat.utils.PlayerUtils;
 import anticheat.utils.TxtFile;
 
 public class Exile extends JavaPlugin {
@@ -56,6 +59,7 @@ public class Exile extends JavaPlugin {
 	private CommandManager commandManager;
 	BufferedWriter bw = null;
 	public static String hwid;
+	private ArrayList<Double> values = new ArrayList<Double>();
 	public ArrayList<Player> playersBanned = new ArrayList<Player>();
 	File file = new File(getDataFolder(), "JD.txt");
 
@@ -73,6 +77,10 @@ public class Exile extends JavaPlugin {
 
 	public UserManager getUserManager() {
 		return userManager;
+	}
+	
+	public ArrayList<Double> getValues() {
+		return values;
 	}
 	
 	public GUI getGUIManager() {
@@ -106,6 +114,7 @@ public class Exile extends JavaPlugin {
 		}
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded Configuration!"));
 
+		loadUtils();
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Loaded players data's!"));
 		commandManager.init();
 		checksmanager.init();
@@ -119,6 +128,7 @@ public class Exile extends JavaPlugin {
 			}
 		}
 		registerEvents();
+		addValues();
 		this.getServer().getConsoleSender().sendMessage(Color.translate("&6 Exile &f Registered events!"));
 		if (!getDataFolder().exists()) {
 			getDataFolder().mkdirs();
@@ -154,12 +164,44 @@ public class Exile extends JavaPlugin {
 			getConfig().set("checks." + check.getName() + ".bannable", check.isBannable());
 			saveConfig();
 		}
+		ProtocolLibrary.getProtocolManager().getPacketListeners().forEach(ProtocolLibrary.getProtocolManager()::removePacketListener);
+        getServer().getScheduler().cancelAllTasks();
 	}
 
 	public void clearVLS() {
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			getAC().getUserManager().getUser(online.getUniqueId()).getVLs().clear();
 		}
+	}
+	
+	public void loadUtils() {
+		new PlayerUtils();
+	}
+	
+	public void addValues() {
+		values.add(8.269760131835938);
+		values.add(3.1951751708984375);
+		values.add(4.9948883056640625);
+		values.add(5.952545166015625);
+		values.add(3.19793701171875);
+		values.add(5.0046539306640625);
+		values.add(3.1733245849609375);
+		values.add(4.9948883056640625);
+		values.add(5.437042236328125);
+		values.add(6.1609954833984375);
+		values.add(2.523773193359375);
+		values.add(4.774627685546875);
+		values.add(6.62579345703125);
+		values.add(6.465545654296875);
+		values.add(7.887962341308594);
+		values.add(8.133255004882812);
+		values.add(6.3710174560546875);
+		values.add(11.437835693359375);
+		values.add(17.410167694091797);
+		values.add(25.26342010498047);
+		values.add(18.766246795654297);
+		values.add(6.001434326171875);
+		values.add(26.16533660888672);
 	}
 
 	public void registerEvents() {

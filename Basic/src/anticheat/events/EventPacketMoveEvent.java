@@ -26,8 +26,6 @@ public class EventPacketMoveEvent implements Listener {
 					Location lastLocation = online.getLocation();
 					if(locations.containsKey(online)) {
 						lastLocation = locations.get(online);
-					} else {
-						locations.put(online, location);
 					}
 					
 					Bukkit.getPluginManager().callEvent(new PacketedMovementEvent(online, lastLocation, location));
@@ -38,27 +36,9 @@ public class EventPacketMoveEvent implements Listener {
 	}
 	
 	@EventHandler
-	public void onTick(TickEvent event) {
-		if(event.getType() != TickType.FASTEST) {
-			return;
-		}
-		for(Player online : Bukkit.getOnlinePlayers()) {
-			Location location = online.getLocation();
-			Location lastLocation = online.getLocation();
-			if(locations.containsKey(online)) {
-				lastLocation = EventPacketMoveEvent.this.locations.get(online);
-			} else {
-				locations.put(online, location);
-			}
-			
-			Bukkit.getPluginManager().callEvent(new PacketedMovementEvent(online, lastLocation, location));
-			locations.put(online, location);
-		}
-	}
-	
-	@EventHandler
 	public void onMove(PacketedMovementEvent event) {
 		Exile.getAC().getChecks().event(event);
+		
 	}
 
 }

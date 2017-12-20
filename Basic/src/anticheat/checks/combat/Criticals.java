@@ -101,7 +101,7 @@ public class Criticals extends Checks {
 			
 			User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 
-			if (user.isVelocity()) {
+			if ((System.currentTimeMillis() - user.getTookVelocity()) < 2000L) {
 				return;
 			}
 			

@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import anticheat.Exile;
@@ -26,6 +27,13 @@ public class EventPlayerInteractEvent implements Listener {
 
 		} else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			user.setRightClicks(user.getRightClicks() + 1);
+		}
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		if(event.getWhoClicked() instanceof Player) {
+			Exile.getAC().getChecks().event(event);
 		}
 	}
 	
