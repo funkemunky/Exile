@@ -20,7 +20,6 @@ import anticheat.packets.events.PacketPlayerType;
 import anticheat.user.User;
 import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
-import anticheat.utils.PlayerUtils;
 import anticheat.utils.TimerUtils;
 
 @ChecksListener(events = {PacketPlayerEvent.class, PlayerQuitEvent.class, PlayerMoveEvent.class, EntityDamageByEntityEvent.class})

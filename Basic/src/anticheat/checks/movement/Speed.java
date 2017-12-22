@@ -317,7 +317,7 @@ public class Speed extends Checks {
 					TooFastCount = TooFastCount > -150 ? TooFastCount-- : -150;
 				}
 			}
-			if (TooFastCount > 7) {
+			if (TooFastCount > 10) {
 				TooFastCount = 0;
 				Count++;
 			}
@@ -325,7 +325,7 @@ public class Speed extends Checks {
 				Count = 0;
 				Time = TimerUtils.nowlong();
 			}
-			if (Count > 2) {
+			if (Count > 3) {
 				Count = 0;
 				user.setVL(Speed.this, user.getVL(this) + 1);
 				alert(player, Color.Gray + "Reason: " + Color.White + "Overall " + Color.White + Color.Gray +  "Speed: " + "N/A");

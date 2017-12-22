@@ -19,6 +19,7 @@ import anticheat.checks.movement.Fly;
 import anticheat.checks.movement.Jesus;
 import anticheat.checks.movement.NoFall;
 import anticheat.checks.movement.NoSlowdown;
+import anticheat.checks.movement.Phase;
 import anticheat.checks.movement.Speed;
 import anticheat.checks.movement.VClip;
 import anticheat.checks.movement.Velocity;
@@ -66,6 +67,7 @@ public class ChecksManager {
 		new DoubleClick();
 		new Velocity();
 		new AutoInventory();
+		new Phase();
 	}
 
 	public void event(Event event) {

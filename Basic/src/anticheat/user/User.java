@@ -85,11 +85,10 @@ public class User {
 	@Getter @Setter private long isHit = 0L;
 	@Getter @Setter private int clicks = 0;
 	@Getter @Setter private Player lastPlayer = null;
-
 	@Getter @Setter private double totalClickTime = 0.0;
-
 	@Getter @Setter private double yawOffset = 0.0D;
 	@Getter @Setter private double lastYawOffset = 0.0D;
+	@Getter @Setter private double realFallDistance = 0.0D;
 
 	private int leftClicks;
 	private int rightClicks;
@@ -106,6 +105,14 @@ public class User {
 
 	public void setYawOffset(double yawOffset) {
 		this.yawOffset = yawOffset;
+	}
+	
+	public double getRealFallDistance() {
+		return realFallDistance;
+	}
+
+	public void setRealFallDistance(double realFallDistance) {
+		this.realFallDistance = realFallDistance;
 	}
 
 	public double getLastYawOffset() {

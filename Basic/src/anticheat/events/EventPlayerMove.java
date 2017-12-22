@@ -9,6 +9,7 @@ import anticheat.Exile;
 import anticheat.user.User;
 import anticheat.utils.Color;
 import anticheat.utils.MathUtils;
+import anticheat.utils.MiscUtils;
 import anticheat.utils.PlayerUtils;
 
 /**
@@ -28,6 +29,13 @@ public class EventPlayerMove implements Listener {
 		double horizontal = Math.sqrt(Math.pow(event.getTo().getX() - event.getFrom().getX(), 2.0)
 				+ Math.pow(event.getTo().getZ() - event.getFrom().getZ(), 2.0));
 		double vertical = Math.sqrt(Math.pow(event.getTo().getY() - event.getFrom().getY(), 2.0));
+		if(!PlayerUtils.isOnGround(p.getLocation()) && event.getFrom().getY() > event.getTo().getY()) {
+			user.setRealFallDistance(user.getRealFallDistance() + MiscUtils.getVerticalDistance(event.getFrom(), event.getTo()));;
+		}
+		
+		if(PlayerUtils.isOnGround(p.getLocation())) {
+			user.setRealFallDistance(0.0D);;
+		}
 		user.setDeltaXZ(horizontal);
 		user.setDeltaY(vertical);
 	    if(MathUtils.elapsed(user.getLastMove()) > 105L

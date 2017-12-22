@@ -154,6 +154,29 @@ public class BlockUtils {
 		return Location.getWorld().getName() + "," + Location.getX() + "," + Location.getY() + "," + Location.getZ()
 				+ "," + Location.getPitch() + "," + Location.getYaw();
 	}
+	
+	public static boolean isFence(Material material) {
+		return material.equals(Material.getMaterial("FENCE")) || material.equals(Material.getMaterial("FENCE_GATE")) 
+				|| material.equals(Material.getMaterial("ACACIA_FENCE")) || material.equals(Material.getMaterial("ACACIA_FENCE_GATE"))
+		         || material.equals(Material.getMaterial("BIRCH_FENCE")) || material.equals(Material.getMaterial("BIRCH_FENCE_GATE"))
+		         || material.equals(Material.getMaterial("DARK_OAK_FENCE")) || material.equals(Material.getMaterial("DARK_OAK_FENCE_GATE"))
+		         || material.equals(Material.getMaterial("IRON_FENCE")) || material.equals(Material.getMaterial("JUNGLE_FENCE"))
+		         || material.equals(Material.getMaterial("JUNGLE_FENCE_GATE")) || material.equals(Material.getMaterial("NETHER_FENCE"))
+		         || material.equals(Material.getMaterial("SPRUCE_FENCE")) || material.equals(Material.getMaterial("SPRUCE_FENCE_GATE"));
+	}
+	
+	public static boolean isHalfBlock(Material material) {
+		return material.equals(Material.getMaterial("CHEST")) || material.equals(Material.getMaterial("TRAPPED_CHEST"))
+				|| material.equals(Material.getMaterial("PISTON_EXTENSION"));
+	}
+	
+	public static boolean isDoor(Material material) {
+		return material.equals(Material.getMaterial("ACACIA_DOOR")) || material.equals(Material.getMaterial("BIRCH_DOOR"))
+				|| material.equals(Material.getMaterial("DARK_OAK_DOOR")) || material.equals(Material.getMaterial("IRON_DOOR"))
+				|| material.equals(Material.getMaterial("JUNGLE_DOOR")) || material.equals(Material.getMaterial("SPRUCE_DOOR"))
+				|| material.equals(Material.getMaterial("WOOD_DOOR")) || material.equals(Material.getMaterial("IRON_DOOR_BLOCK"))
+				|| material.equals(Material.getMaterial("WOODEN_DOOR"));
+	}
 
 	@SuppressWarnings("deprecation")
 	public static boolean solid(Block block) {
