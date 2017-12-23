@@ -33,6 +33,7 @@ import anticheat.packets.events.PacketPlayerType;
 import anticheat.packets.events.PacketReadVelocityEvent;
 import anticheat.packets.events.PacketSwingArmEvent;
 import anticheat.packets.events.PacketUseEntityEvent;
+import anticheat.user.User;
 
 public class PacketCore {
 	
@@ -145,6 +146,11 @@ public class PacketCore {
 				final Player player = event.getPlayer();
 				if (player == null) {
 					return;
+				}
+				User user = Exile.getUserManager().getUser(player.getUniqueId());
+				
+				if(user != null) {
+					user.setPosPackets(user.getPosPackets() + 1);
 				}
 				Bukkit.getServer().getPluginManager().callEvent(
 						(Event) new PacketPlayerEvent(player, (double) event.getPacket().getDoubles().read(0),

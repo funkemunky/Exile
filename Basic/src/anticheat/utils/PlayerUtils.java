@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -77,6 +76,16 @@ public class PlayerUtils {
 		}
 	}
 	
+	public static boolean isOnIce(final Player player) {
+		final Location a = player.getLocation();
+		a.setY(a.getY() - 1.0);
+		if (a.getBlock().getType().equals(Material.ICE)) {
+			return true;
+		}
+		a.setY(a.getY() - 1.0);
+		return a.getBlock().getType().equals(Material.ICE);
+	}
+	
 	public static boolean hasPistonsNear(Player player) {
 		boolean is = false;
 		for(Block block : BlockUtils.getBlocksAroundCenter(player.getLocation(), 2.0)) {
@@ -142,6 +151,15 @@ public class PlayerUtils {
 		}
 		return false;
 	}
+	
+	public static int getPotionEffectLevel(Player p, PotionEffectType pet) {
+		for (PotionEffect pe : p.getActivePotionEffects()) {
+			if (pe.getType().getName().equals(pet.getName())) {
+				return pe.getAmplifier() + 1;
+			}
+		}
+		return 0;
+	}
 
 	public static double offset(Vector a, Vector b) {
 		return a.subtract(b).length();
@@ -154,7 +172,7 @@ public class PlayerUtils {
 		int z = l.getBlockZ();
 		Location b = new Location(p.getWorld(), x, y - 1, z);
 
-		if (p.isOnGround() && b.getBlock().getType() != Material.AIR && b.getBlock().getType() != Material.WEB
+		if (isOnGround(p.getLocation()) && b.getBlock().getType() != Material.AIR && b.getBlock().getType() != Material.WEB
 				&& !b.getBlock().isLiquid()) {
 			return true;
 		} else {

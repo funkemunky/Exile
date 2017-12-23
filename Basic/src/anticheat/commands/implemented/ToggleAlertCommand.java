@@ -12,7 +12,7 @@ import anticheat.utils.Color;
 public class ToggleAlertCommand extends Command {
 
 	public ToggleAlertCommand() {
-		super("Exile");
+		super("Kodona");
 	}
 
 	public void onCommand(CommandSender sender, String[] args) {

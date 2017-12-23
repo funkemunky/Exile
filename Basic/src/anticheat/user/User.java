@@ -89,6 +89,9 @@ public class User {
 	@Getter @Setter private double yawOffset = 0.0D;
 	@Getter @Setter private double lastYawOffset = 0.0D;
 	@Getter @Setter private double realFallDistance = 0.0D;
+	@Getter @Setter private int blockTicks = 0;
+	@Getter @Setter private int posPackets = 0;
+	@Getter @Setter private long lastPacket = 0L;
 
 	private int leftClicks;
 	private int rightClicks;
@@ -362,6 +365,22 @@ public class User {
 		usePackets++;
 	}
 
+	public int getPosPackets() {
+		return posPackets;
+	}
+
+	public void setPosPackets(int posPackets) {
+		this.posPackets = posPackets;
+	}
+
+	public long getLastPacket() {
+		return lastPacket;
+	}
+
+	public void setLastPacket(long lastPacket) {
+		this.lastPacket = lastPacket;
+	}
+
 	/**
 	 * 
 	 * @return usePackets
@@ -411,6 +430,14 @@ public class User {
 		this.clickFreg2 = freg;
 	}
 	
+	public int getBlockTicks() {
+		return blockTicks;
+	}
+
+	public void setBlockTicks(int blockTicks) {
+		this.blockTicks = blockTicks;
+	}
+
 	public int getClickFreq() {
 		return this.clickFreg;
 	}

@@ -50,7 +50,9 @@ public class EventPlayerInteractEvent implements Listener {
 		Player player = (Player) event.getEntity();
 		User user = Exile.getAC().getUserManager().getUser(player.getUniqueId());
 		
-		user.setLastPotionSplash(System.currentTimeMillis());
+		if(user != null) {
+			user.setLastPotionSplash(System.currentTimeMillis());
+		}
 	}
 	
 }

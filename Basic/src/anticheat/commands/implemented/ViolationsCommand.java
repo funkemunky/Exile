@@ -13,7 +13,7 @@ import anticheat.utils.Color;
 public class ViolationsCommand extends Command {
 	
 	public ViolationsCommand() {
-		super("Exile");
+		super("Kodona");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {

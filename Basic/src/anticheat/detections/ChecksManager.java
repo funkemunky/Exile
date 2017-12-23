@@ -26,6 +26,7 @@ import anticheat.checks.movement.Velocity;
 import anticheat.checks.other.AutoInventory;
 import anticheat.checks.other.InvalidPackets;
 import anticheat.checks.other.PME;
+import anticheat.checks.other.Timer;
 
 public class ChecksManager {
 
@@ -68,6 +69,7 @@ public class ChecksManager {
 		new Velocity();
 		new AutoInventory();
 		new Phase();
+		new Timer();
 	}
 
 	public void event(Event event) {

@@ -11,10 +11,6 @@ import anticheat.Exile;
 import anticheat.user.User;
 import anticheat.utils.Color;
 
-/**
- * Created by XtasyCode on 11/08/2017.
- */
-@SuppressWarnings("deprecation")
 public class EventJoinQuit implements Listener {
 
 	@EventHandler

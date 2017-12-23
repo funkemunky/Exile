@@ -1,5 +1,7 @@
 package anticheat.events;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,19 +9,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import anticheat.Exile;
 import anticheat.user.User;
-import anticheat.utils.Color;
-import anticheat.utils.MathUtils;
 import anticheat.utils.MiscUtils;
 import anticheat.utils.PlayerUtils;
 
-/**
- * Created by XtasyCode on 11/08/2017.
- */
-
 public class EventPlayerMove implements Listener {
 	
-	int wank = 0;
-
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		Exile.getAC().getChecks().event(event);
@@ -38,14 +32,7 @@ public class EventPlayerMove implements Listener {
 		}
 		user.setDeltaXZ(horizontal);
 		user.setDeltaY(vertical);
-	    if(MathUtils.elapsed(user.getLastMove()) > 105L
-	    		|| p.getVehicle() != null || MathUtils.elapsed(user.getTookVelocity()) < 1000L
-	    		|| user.getIceTicks() > 0 || vertical > horizontal + 0.1 || PlayerUtils.isInWater(p)
-	         || p.isFlying()) {
-			if(Exile.getAC().getUserManager().getUser(p.getUniqueId()).isInventoryOpen()) {
-				Exile.getAC().getUserManager().getUser(p.getUniqueId()).setInventoryOpen(false);
-			}
-	    }
+
 		user.setLastMove(System.currentTimeMillis());
 		  double deltaX = Math.abs(event.getFrom().getX() - event.getTo().getX());
 	        double deltaY = Math.abs(event.getFrom().getY() - event.getTo().getY());
@@ -53,44 +40,26 @@ public class EventPlayerMove implements Listener {
 	        user.setDeltaXZ2(deltaX + deltaZ);
 	        user.setDeltaY2(deltaY);
 
-		if (PlayerUtils.isReallyOnground(p)) {
+		if (PlayerUtils.isOnGround(p.getLocation())) {
 			user.setGroundTicks(user.getGroundTicks() + 1);
 			user.setAirTicks(0);
 		} else {
 			user.setGroundTicks(0);
 			user.setAirTicks(user.getAirTicks() + 1);
 		}
-		
-		if(p.getName().equalsIgnoreCase("funkemunky")) {
-			if(wank > 10) {
-				p.setPlayerListName(Color.Red + "funkemunky");
-			}
-			if(wank > 20) {
-				p.setPlayerListName(Color.Gold + "funkemunky");
-			}
-			if(wank > 30) {
-				p.setPlayerListName(Color.Yellow + "funkemunky");
-			}
-			if(wank > 40) {
-				p.setPlayerListName(Color.Green + "funkemunky");
-			}
-			if(wank > 40) {
-				p.setPlayerListName(Color.Dark_Green + "funkemunky");
-			}
-			if(wank > 50) {
-				p.setPlayerListName(Color.Blue + "funkmeunky");
-			}
-			if(wank > 60) {
-				p.setPlayerListName(Color.Dark_Blue + "funkemunky");
-			}
-			if(wank > 70) {
-				wank = 0;
-				p.setPlayerListName(Color.Purple + "funkemunky");
-			}
+		Location blockLoc = new Location(p.getWorld(), p.getLocation().getX(), p.getLocation().getY() - 1, p.getLocation().getZ());
+		if(blockLoc.getBlock().getType() == Material.ICE || blockLoc.getBlock().getType() == Material.PACKED_ICE) {
+			user.setIceTicks(user.getIceTicks() + 1);
+		} else {
+			user.setIceTicks(user.getIceTicks() > 0 ? user.getIceTicks() - 1 : 0);
 		}
 		
-		if(p.getName().equalsIgnoreCase("funkemunky")) {
-			wank++;
+		Location above = p.getLocation().clone().add(0.0D, 2.0D, 0.0D);
+		
+		if(above.getBlock().getType().isSolid()) {
+			user.setBlockTicks(user.getBlockTicks() + 1);
+		} else {
+			user.setBlockTicks(user.getBlockTicks() > 0 ? user.getBlockTicks() - 1 : 0);
 		}
 		
 		if(event.isCancelled()) {

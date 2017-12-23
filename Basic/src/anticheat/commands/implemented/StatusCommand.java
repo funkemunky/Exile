@@ -12,7 +12,7 @@ import anticheat.utils.Color;
 public class StatusCommand extends Command {
 	
 	public StatusCommand() {
-		super("Exile");
+		super("Kodona");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {

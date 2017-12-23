@@ -11,7 +11,7 @@ import anticheat.utils.Color;
 public class CreateCommand extends Command {
 	
 	public CreateCommand() {
-		super("Exile");
+		super("Kodona");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {

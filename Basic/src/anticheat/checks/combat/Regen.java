@@ -21,12 +21,12 @@ import anticheat.utils.TimerUtils;
 @ChecksListener(events = { PlayerQuitEvent.class, EntityRegainHealthEvent.class })
 public class Regen extends Checks {
 
-	public Map<UUID, Map.Entry<Integer, Long>> FastHealTicks;
+	public Map<UUID, Map.Entry<Integer, Long>> verbose;
 
 	public Regen() {
 		super("Regen", ChecksType.COMBAT, Exile.getAC(), 5, true, true);
 
-		this.FastHealTicks = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
+		this.verbose = new WeakHashMap<UUID, Map.Entry<Integer, Long>>();
 	}
 
 	public boolean checkFastHeal(Player player) {
@@ -51,8 +51,8 @@ public class Regen extends Checks {
 			PlayerQuitEvent e = (PlayerQuitEvent) event;
 
 			Player player = e.getPlayer();
-			if (this.FastHealTicks.containsKey(player.getUniqueId())) {
-				this.FastHealTicks.remove(player.getUniqueId());
+			if (this.verbose.containsKey(player.getUniqueId())) {
+				this.verbose.remove(player.getUniqueId());
 			}
 		}
 
@@ -80,9 +80,9 @@ public class Regen extends Checks {
 			}
 			int Count = 0;
 			long Time = System.currentTimeMillis();
-			if (this.FastHealTicks.containsKey(player.getUniqueId())) {
-				Count = ((Integer) this.FastHealTicks.get(player.getUniqueId()).getKey()).intValue();
-				Time = ((Long) this.FastHealTicks.get(player.getUniqueId()).getValue()).longValue();
+			if (this.verbose.containsKey(player.getUniqueId())) {
+				Count = this.verbose.get(player.getUniqueId()).getKey().intValue();
+				Time = this.verbose.get(player.getUniqueId()).getValue().longValue();
 			}
 			if (checkFastHeal(player)) {
 				if (!player.getLocation().getBlock().getType().isSolid()) {
@@ -98,11 +98,11 @@ public class Regen extends Checks {
 				}
 				Count = 0;
 			}
-			if ((this.FastHealTicks.containsKey(player.getUniqueId())) && (TimerUtils.elapsed(Time, 60000L))) {
+			if ((this.verbose.containsKey(player.getUniqueId())) && (TimerUtils.elapsed(Time, 60000L))) {
 				Count = 0;
 				Time = TimerUtils.nowlong();
 			}
-			this.FastHealTicks.put(player.getUniqueId(),
+			this.verbose.put(player.getUniqueId(),
 					new AbstractMap.SimpleEntry<Integer, Long>(Integer.valueOf(Count), Long.valueOf(Time)));
 		}
 	}

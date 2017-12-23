@@ -16,6 +16,7 @@ import anticheat.detections.ChecksListener;
 import anticheat.detections.ChecksType;
 import anticheat.user.User;
 import anticheat.utils.MiscUtils;
+import anticheat.utils.PlayerUtils;
 
 @ChecksListener(events = { PlayerMoveEvent.class, PlayerQuitEvent.class })
 public class Jesus extends Checks {
@@ -97,7 +98,7 @@ public class Jesus extends Checks {
 				advancedalert(p, 100);
 				
 			}
-			if (!p.isOnGround()) {
+			if (!PlayerUtils.isOnGround(p.getLocation())) {
 				this.velocity.put(p.getUniqueId(), p.getVelocity().length());
 			} else {
 				this.velocity.put(p.getUniqueId(), -1.0D);

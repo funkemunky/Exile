@@ -25,7 +25,6 @@ import anticheat.detections.ChecksManager;
 import anticheat.events.EventInventory;
 import anticheat.events.EventJoinQuit;
 import anticheat.events.EventPacket;
-import anticheat.events.EventPacketMoveEvent;
 import anticheat.events.EventPacketReadVelocity;
 import anticheat.events.EventPacketUse;
 import anticheat.events.EventPlayerAttack;
@@ -219,7 +218,6 @@ public class Exile extends JavaPlugin {
 		pm.registerEvents(new EventPlayerRespawn(), this);
 		pm.registerEvents(new EventProjectileLaunch(), this);
 		pm.registerEvents(new EventInventory(), this);
-		pm.registerEvents(new EventPacketMoveEvent(), this);
 		pm.registerEvents(new GUIListener(), this);
 
 		PME pme = (PME) getChecks().getCheckByName("PME");

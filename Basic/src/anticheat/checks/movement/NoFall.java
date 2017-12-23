@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.util.Vector;
 
 import anticheat.Exile;
 import anticheat.detections.Checks;

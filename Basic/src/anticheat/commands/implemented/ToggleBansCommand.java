@@ -13,7 +13,7 @@ import anticheat.utils.Color;
 public class ToggleBansCommand extends Command {
 	
 	public ToggleBansCommand() {
-		super("Exile");
+		super("Kodona");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {

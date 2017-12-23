@@ -167,7 +167,7 @@ public class Fly extends Checks {
 			}
 			AscensionTicks.put(player.getUniqueId(),
 					new AbstractMap.SimpleEntry<Long, Double>(Time, TotalBlocks));
-			if (!player.isOnGround() && !PlayerUtils.hasPotionEffect(player, PotionEffectType.POISON)) {
+			if (!PlayerUtils.isOnGround(player.getLocation()) && !PlayerUtils.hasPotionEffect(player, PotionEffectType.POISON)) {
 				velocity.put(player.getUniqueId(), player.getVelocity().length());
 			} else {
 				velocity.put(player.getUniqueId(), -1.0D);

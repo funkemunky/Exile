@@ -3,7 +3,6 @@ package anticheat.events;
 import org.bukkit.Achievement;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
@@ -11,14 +10,17 @@ import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import anticheat.Exile;
 import anticheat.user.User;
 
-@SuppressWarnings("deprecation")
 public class EventInventory implements Listener {
 
 	@EventHandler
 	public void onClose(InventoryCloseEvent e) {
 		Exile.getAC().getChecks().event(e);
 		
-		Exile.getAC().getUserManager().getUser(e.getPlayer().getUniqueId()).setInventoryOpen(false);
+		User user = Exile.getAC().getUserManager().getUser(e.getPlayer().getUniqueId());
+		
+		if(user != null) {
+			user.setInventoryOpen(false);
+		}
 	}
 	
 	@EventHandler
@@ -28,13 +30,6 @@ public class EventInventory implements Listener {
 			e.setCancelled(true);
 			user.setInventoryOpen(true);
 		}
-	}
-	
-	@EventHandler
-	public void onClick(InventoryClickEvent e) {
-		Exile.getAC().getChecks().event(e);
-		
-		Exile.getAC().getUserManager().getUser(e.getWhoClicked().getUniqueId()).setInventoryOpen(true);
 	}
 	
 	@EventHandler

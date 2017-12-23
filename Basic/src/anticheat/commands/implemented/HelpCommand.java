@@ -9,7 +9,7 @@ import anticheat.utils.Color;
 public class HelpCommand extends Command {
 	
 	public HelpCommand() {
-		super("exile");
+		super("Kodona");
 	}
 	
 	public void onCommand(CommandSender sender, String[] args) {
